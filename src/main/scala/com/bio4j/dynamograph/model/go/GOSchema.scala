@@ -19,16 +19,17 @@ object GOSchema {
 
 
   // Vertex Type
-  object GOTermType extends VertexType("GOTerm"){
-    implicit val termId         = this has id
-    implicit val termName       = this has name
-    implicit val termNamespace  = this has namespace
-    implicit val termDefinition = this has definition
+  object GOTermType extends VertexType("GOTerm")
 
-    // Optionals
-    implicit val termComment    = this has comment
+    implicit val GoTermType_id         = GOTermType has id
+    implicit val GoTermType_name       = GOTermType has name
+    implicit val GoTermType_namespace  = GOTermType has namespace
+    implicit val GoTermType_definition = GOTermType has definition
 
-  }
+      // Optionals
+    implicit val termComment    = GOTermType has comment
+
+
 
 
   // Edge Types

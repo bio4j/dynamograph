@@ -22,14 +22,14 @@ object GOImplementation {
   }
 
   //edges
-  case class HasPart(override val dbDao : DynamoDbDao) extends DynamoEdge(dbDao, GOTermType, HasPartType, GOTermType)
+  case class HasPart(dbDao : DynamoDbDao) extends DynamoEdge(dbDao, GOTermType, HasPartType, GOTermType)
 
-  case class IsAType(override val dbDao : DynamoDbDao) extends DynamoEdge(dbDao, GOTermType, HasPartType, GOTermType)
+  case class IsA(dbDao : DynamoDbDao) extends DynamoEdge(dbDao, GOTermType, IsAType, GOTermType)
 
-  case class NegativelyRegulatesType(override val dbDao : DynamoDbDao) extends DynamoEdge(dbDao, GOTermType, HasPartType, GOTermType)
+  case class NegativelyRegulates(dbDao : DynamoDbDao) extends DynamoEdge(dbDao, GOTermType, NegativelyRegulatesType, GOTermType)
 
-  case class PartOfType(override val dbDao : DynamoDbDao) extends DynamoEdge(dbDao, GOTermType, HasPartType, GOTermType)
+  case class PartOf(dbDao : DynamoDbDao) extends DynamoEdge(dbDao, GOTermType, PartOfType, GOTermType)
 
-  case class PositivelyRegulatesType(override val dbDao : DynamoDbDao) extends DynamoEdge(dbDao, GOTermType, HasPartType, GOTermType)
+  case class PositivelyRegulates(dbDao : DynamoDbDao) extends DynamoEdge(dbDao, GOTermType, PositivelyRegulatesType, GOTermType)
 
 }
