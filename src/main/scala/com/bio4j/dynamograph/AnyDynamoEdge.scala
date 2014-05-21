@@ -9,9 +9,10 @@ import com.bio4j.dynamograph.dao.go.DynamoDbDao
 
 trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
-  val dao : DynamoDbDao
 
-  final type Raw = Map[String,AttributeValue]
+  final type Raw = DynamoRawEdge
+
+  val dao: DynamoDbDao = ServiceProvider.getDao()
 
   type Source <: AnyVertex.ofType[Tpe#SourceType] with AnyDynamoVertex
   val source: Source
@@ -22,17 +23,17 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   implicit def unsafeGetProperty[P <: AnyProperty: PropertyOf[this.Tpe]#is](p: P) =
     new GetProperty[P](p) {
-      def apply(rep: Rep): p.Raw = rep.get(p.label).getS.asInstanceOf[p.Raw]
+      def apply(rep: dynamoEdge.Rep): p.Raw = rep.getAttributeValue(p.label).asInstanceOf[p.Raw]
     }
 
   implicit object sourceGetter extends GetSource[Source](source) {
     def apply(rep: dynamoEdge.Rep): source.Rep =
-      source ->> dao.get(rep.get("source").getN)
+      source ->> dao.get(rep.source)
   }
 
   implicit object targetGetter extends GetTarget[Target](target) {
     def apply(rep: dynamoEdge.Rep): target.Rep =
-      target ->> dao.get(rep.get("target").getN)
+      target ->> dao.get(rep.target)
   }
 
 }
@@ -41,8 +42,7 @@ class DynamoEdge[
 ET <: AnyEdgeType,
 S <: AnyVertex.ofType[ET#SourceType] with AnyDynamoVertex,
 T <: AnyVertex.ofType[ET#TargetType] with AnyDynamoVertex
-](val dbDao : DynamoDbDao, val source: S, val tpe: ET, val target: T) extends AnyDynamoEdge {
-  val dao = dbDao
+](val source: S, val tpe: ET, val target: T) extends AnyDynamoEdge {
   type Source = S
   type Tpe = ET
   type Target = T
