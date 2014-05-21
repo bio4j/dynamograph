@@ -11,23 +11,19 @@ object GOSchema {
   case object namespace extends Property[GOTermNamespace]
   case object definition extends Property[String]
 
-
-  case object synonyms extends Property[List[String]]
-  case object crossRef extends Property[List[String]]
-  case object subset extends Property[List[String]]
   case object comment extends Property[String]
 
 
   // Vertex Type
   object GOTermType extends VertexType("GOTerm")
 
-    implicit val GoTermType_id         = GOTermType has id
-    implicit val GoTermType_name       = GOTermType has name
-    implicit val GoTermType_namespace  = GOTermType has namespace
-    implicit val GoTermType_definition = GOTermType has definition
+  implicit val GoTermType_id         = GOTermType has id
+  implicit val GoTermType_name       = GOTermType has name
+  implicit val GoTermType_namespace  = GOTermType has namespace
+  implicit val GoTermType_definition = GOTermType has definition
 
-      // Optionals
-    implicit val termComment    = GOTermType has comment
+    // Optionals
+  implicit val termComment    = GOTermType has comment
 
 
 
@@ -51,3 +47,6 @@ object GOTermNamespace extends Enumeration{
   val BIOLOGICAL_PROCESS = Value("BIOLOGICAL_PROCESS")
   val MOLECULAR_FUNCTION = Value("MOLECULAR_FUNCTION")
 }
+
+
+

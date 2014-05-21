@@ -1,6 +1,5 @@
 package com.bio4j.dynamograph.model.go
 
-import com.bio4j.dynamograph.dao.go.DynamoDbDao
 import com.bio4j.dynamograph.{DynamoEdge, DynamoVertex}
 import com.bio4j.dynamograph.model.go.GOSchema._
 
@@ -8,7 +7,7 @@ import com.bio4j.dynamograph.model.go.GOSchema._
 object GOImplementation {
 
   // vertices
-  case class GOTerm(override val dbDao : DynamoDbDao) extends DynamoVertex[GOTermType.type](dbDao, GOTermType) {
+  case object GOTerm extends DynamoVertex[GOTermType.type](GOTermType) {
 
     implicit val _id : GetProperty[id.type] = unsafeGetProperty(id)
 
@@ -22,14 +21,14 @@ object GOImplementation {
   }
 
   //edges
-  case class HasPart(dbDao : DynamoDbDao) extends DynamoEdge(dbDao, GOTermType, HasPartType, GOTermType)
+  case object HasPart extends DynamoEdge(GOTerm, HasPartType, GOTerm)
 
-  case class IsA(dbDao : DynamoDbDao) extends DynamoEdge(dbDao, GOTermType, IsAType, GOTermType)
+  case object IsA extends DynamoEdge(GOTerm, IsAType, GOTerm)
 
-  case class NegativelyRegulates(dbDao : DynamoDbDao) extends DynamoEdge(dbDao, GOTermType, NegativelyRegulatesType, GOTermType)
+  case object NegativelyRegulates extends DynamoEdge(GOTerm, NegativelyRegulatesType, GOTerm)
 
-  case class PartOf(dbDao : DynamoDbDao) extends DynamoEdge(dbDao, GOTermType, PartOfType, GOTermType)
+  case object PartOf extends DynamoEdge(GOTerm, PartOfType, GOTerm)
 
-  case class PositivelyRegulates(dbDao : DynamoDbDao) extends DynamoEdge(dbDao, GOTermType, PositivelyRegulatesType, GOTermType)
+  case object PositivelyRegulates extends DynamoEdge(GOTerm, PositivelyRegulatesType, GOTerm)
 
 }
