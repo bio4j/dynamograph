@@ -1,10 +1,8 @@
 package com.bio4j.dynamograph
 
-import java.util.Map
-import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import ohnosequences.scarph._
 import ohnosequences.scarph.SmthHasProperty._
-import com.bio4j.dynamograph.dao.go.DynamoDbDao
+import com.bio4j.dynamograph.dao.go.IDynamoDbDao
 
 
 trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
@@ -12,7 +10,7 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   final type Raw = DynamoRawEdge
 
-  val dao: DynamoDbDao = ServiceProvider.getDao()
+  val dao: IDynamoDbDao = ServiceProvider.getDao()
 
   type Source <: AnyVertex.ofType[Tpe#SourceType] with AnyDynamoVertex
   val source: Source

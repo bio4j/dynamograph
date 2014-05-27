@@ -3,15 +3,15 @@ package com.bio4j.dynamograph
 import ohnosequences.scarph._
 import ohnosequences.scarph.AnyProperty.ReadFrom
 import ohnosequences.scarph.SmthHasProperty.PropertyOf
-import com.bio4j.dynamograph.dao.go.DynamoDbDao
 import scala.collection.JavaConverters._
+import com.bio4j.dynamograph.dao.go.IDynamoDbDao
 
 
 trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
   final type Raw = DynamoRawVertex
 
-  val dao: DynamoDbDao = ServiceProvider.getDao()
+  val dao: IDynamoDbDao = ServiceProvider.getDao()
 
   implicit def readFromDynamoVertex(vr: Rep) =
     new ReadFrom[Rep](vr) {
