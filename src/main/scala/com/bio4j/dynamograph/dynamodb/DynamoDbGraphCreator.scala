@@ -8,7 +8,7 @@ class DynamoDbGraphCreator(val ddb : AmazonDynamoDB) extends IDynamoDbGraphCreat
   
   def createNode(dbModel : DynamoDbNodeModel) : Boolean = {
     val tableName = s"${dbModel.nodeName}Node"
-    ohnosequences.awstools.ddb.Utils.createTable(ddb,tableName,dbModel.hash,dbModel.range,dbModel.writeThroughput,dbModel.readThroughput,true)
+    ohnosequences.awstools.ddb.Utils.createTable(ddb,tableName,dbModel.hash,None ,dbModel.writeThroughput,dbModel.readThroughput,true)
   }
   
   def createEdge(dbModel: DynamoDbEdgeModel) : Boolean = {

@@ -26,12 +26,12 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   implicit object sourceGetter extends GetSource[Source](source) {
     def apply(rep: dynamoEdge.Rep): source.Rep =
-      source ->> dao.get(rep.source)
+      source ->> dao.get(rep.source).get
   }
 
   implicit object targetGetter extends GetTarget[Target](target) {
     def apply(rep: dynamoEdge.Rep): target.Rep =
-      target ->> dao.get(rep.target)
+      target ->> dao.get(rep.target).get
   }
 
 }
