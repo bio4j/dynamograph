@@ -2,6 +2,8 @@ package com.bio4j.dynamograph.model.go
 
 import com.bio4j.dynamograph.{DynamoEdge, DynamoVertex}
 import com.bio4j.dynamograph.model.go.GOSchema._
+import com.bio4j.dynamograph.model.go.GOTermNamespace.GOTermNamespace
+import ohnosequences.scarph.Property
 
 
 object GOImplementation {
@@ -9,15 +11,9 @@ object GOImplementation {
   // vertices
   case object GOTerm extends DynamoVertex[GOTermType.type](GOTermType) {
 
-    implicit val _id : GetProperty[id.type] = unsafeGetProperty(id)
-
-    implicit val _name : GetProperty[name.type] = unsafeGetProperty(name)
-
-    implicit val _namespace : GetProperty[namespace.type] = unsafeGetProperty(namespace)
-
-    implicit val _definition : GetProperty[definition.type] = unsafeGetProperty(definition)
-
-    implicit val _comment : GetProperty[comment.type] = unsafeGetProperty(comment)
+    implicit val _namespace : GetProperty[namespace.type] = new GetProperty[namespace.type](namespace) {
+      def apply(rep: Rep): p.Raw = GOTermNamespace.withName(rep.getAttributeValue(p.label))
+    }
   }
 
   //edges
