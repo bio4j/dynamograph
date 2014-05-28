@@ -1,6 +1,7 @@
 package com.bio4j.dynamograph.dynamodb.model
 
-import com.bio4j.dynamograph.dynamodb.{DynamoDbNodeModel, DynamoDbEdgeModel}
+import com.bio4j.dynamograph.dynamodb.DynamoDbEdgeModel
+import com.bio4j.dynamograph.dynamodb.DynamoDbNodeModel
 
 
 object DynamoDbGoSchema {

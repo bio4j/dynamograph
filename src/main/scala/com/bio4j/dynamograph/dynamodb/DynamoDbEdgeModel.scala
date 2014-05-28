@@ -4,7 +4,9 @@ import com.amazonaws.services.dynamodbv2.model.{ScalarAttributeType, AttributeDe
 import Constants._
 
 
-case class DynamoDbEdgeModel(edgeName: String, writeThroughput: Int = 1, readThroughput: Int = 1){
+case class DynamoDbEdgeModel(edgeTableName: String, writeThroughput: Int = 1, readThroughput: Int = 1){
   val nodeId = new AttributeDefinition().withAttributeName(relationTableNodeId).withAttributeType(ScalarAttributeType.S)
   val relationId = new AttributeDefinition().withAttributeName(relationTableId).withAttributeType(ScalarAttributeType.S)
+  val inEdgeTableName = s"in${edgeTableName}"
+  val outEdgeTableName = s"out${edgeTableName}"
 }

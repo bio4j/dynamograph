@@ -5,6 +5,7 @@ import ohnosequences.scarph.AnyProperty.ReadFrom
 import ohnosequences.scarph.SmthHasProperty.PropertyOf
 import scala.collection.JavaConverters._
 import com.bio4j.dynamograph.dao.go.AnyDynamoDbDao
+import com.bio4j.dynamograph.{EdgeTypeToTableModel => mapper}
 
 
 
@@ -29,7 +30,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: From[dynamoVertex.Tpe] with OneOut }](e: E): RetrieveOutEdge[E] = new RetrieveOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
-      val it = dao.getOutRelationships(rep.id).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(rep.id, mapper.getEdgeTableModel(e.tpe)).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.headOption: Option[e.Rep]
     }
   }
@@ -38,7 +39,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: From[dynamoVertex.Tpe] with ManyOut }](e: E): RetrieveOutEdge[E] = new RetrieveOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
-      val it = dao.getOutRelationships(rep.id).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(rep.id, mapper.getEdgeTableModel(e.tpe)).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.toList: List[e.Rep]
     }
   }
@@ -47,7 +48,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: To[dynamoVertex.Tpe] with OneIn }](e: E): RetrieveInEdge[E] = new RetrieveInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
-      val it = dao.getInRelationships(rep.id).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getInRelationships(rep.id, mapper.getEdgeTableModel(e.tpe)).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.headOption: Option[e.Rep]
     }
   }
@@ -56,7 +57,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: To[dynamoVertex.Tpe] with ManyIn }](e: E): RetrieveInEdge[E] = new RetrieveInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
-      val it = dao.getInRelationships(rep.id).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getInRelationships(rep.id, mapper.getEdgeTableModel(e.tpe)).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.toList: List[e.Rep]
     }
   }

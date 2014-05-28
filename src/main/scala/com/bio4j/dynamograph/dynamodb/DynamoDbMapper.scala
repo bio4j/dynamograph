@@ -12,7 +12,7 @@ class DynamoDbMapper {
   }
 
   // TODO: BA provide proper implementation
-  def mapToDynamoRawEdge(values: Map[String, AttributeValue]) : DynamoRawEdge = {
+  def mapToDynamoRawEdge(tableName: String, values: Map[String, AttributeValue]) : DynamoRawEdge = {
     val dummyResult = DynamoRawEdge(DynamoElementIdentifier("id","test"),DynamoElementIdentifier("id","target"),DynamoElementIdentifier("id","source"), values);
     dummyResult
   }
