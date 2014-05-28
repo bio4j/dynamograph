@@ -4,7 +4,7 @@ package com.bio4j.dynamograph.dynamodb
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 
 
-class DynamoDbGraphCreator(val ddb : AmazonDynamoDB) extends IDynamoDbGraphCreator{
+class DynamoDbGraphCreator(val ddb : AmazonDynamoDB) extends AnyDynamoDbGraphCreator{
   
   def createNode(dbModel : DynamoDbNodeModel) : Boolean = {
     val tableName = s"${dbModel.nodeName}Node"

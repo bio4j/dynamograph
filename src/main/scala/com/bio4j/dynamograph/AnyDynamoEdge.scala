@@ -2,7 +2,7 @@ package com.bio4j.dynamograph
 
 import ohnosequences.scarph._
 import ohnosequences.scarph.SmthHasProperty._
-import com.bio4j.dynamograph.dao.go.IDynamoDbDao
+import com.bio4j.dynamograph.dao.go.AnyDynamoDbDao
 
 
 trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
@@ -10,7 +10,7 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   final type Raw = DynamoRawEdge
 
-  val dao: IDynamoDbDao = ServiceProvider.getDao()
+  val dao: AnyDynamoDbDao = ServiceProvider.getDao()
 
   type Source <: AnyVertex.ofType[Tpe#SourceType] with AnyDynamoVertex
   val source: Source
@@ -23,12 +23,12 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
     new GetProperty[P](p) {
       def apply(rep: dynamoEdge.Rep): p.Raw = rep.getAttributeValue(p.label).asInstanceOf[p.Raw]
     }
-
+  //TODO: BA None handling
   implicit object sourceGetter extends GetSource[Source](source) {
     def apply(rep: dynamoEdge.Rep): source.Rep =
       source ->> dao.get(rep.source).get
   }
-
+  //TODO: BA None handling
   implicit object targetGetter extends GetTarget[Target](target) {
     def apply(rep: dynamoEdge.Rep): target.Rep =
       target ->> dao.get(rep.target).get

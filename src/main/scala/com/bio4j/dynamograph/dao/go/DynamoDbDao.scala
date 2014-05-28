@@ -7,7 +7,7 @@ import scala.collection.JavaConversions._
 import com.bio4j.dynamograph.dynamodb.DynamoDbMapper
 import com.bio4j.dynamograph.dynamodb.Constants._
 
-class DynamoDbDao(val ddb : AmazonDynamoDB, val mapper : DynamoDbMapper) extends IDynamoDbDao{
+class DynamoDbDao(val ddb : AmazonDynamoDB, val mapper : DynamoDbMapper) extends AnyDynamoDbDao{
 
   override def getOutRelationships(id: DynamoElementIdentifier): List[DynamoRawEdge] = ???
 

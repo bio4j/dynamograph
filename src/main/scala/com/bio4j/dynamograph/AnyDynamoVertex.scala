@@ -4,14 +4,14 @@ import ohnosequences.scarph._
 import ohnosequences.scarph.AnyProperty.ReadFrom
 import ohnosequences.scarph.SmthHasProperty.PropertyOf
 import scala.collection.JavaConverters._
-import com.bio4j.dynamograph.dao.go.IDynamoDbDao
+import com.bio4j.dynamograph.dao.go.AnyDynamoDbDao
 
 
 trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
   final type Raw = DynamoRawVertex
 
-  val dao: IDynamoDbDao = ServiceProvider.getDao()
+  val dao: AnyDynamoDbDao = ServiceProvider.getDao()
 
   implicit def readFromDynamoVertex(vr: Rep) =
     new ReadFrom[Rep](vr) {
@@ -46,7 +46,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: To[dynamoVertex.Tpe] with OneIn }](e: E): RetrieveInEdge[E] = new RetrieveInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
-      val it = dao.getOutRelationships(rep.id).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getInRelationships(rep.id).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.headOption: Option[e.Rep]
     }
   }
@@ -55,7 +55,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: To[dynamoVertex.Tpe] with ManyIn }](e: E): RetrieveInEdge[E] = new RetrieveInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
-      val it = dao.getOutRelationships(rep.id).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getInRelationships(rep.id).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.toList: List[e.Rep]
     }
   }
