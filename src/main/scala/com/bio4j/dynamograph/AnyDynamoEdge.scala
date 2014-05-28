@@ -5,6 +5,7 @@ import ohnosequences.scarph.SmthHasProperty._
 import com.bio4j.dynamograph.dao.go.AnyDynamoDbDao
 
 
+
 trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
 

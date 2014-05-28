@@ -7,6 +7,7 @@ import scala.collection.JavaConverters._
 import com.bio4j.dynamograph.dao.go.AnyDynamoDbDao
 
 
+
 trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
   final type Raw = DynamoRawVertex

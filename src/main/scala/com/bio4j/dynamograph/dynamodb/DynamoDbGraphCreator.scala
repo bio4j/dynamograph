@@ -5,7 +5,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 
 
 class DynamoDbGraphCreator(val ddb : AmazonDynamoDB) extends AnyDynamoDbGraphCreator{
-  
+
   def createNode(dbModel : DynamoDbNodeModel) : Boolean = {
     val tableName = s"${dbModel.nodeName}Node"
     ohnosequences.awstools.ddb.Utils.createTable(ddb,tableName,dbModel.hash,None ,dbModel.writeThroughput,dbModel.readThroughput,true)
