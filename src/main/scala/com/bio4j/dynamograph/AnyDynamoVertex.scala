@@ -4,7 +4,7 @@ import ohnosequences.scarph._
 import ohnosequences.scarph.AnyProperty.ReadFrom
 import ohnosequences.scarph.SmthHasProperty.PropertyOf
 import scala.collection.JavaConverters._
-import com.bio4j.dynamograph.dao.go.AnyDynamoDbDao
+import com.bio4j.dynamograph.dao.go.AnyDynamoDbReadDao
 import com.bio4j.dynamograph.{EdgeTypeToTableModel => mapper}
 
 
@@ -13,7 +13,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
   final type Raw = DynamoRawVertex
 
-  val dao: AnyDynamoDbDao = ServiceProvider.getDao()
+  val dao: AnyDynamoDbReadDao = ServiceProvider.getDao()
 
   implicit def readFromDynamoVertex(vr: Rep) =
     new ReadFrom[Rep](vr) {

@@ -1,8 +1,8 @@
 package com.bio4j.dynamograph
 
-import com.bio4j.dynamograph.dao.go.AnyDynamoDbDao
+import com.bio4j.dynamograph.dao.go.AnyDynamoDbReadDao
 
 object ServiceProvider extends AnyServiceProvider{
 
-  def getDao() : AnyDynamoDbDao = ???
+  def getDao() : AnyDynamoDbReadDao = ???
 }

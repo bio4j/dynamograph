@@ -13,7 +13,7 @@ import scala.collection.mutable
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 
-class DynamoDbDao(val ddb : AmazonDynamoDB, val mapper : DynamoDbMapper) extends AnyDynamoDbDao{
+class DynamoDbReadDao(val ddb : AmazonDynamoDB, val mapper : DynamoDbMapper) extends AnyDynamoDbReadDao{
 
   //TODO: BA Further improvements
   override def getOutRelationships(id: DynamoElementIdentifier, edgeModel: Option[DynamoDbEdgeModel]): List[DynamoRawEdge] = edgeModel match {

@@ -2,7 +2,7 @@ package com.bio4j.dynamograph
 
 import ohnosequences.scarph._
 import ohnosequences.scarph.SmthHasProperty._
-import com.bio4j.dynamograph.dao.go.AnyDynamoDbDao
+import com.bio4j.dynamograph.dao.go.AnyDynamoDbReadDao
 
 
 
@@ -11,7 +11,7 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   final type Raw = DynamoRawEdge
 
-  val dao: AnyDynamoDbDao = ServiceProvider.getDao()
+  val dao: AnyDynamoDbReadDao = ServiceProvider.getDao()
 
   type Source <: AnyVertex.ofType[Tpe#SourceType] with AnyDynamoVertex
   val source: Source
