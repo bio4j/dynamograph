@@ -1,7 +1,6 @@
 package com.bio4j.dynamograph.model.go
 
 import ohnosequences.scarph._
-import com.bio4j.dynamograph.model.go.GOTermNamespace.GOTermNamespace
 
 object GOSchema {
 

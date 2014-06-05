@@ -1,9 +1,7 @@
 package com.bio4j.dynamograph.model.go
 
-import com.bio4j.dynamograph.{DynamoRawVertex, DynamoRawEdge, DynamoEdge, DynamoVertex}
+import com.bio4j.dynamograph.{DynamoEdge, DynamoVertex}
 import com.bio4j.dynamograph.model.go.GOSchema._
-import com.bio4j.dynamograph.model.go.GOTermNamespace.GOTermNamespace
-import ohnosequences.scarph.{ManyToOne, Property}
 
 
 object GOImplementation {
@@ -26,9 +24,9 @@ object GOImplementation {
 
   case object PositivelyRegulates extends DynamoEdge(GOTerm, PositivelyRegulatesType, GOTerm)
 
-  case object CellularComponent extends DynamoEdge(GONamespace, CellularComponentType, GOTerm)
+  case object CellularComponent extends DynamoEdge(GOTerm, CellularComponentType, GONamespace)
 
-  case object MolecularFunction extends DynamoEdge(GONamespace, MolecularFunctionType, GOTerm)
+  case object MolecularFunction extends DynamoEdge(GOTerm, MolecularFunctionType, GONamespace)
 
-  case object BiologicalProcess extends DynamoEdge(GONamespaceType, BiologicalProcessType, GOTermType)
+  case object BiologicalProcess extends DynamoEdge(GOTerm, BiologicalProcessType, GONamespace)
 }
