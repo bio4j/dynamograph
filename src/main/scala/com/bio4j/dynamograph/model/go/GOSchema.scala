@@ -1,6 +1,6 @@
 package com.bio4j.dynamograph.model.go
 
-import ohnosequences.scarph.{VertexType, ManyToMany, Property}
+import ohnosequences.scarph._
 import com.bio4j.dynamograph.model.go.GOTermNamespace.GOTermNamespace
 
 object GOSchema {
@@ -8,7 +8,6 @@ object GOSchema {
   // Properties
   case object id extends Property[String]
   case object name extends Property[String]
-  case object namespace extends Property[GOTermNamespace]
   case object definition extends Property[String]
 
   case object comment extends Property[String]
@@ -19,13 +18,12 @@ object GOSchema {
 
   implicit val GoTermType_id         = GOTermType has id
   implicit val GoTermType_name       = GOTermType has name
-  implicit val GoTermType_namespace  = GOTermType has namespace
   implicit val GoTermType_definition = GOTermType has definition
 
     // Optionals
   implicit val termComment    = GOTermType has comment
 
-
+  object GONamespaceType extends VertexType("GONamespace")
 
 
   // Edge Types
@@ -39,13 +37,14 @@ object GOSchema {
 
   case object PositivelyRegulatesType extends ManyToMany (GOTermType, "negatively_regulates", GOTermType)
 
-}
+  // Namespace edge types
+  case object CellularComponentType extends ManyToOne (GOTermType, "cellular_component", GONamespaceType)
 
-object GOTermNamespace extends Enumeration{
-  type GOTermNamespace = Value
-  val CELLULAR_COMONENT = Value("CELLULAR_COMONENT")
-  val BIOLOGICAL_PROCESS = Value("BIOLOGICAL_PROCESS")
-  val MOLECULAR_FUNCTION = Value("MOLECULAR_FUNCTION")
+  case object MolecularFunctionType extends ManyToOne (GOTermType, "molecular_function", GONamespaceType)
+
+  case object BiologicalProcessType extends ManyToOne (GOTermType, "biological_function", GONamespaceType)
+
+
 }
 
 
