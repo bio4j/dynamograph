@@ -7,11 +7,9 @@ import com.bio4j.dynamograph.model.go.GOSchema._
 object GOImplementation {
 
   // vertices
-  case object GOTerm extends DynamoVertex[GOTermType.type](GOTermType) {
+  case object GOTerm extends DynamoVertex(GOTermType)
 
-  }
-
-  case object GONamespace extends DynamoVertex[GONamespaceType.type](GONamespaceType)
+  case object GONamespaces extends DynamoVertex(GONamespacesType)
 
   //edges
   case object HasPart extends DynamoEdge(GOTerm, HasPartType, GOTerm)
@@ -24,9 +22,5 @@ object GOImplementation {
 
   case object PositivelyRegulates extends DynamoEdge(GOTerm, PositivelyRegulatesType, GOTerm)
 
-  case object CellularComponent extends DynamoEdge(GOTerm, CellularComponentType, GONamespace)
-
-  case object MolecularFunction extends DynamoEdge(GOTerm, MolecularFunctionType, GONamespace)
-
-  case object BiologicalProcess extends DynamoEdge(GOTerm, BiologicalProcessType, GONamespace)
+  case object Namespace extends DynamoEdge(GOTerm, NamespaceType, GONamespaces)
 }

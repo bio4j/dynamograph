@@ -22,7 +22,7 @@ object GOSchema {
     // Optionals
   implicit val termComment    = GOTermType has comment
 
-  object GONamespaceType extends VertexType("GONamespace")
+  object GONamespacesType extends VertexType("GONamespace")
 
 
   // Edge Types
@@ -37,7 +37,7 @@ object GOSchema {
   case object PositivelyRegulatesType extends ManyToMany (GOTermType, "negatively_regulates", GOTermType)
 
   // Namespace edge types
-  case object NamespaceType extends ManyToOne (GOTermType, "namespace", GONamespaceType)
+  case object NamespaceType extends ManyToOne (GOTermType, "namespace", GONamespacesType)
 
 }
 
