@@ -37,12 +37,7 @@ object GOSchema {
   case object PositivelyRegulatesType extends ManyToMany (GOTermType, "negatively_regulates", GOTermType)
 
   // Namespace edge types
-  case object CellularComponentType extends ManyToOne (GOTermType, "cellular_component", GONamespaceType)
-
-  case object MolecularFunctionType extends ManyToOne (GOTermType, "molecular_function", GONamespaceType)
-
-  case object BiologicalProcessType extends ManyToOne (GOTermType, "biological_function", GONamespaceType)
-
+  case object NamespaceType extends ManyToOne (GOTermType, "namespace", GONamespaceType)
 
 }
 
