@@ -62,7 +62,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
 }
 
-class DynamoVertex[VT <: AnyVertexType](val tpe: VT) extends AnyDynamoVertex {
+class DynamoVertex[VT <: Singleton with AnyVertexType](val tpe: VT) extends AnyDynamoVertex {
   type Tpe = VT
 }
 
