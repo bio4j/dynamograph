@@ -3,4 +3,3 @@ resolvers ++= Seq(
 )
 
 addSbtPlugin("ohnosequences" % "nice-sbt-settings" % "0.4.0")
-
