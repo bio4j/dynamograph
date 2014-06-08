@@ -12,6 +12,7 @@ scalaVersion := "2.11.1"
 
 libraryDependencies ++= Seq(
   "ohnosequences" %% "scarph" % "0.1.0-SNAPSHOT",
+  "ohnosequences" %% "tabula" % "0.1.0-SNAPSHOT",
   "com.amazonaws" % "aws-java-sdk" % "1.7.9",
   "org.scalatest" %% "scalatest" % "2.1.6" % "test"
 )
