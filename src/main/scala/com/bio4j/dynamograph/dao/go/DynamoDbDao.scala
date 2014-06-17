@@ -1,12 +1,12 @@
 package com.bio4j.dynamograph.dao.go
 
-import com.bio4j.dynamograph.{DynamoRawEdge, DynamoRawVertex}
+import com.amazonaws.services.dynamodbv2.model.AttributeValue
 
 trait DynamoDbDao {
-  def get(id : String) : DynamoRawVertex
+  def get(id : String) : Map[String,AttributeValue]
 
-  def getInRelationships(id : String) : List[DynamoRawEdge]
+  def getInRelationships(id : String) : List[Map[String,AttributeValue]]
 
-  def getOutRelationships(id : String) : List[DynamoRawEdge]
+  def getOutRelationships(id : String) : List[Map[String,AttributeValue]]
 
 }

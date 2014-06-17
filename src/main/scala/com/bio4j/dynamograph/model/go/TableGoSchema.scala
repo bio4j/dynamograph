@@ -2,7 +2,7 @@ package com.bio4j.dynamograph.model.go
 
 import ohnosequences.tabula._
 import com.bio4j.dynamograph.{AnyDynamoVertex, AnyDynamoEdge}
-import com.bio4j.dynamograph.model.go.GOSchema.id
+import com.bio4j.dynamograph.model.GeneralSchema._
 
 
 object TableGoSchema {
@@ -18,8 +18,7 @@ object TableGoSchema {
     type VertexTpe = E
   }
 
-  case object nodeId extends Attribute[String]
-  case object relationId extends Attribute[String]
+
 
   abstract class EdgeTables[E<: AnyDynamoEdge, R <: AnyRegion](val tablaName: String, val region: R) {
     class InTable extends CompositeKeyTable(s"${tablaName}_IN", nodeId, relationId, region)

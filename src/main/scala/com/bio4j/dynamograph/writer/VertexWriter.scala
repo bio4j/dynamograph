@@ -14,6 +14,6 @@ trait VertexWriter extends AnyVertexWriter {
 
   val vertexTable: VertexTable[vertexType,AnyRegion];
   def write(v: vertexType#Rep) : List[writeType] = {
-    return List(new PutItemRequest().withTableName(vertexTable.tableName).withItem(v.attributes))
+    return List(new PutItemRequest().withTableName(vertexTable.tableName).withItem(v))
   }
 }

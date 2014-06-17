@@ -2,11 +2,11 @@ package com.bio4j.dynamograph.model.go
 
 import ohnosequences.scarph._
 import ohnosequences.tabula.Attribute
+import com.bio4j.dynamograph.model.GeneralSchema.id
 
 object GOSchema {
 
   // Properties
-  case object id extends Attribute[String]
   case object name extends Attribute[String]
   case object definition extends Attribute[String]
 

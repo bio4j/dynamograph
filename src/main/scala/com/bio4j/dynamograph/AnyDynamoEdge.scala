@@ -1,10 +1,10 @@
 package com.bio4j.dynamograph
 
-import java.util.Map
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import ohnosequences.scarph._
 import ohnosequences.scarph.SmthHasProperty._
 import com.bio4j.dynamograph.dao.go.DynamoDbDao
+import com.bio4j.dynamograph.model.GeneralSchema._
 
 
 trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
