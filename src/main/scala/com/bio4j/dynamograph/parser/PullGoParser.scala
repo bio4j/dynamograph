@@ -4,7 +4,7 @@ import scala.xml.pull._
 import scala.io.Source
 
 
-object PullGoParser extends AnyGoParser {
+class PullGoParser(val src: Source) extends AnyGoParser {
   // simple values/properties
   val idTag = "id"
   val comment = "comment"
@@ -26,37 +26,34 @@ object PullGoParser extends AnyGoParser {
   val relationMapping = Map(partOf._2 -> partOf._1,hasPart._2 -> hasPart._1,regulates._2 -> regulates._1,
     negativelyRegulates._2 -> negativelyRegulates._1,positivelyRegulates._2 -> positivelyRegulates._1)
 
-  override def parse(src: Source): Map[String, List[(String, Any)]] = {
-    var result : Map[String, List[(String, Any)]] = Map()
+  override def foreach[U](f: SingleElement => U) = {
     val reader = new XMLEventReader(src)
     while(reader.hasNext){
       reader.next match {
         case EvElemStart(pre, "Class", _, _) => {
-          result += parseSingleElement(reader)
+          f(parseSingleElement(reader))
         }
         case _ =>
       }
     }
-    result
   }
 
-  private def parseSingleElement(parser: XMLEventReader) : (String,List[(String, Any)]) = {
+  private def parseSingleElement(parser: XMLEventReader) : SingleElement = {
     var done = false
-    var singleGO : List[(String, Any)] = List()
+    var vertex : Map[String, String] = Map()
+    var edges : List[Map[String, String]] = List()
+    //var singleGO : List[(String, String)] = List()
     while (parser.hasNext && !done){
       parser.next match {
         case EvElemEnd(_, "Class") => done = true
         case EvElemStart(pre, "Class", attrs, _) => skip("Class", parser)
-        case EvElemStart(pre, "subClassOf", attrs, _) => singleGO ::= parseSingleRelation(attrs, parser)
-        case EvElemStart(pre, label, _, _) if mapping.contains(label) => singleGO ::= parseSingleProperty(label, parser)
+        case EvElemStart(pre, "subClassOf", attrs, _) => edges ::= parseSingleRelation(attrs, parser)
+        case EvElemStart(pre, label, _, _) if mapping.contains(label) => vertex += parseSingleProperty(label, parser)
         case _ => ()
       }
     }
-    (findSingleElementId(singleGO), singleGO)
+    SingleElement(vertex, edges)
   }
-
-  private def findSingleElementId(attributes : List[(String, Any)]) : String = attributes.filter(p => p._1.equals("id")).head._2.asInstanceOf[String]
-
 
   private def skip(label: String,parser: XMLEventReader) = {
     var done = false
@@ -68,7 +65,7 @@ object PullGoParser extends AnyGoParser {
     }
   }
 
-  private def parseSingleProperty(label : String, parser: XMLEventReader) : (String, Any) = {
+  private def parseSingleProperty(label : String, parser: XMLEventReader) : (String, String) = {
     var done = false
     var value : String = null
     while (parser.hasNext && !done){
@@ -81,13 +78,13 @@ object PullGoParser extends AnyGoParser {
     (mapping.getOrElse(label,""), value)
   }
 
-  private def parseSingleRelation(attrs : scala.xml.MetaData,parser: XMLEventReader) : (String, Any) =
+  private def parseSingleRelation(attrs : scala.xml.MetaData,parser: XMLEventReader) : Map[String, String] =
     getAttributeValue(attrs, resource) match {
-      case Some(StringPrefixMatcher(id)) => (is_a, id)
+      case Some(StringPrefixMatcher(id)) => Map(is_a -> id)
       case _ => parseCompoundRelation(parser)
     }
 
-  private def parseCompoundRelation(parser: XMLEventReader) : (String, Any) = {
+  private def parseCompoundRelation(parser: XMLEventReader) : Map[String, String] = {
     var done = false
     var id : String = null
     var value : String = null
@@ -99,7 +96,7 @@ object PullGoParser extends AnyGoParser {
         case _ =>
       }
     }
-    (id, value)
+    Map(id -> value)
   }
 
   private def getAttributeValue(attrs : scala.xml.MetaData, attrName : String) : Option[String] = {
