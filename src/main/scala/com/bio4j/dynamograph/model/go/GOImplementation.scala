@@ -22,5 +22,7 @@ object GOImplementation {
 
   case object PositivelyRegulates extends DynamoEdge(GOTerm, PositivelyRegulatesType, GOTerm)
 
+  case object Regulates extends DynamoEdge(GOTerm, RegulatesType, GOTerm)
+
   case object Namespace extends DynamoEdge(GOTerm, NamespaceType, GONamespaces)
 }

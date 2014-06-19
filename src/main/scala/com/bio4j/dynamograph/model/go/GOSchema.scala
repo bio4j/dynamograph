@@ -37,6 +37,8 @@ object GOSchema {
 
   case object PositivelyRegulatesType extends ManyToMany (GOTermType, "negatively_regulates", GOTermType)
 
+  case object RegulatesType extends ManyToMany (GOTermType, "regulates", GOTermType)
+
   // Namespace edge types
   case object NamespaceType extends ManyToOne (GOTermType, "namespace", GONamespacesType)
 
