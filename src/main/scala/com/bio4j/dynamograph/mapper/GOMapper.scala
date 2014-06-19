@@ -1,19 +1,19 @@
 package com.bio4j.dynamograph.mapper
 
-import com.bio4j.dynamograph.model.go.GOImplementation._
+import com.bio4j.dynamograph.model.go.GoImplementation._
 import com.bio4j.dynamograph.model.GeneralSchema.{relationId, targetId, sourceId, id}
 import com.bio4j.dynamograph.parser.{ParsingContants, SingleElement}
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.bio4j.dynamograph.AnyDynamoEdge
-import com.bio4j.dynamograph.model.go.GOSchema._
+import com.bio4j.dynamograph.model.go.GoSchema._
 
 
 class GOMapper extends AnyMapper{
   //TODO: type of the right element in pair
-  type ResultType = (GOTerm.Rep ,List[Any])
+  type ResultType = (GoTerm.Rep ,List[Any])
 
   override def map(element: SingleElement): GOMapper#ResultType = {
-    val vertex = GOTerm ->> element.vertexAttributes.mapValues(mapValue)
+    val vertex = GoTerm ->> element.vertexAttributes.mapValues(mapValue)
     val vertexId : String = vertex.get(id)
 
     def toEdge(attributes: Map[String,String])  = {
@@ -38,7 +38,7 @@ class GOMapper extends AnyMapper{
     case relType if relType == NegativelyRegulatesType.label => NegativelyRegulates ->> rawEdge
     case relType if relType == PositivelyRegulatesType.label => PositivelyRegulates ->> rawEdge
     case relType if relType == RegulatesType.label => Regulates ->> rawEdge
-    case relType if relType == NamespaceType.label => GONamespaces ->> rawEdge
+    case relType if relType == NamespaceType.label => GoNamespaces ->> rawEdge
   }
 
 }

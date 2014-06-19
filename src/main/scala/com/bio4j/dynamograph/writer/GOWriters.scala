@@ -1,18 +1,18 @@
 package com.bio4j.dynamograph.writer
 
-import com.bio4j.dynamograph.model.go.GOImplementation._
-import com.bio4j.dynamograph.model.go.TableGOImplementation._
+import com.bio4j.dynamograph.model.go.GoImplementation._
+import com.bio4j.dynamograph.model.go.TableGoImplementation._
 
 object GOWriters {
 
   class GOVertexWriter extends VertexWriter{
-    type vertexType = GOTerm.type
-    override val vertexTable = GOTermTable
+    type vertexType = GoTerm.type
+    override val vertexTable = GoTermTable
   }
 
   class GONamespaceVertexWriter extends VertexWriter{
-    type vertexType = GONamespaces.type
-    override val vertexTable = GONamespacesTable
+    type vertexType = GoNamespaces.type
+    override val vertexTable = GoNamespacesTable
   }
 
   class IsAEdgeWriter extends EdgeWriter{
