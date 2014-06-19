@@ -10,6 +10,11 @@ object GOWriters {
     override val vertexTable = GOTermTable
   }
 
+  class GONamespaceVertexWriter extends VertexWriter{
+    type vertexType = GONamespaces.type
+    override val vertexTable = GONamespacesTable
+  }
+
   class IsAEdgeWriter extends EdgeWriter{
     type edgeType = IsA.type
     override val edgeTables = IsATables

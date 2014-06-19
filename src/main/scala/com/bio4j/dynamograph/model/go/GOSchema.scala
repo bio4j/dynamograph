@@ -25,6 +25,7 @@ object GOSchema {
 
   object GONamespacesType extends VertexType("GONamespace")
 
+  implicit val GONamespacesType_id         = GONamespacesType has id
 
   // Edge Types
   case object HasPartType extends ManyToMany (GOTermType, "has_part", GOTermType)

@@ -9,6 +9,8 @@ object TableGOImplementation {
 
   case object GOTermTable extends VertexTable[GOTerm.type, AnyRegion]("GOTerm", EU)
 
+  case object GONamespacesTable extends VertexTable[GONamespaces.type, AnyRegion]("G0Namespaces", EU)
+
   case object IsATables extends EdgeTables[IsA.type, AnyRegion]("GOIsA", EU)
 
   case object HasPartTables extends EdgeTables[HasPart.type, AnyRegion]("GOHasPart",EU)

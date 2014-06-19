@@ -10,7 +10,7 @@ import com.bio4j.dynamograph.model.GeneralSchema._
 trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
 
-  final type Raw = DynamoRawEdge
+  final type Raw = Map[String, AttributeValue]
 
   val dao: DynamoDbDao = ServiceProvider.getDao()
 
@@ -23,18 +23,20 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   implicit def unsafeGetProperty[P <: AnyProperty: PropertyOf[this.Tpe]#is](p: P) =
     new GetProperty[P](p) {
-      def apply(rep: dynamoEdge.Rep): p.Raw = rep.getAttributeValue(p.label).asInstanceOf[p.Raw]
+      def apply(rep: dynamoEdge.Rep): p.Raw = getValue(rep, p.label).asInstanceOf[p.Raw]
     }
 
   implicit object sourceGetter extends GetSource[Source](source) {
     def apply(rep: dynamoEdge.Rep): source.Rep =
-      source ->> dao.get(rep.source)
+      source ->> dao.get(getValue(rep,sourceId.label))
   }
 
   implicit object targetGetter extends GetTarget[Target](target) {
     def apply(rep: dynamoEdge.Rep): target.Rep =
-      target ->> dao.get(rep.target)
+      target ->> dao.get(getValue(rep,targetId.label))
   }
+
+  private def getValue(rep: Rep, attributeName : String) : String = rep.get(attributeName).get.getS
 
 }
 
