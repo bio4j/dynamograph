@@ -22,4 +22,6 @@ object TableGoImplementation {
   case object PositivelyRegulatesTables extends EdgeTables[PositivelyRegulates.type, AnyRegion]("GoPositivelyRegulates", EU)
 
   case object RegulatesTables extends EdgeTables[Regulates.type, AnyRegion]("GoRegulates", EU)
+
+  case object NamespaceTables extends EdgeTables[Namespace.type, AnyRegion]("GoNamespaceEdges", EU)
 }
