@@ -1,12 +1,14 @@
 package com.bio4j.dynamograph.dao.go
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
+import ohnosequences.scarph.{AnyEdgeType, AnyVertexType}
 
-trait DynamoDbDao {
-  def get(id : String) : Map[String,AttributeValue]
+class DynamoDbDao extends AnyDynamoDbDao{
 
-  def getInRelationships(id : String) : List[Map[String,AttributeValue]]
+  def get(id : String, vt : AnyVertexType) : Map[String,AttributeValue] = ???
 
-  def getOutRelationships(id : String) : List[Map[String,AttributeValue]]
+  def getInRelationships(id : String, et : AnyEdgeType) : List[Map[String,AttributeValue]] = ???
+
+  def getOutRelationships(id : String, et : AnyEdgeType) : List[Map[String,AttributeValue]] = ???
 
 }

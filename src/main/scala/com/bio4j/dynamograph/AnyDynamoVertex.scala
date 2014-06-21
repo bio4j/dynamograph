@@ -3,7 +3,7 @@ package com.bio4j.dynamograph
 import ohnosequences.scarph._
 import ohnosequences.scarph.AnyProperty.ReadFrom
 import ohnosequences.scarph.SmthHasProperty.PropertyOf
-import com.bio4j.dynamograph.dao.go.DynamoDbDao
+import com.bio4j.dynamograph.dao.go.{AnyDynamoDbDao, DynamoDbDao}
 import com.bio4j.dynamograph.model.GeneralSchema.id
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import scala.collection.JavaConverters._
@@ -13,7 +13,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
   final type Raw = Map[String, AttributeValue]
 
-  val dao: DynamoDbDao = ServiceProvider.getDao()
+  val dao: AnyDynamoDbDao = ServiceProvider.getDao()
 
   implicit def readFromDynamoVertex(vr: Rep) =
     new ReadFrom[Rep](vr) {
@@ -30,7 +30,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: From[dynamoVertex.Tpe] with OneOut }](e: E): RetrieveOutEdge[E] = new RetrieveOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep)).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(getId(rep), e.tpe).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.headOption: Option[e.Rep]
     }
   }
@@ -39,7 +39,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: From[dynamoVertex.Tpe] with ManyOut }](e: E): RetrieveOutEdge[E] = new RetrieveOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep)).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(getId(rep),e.tpe).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.toList: List[e.Rep]
     }
   }
@@ -48,7 +48,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: To[dynamoVertex.Tpe] with OneIn }](e: E): RetrieveInEdge[E] = new RetrieveInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep)).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(getId(rep),e.tpe).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.headOption: Option[e.Rep]
     }
   }
@@ -57,7 +57,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: To[dynamoVertex.Tpe] with ManyIn }](e: E): RetrieveInEdge[E] = new RetrieveInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep)).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(getId(rep), e.tpe).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.toList: List[e.Rep]
     }
   }
