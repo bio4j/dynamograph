@@ -4,12 +4,13 @@ import com.bio4j.dynamograph.model.go.TableGoSchema.VertexTable
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest
 import ohnosequences.tabula.AnyRegion
 import scala.collection.JavaConversions._
+import com.bio4j.dynamograph.AnyDynamoVertex
 
 
-trait VertexWriter extends AnyVertexWriter {
+abstract class VertexWriter[VT <:AnyDynamoVertex](val vType: VT, val vertexTable : VertexTable[VT,AnyRegion]) extends AnyVertexWriter {
   type writeType = PutItemRequest
+  type vertexType = VT
 
-  val vertexTable: VertexTable[vertexType,AnyRegion];
   def write(v: vertexType#Rep) : List[writeType] = {
     return List(new PutItemRequest().withTableName(vertexTable.tableName).withItem(v))
   }

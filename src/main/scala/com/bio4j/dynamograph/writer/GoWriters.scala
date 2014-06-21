@@ -5,50 +5,23 @@ import com.bio4j.dynamograph.model.go.TableGoImplementation._
 
 object GoWriters {
 
-  object GoTermVertexWriter extends VertexWriter{
-    type vertexType = GoTerm.type
-    override val vertexTable = GoTermTable
-  }
+  object GoTermVertexWriter extends VertexWriter(GoTerm, GoTermTable)
 
-  object GoNamespaceVertexWriter extends VertexWriter{
-    type vertexType = GoNamespaces.type
-    override val vertexTable = GoNamespacesTable
-  }
+  object GoNamespaceVertexWriter extends VertexWriter(GoNamespaces, GoNamespacesTable)
 
-  object IsAEdgeWriter extends EdgeWriter{
-    type edgeType = IsA.type
-    override val edgeTables = IsATables
-  }
+  object IsAEdgeWriter extends EdgeWriter(IsA, IsATables)
 
-  object PartOfEdgeWriter extends EdgeWriter{
-    type edgeType = PartOf.type
-    override val edgeTables = PartOfTables
-  }
+  object PartOfEdgeWriter extends EdgeWriter(PartOf, PartOfTables)
 
-  object HasPartEdgeWriter extends EdgeWriter{
-    type edgeType = HasPart.type
-    override val edgeTables = HasPartTables
-  }
+  object HasPartEdgeWriter extends EdgeWriter(HasPart, HasPartTables)
 
-  object PositivelyRegulatesEdgeWriter extends EdgeWriter{
-    type edgeType = PositivelyRegulates.type
-    override val edgeTables = PositivelyRegulatesTables
-  }
+  object PositivelyRegulatesEdgeWriter extends EdgeWriter(PositivelyRegulates, PositivelyRegulatesTables)
 
-  object NegativelyRegulatesEdgeWriter extends EdgeWriter{
-    type edgeType = NegativelyRegulates.type
-    override val edgeTables = NegativelyRegulatesTables
-  }
+  object NegativelyRegulatesEdgeWriter extends EdgeWriter(NegativelyRegulates, NegativelyRegulatesTables)
 
-  object RegulatesEdgeWriter extends EdgeWriter{
-    type edgeType = Regulates.type
-    override val edgeTables = RegulatesTables
-  }
+  object RegulatesEdgeWriter extends EdgeWriter(Regulates, RegulatesTables)
 
-  object NamespaceEdgeWriter extends EdgeWriter{
-    type edgeType = Namespace.type
-    override val edgeTables = NamespaceTables
-  }
+  object NamespaceEdgeWriter extends EdgeWriter(Namespace, NamespaceTables)
 
   val vertexWriters = GoTermVertexWriter ::
     GoNamespaceVertexWriter :: Nil

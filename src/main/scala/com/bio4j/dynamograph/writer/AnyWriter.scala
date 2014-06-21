@@ -8,7 +8,9 @@ trait AnyWriter {
 
 }
 
-trait AnyVertexWriter extends AnyWriter{
+trait
+
+AnyVertexWriter extends AnyWriter{
   type vertexType <: AnyDynamoVertex
   def write(vertex: vertexType#Rep) : List[writeType]
 }

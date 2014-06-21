@@ -6,12 +6,13 @@ import ohnosequences.tabula.AnyRegion
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import scala.collection.JavaConversions._
 import com.bio4j.dynamograph.model.GeneralSchema._
+import com.bio4j.dynamograph.AnyDynamoEdge
 
 
-trait EdgeWriter extends AnyEdgeWriter{
+abstract class EdgeWriter[ET <:AnyDynamoEdge](val eType: ET, val edgeTables: EdgeTables[ET,AnyRegion]) extends AnyEdgeWriter{
   type writeType = PutItemRequest
+  type edgeType = ET
 
-  val edgeTables: EdgeTables[edgeType,AnyRegion]
   def write(e: edgeType#Rep) : List[writeType] = {
     val inTableAttrs = Map(edgeTables.inTable.hashKey.label -> new AttributeValue().withS(getValue(e, targetId.label)),edgeTables.inTable.rangeKey.label -> new AttributeValue().withS(getValue(e, relationId.label)))
     val outTableAttrs = Map(edgeTables.outTable.hashKey.label -> new AttributeValue().withS(getValue(e, sourceId.label)),edgeTables.outTable.rangeKey.label -> new AttributeValue().withS(getValue(e, relationId.label)))
