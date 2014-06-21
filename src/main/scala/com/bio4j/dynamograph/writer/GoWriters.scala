@@ -23,17 +23,4 @@ object GoWriters {
 
   object NamespaceEdgeWriter extends EdgeWriter(Namespace, NamespaceTables)
 
-  val vertexWriters = GoTermVertexWriter ::
-    GoNamespaceVertexWriter :: Nil
-
-  val edgeWriters =
-    IsAEdgeWriter ::
-    PartOfEdgeWriter ::
-    HasPartEdgeWriter ::
-    PositivelyRegulates ::
-    NegativelyRegulatesEdgeWriter :: Nil
-
-
-
-
 }

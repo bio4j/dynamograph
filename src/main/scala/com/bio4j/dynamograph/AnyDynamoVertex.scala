@@ -26,38 +26,38 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     }
 
 
-  implicit def unsafeRetrieveOneOutEdge[E <: Singleton with AnyEdge {
+  implicit def unsafeRetrieveOneOutEdge[E <: Singleton with AnyDynamoEdge {
     type Tpe <: From[dynamoVertex.Tpe] with OneOut }](e: E): RetrieveOutEdge[E] = new RetrieveOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep), e.tpe).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.headOption: Option[e.Rep]
     }
   }
 
-  implicit def unsafeRetrieveManyOutEdge[E <: Singleton with AnyEdge {
+  implicit def unsafeRetrieveManyOutEdge[E <: Singleton with AnyDynamoEdge {
     type Tpe <: From[dynamoVertex.Tpe] with ManyOut }](e: E): RetrieveOutEdge[E] = new RetrieveOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep),e.tpe).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.toList: List[e.Rep]
     }
   }
 
-  implicit def unsafeRetrieveOneInEdge[E <: Singleton with AnyEdge {
+  implicit def unsafeRetrieveOneInEdge[E <: Singleton with AnyDynamoEdge {
     type Tpe <: To[dynamoVertex.Tpe] with OneIn }](e: E): RetrieveInEdge[E] = new RetrieveInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep),e.tpe).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.headOption: Option[e.Rep]
     }
   }
 
-  implicit def unsafeRetrieveManyInEdge[E <: Singleton with AnyEdge {
+  implicit def unsafeRetrieveManyInEdge[E <: Singleton with AnyDynamoEdge {
     type Tpe <: To[dynamoVertex.Tpe] with ManyIn }](e: E): RetrieveInEdge[E] = new RetrieveInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep), e.tpe).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.toList: List[e.Rep]
     }
   }

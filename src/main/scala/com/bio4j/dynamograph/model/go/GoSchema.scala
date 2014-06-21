@@ -32,9 +32,9 @@ object GoSchema {
 
   case object PartOfType extends ManyToMany (GoTermType, "partOf", GoTermType)
 
-  case object NegativelyRegulatesType extends ManyToMany (GoTermType, "positivelyRegulates", GoTermType)
+  case object NegativelyRegulatesType extends ManyToMany (GoTermType, "negativelyRegulates", GoTermType)
 
-  case object PositivelyRegulatesType extends ManyToMany (GoTermType, "negativelyRegulates", GoTermType)
+  case object PositivelyRegulatesType extends ManyToMany (GoTermType, "positivelyRegulates", GoTermType)
 
   case object RegulatesType extends ManyToMany (GoTermType, "regulates", GoTermType)
 

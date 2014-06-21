@@ -28,12 +28,12 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   implicit object sourceGetter extends GetSource[Source](source) {
     def apply(rep: dynamoEdge.Rep): source.Rep =
-      source ->> dao.get(getValue(rep,sourceId.label), source.tpe)
+      source ->> dao.get(getValue(rep,sourceId.label), source)
   }
 
   implicit object targetGetter extends GetTarget[Target](target) {
     def apply(rep: dynamoEdge.Rep): target.Rep =
-      target ->> dao.get(getValue(rep,targetId.label), target.tpe)
+      target ->> dao.get(getValue(rep,targetId.label), target)
   }
 
   private def getValue(rep: Rep, attributeName : String) : String = rep.get(attributeName).get.getS
