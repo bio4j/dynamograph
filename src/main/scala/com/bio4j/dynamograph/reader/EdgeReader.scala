@@ -10,9 +10,9 @@ import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 
 
-class EdgeReader[ET <: AnyDynamoEdge](val eType: ET, val edgeTables: EdgeTables[ET,AnyRegion],  val dbExecutor : AnyDynamoDbExecutor) extends AnyEdgeReader {
+class EdgeReader[ET <: AnyDynamoEdge, R <: AnyRegion](val eType : ET,  val edgeTables: EdgeTables[ET,R],  val dbExecutor : AnyDynamoDbExecutor) extends AnyEdgeReader {
   type returnType = List[Map[String,AttributeValue]]
-  type edgeType = ET
+  type edgeType = eType.type
 
   def readOut(vId : id.Raw) : returnType = read(vId, edgeTables.outTable.name)
 
