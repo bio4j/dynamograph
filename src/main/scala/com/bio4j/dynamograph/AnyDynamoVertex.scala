@@ -1,8 +1,6 @@
 package com.bio4j.dynamograph
 
 import ohnosequences.scarph._
-import ohnosequences.scarph.AnyProperty.ReadFrom
-import ohnosequences.scarph.SmthHasProperty.PropertyOf
 import com.bio4j.dynamograph.dao.go.{AnyDynamoDbDao, DynamoDbDao}
 import com.bio4j.dynamograph.model.GeneralSchema.id
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
@@ -15,19 +13,14 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
   val dao: AnyDynamoDbDao = ServiceProvider.getDao()
 
-  implicit def readFromDynamoVertex(vr: Rep) =
-    new ReadFrom[Rep](vr) {
-      def apply[P <: AnyProperty](p: P): p.Raw = vr.get(p.label).asInstanceOf[p.Raw]
-    }
-
-  implicit def unsafeGetProperty[P <: AnyProperty: PropertyOf[this.Tpe]#is](p: P) =
-    new GetProperty[P](p) {
-      def apply(rep: Rep): p.Raw = getValue(rep, p.label).asInstanceOf[p.Raw]
+  implicit def unsafeGetProperty[P <: AnyProperty: Property.Of[this.Tpe]#is](p: P) =
+    new PropertyGetter[P](p) {
+      def apply(rep: Rep): Out = getValue(rep, p.label)
     }
 
 
-  implicit def unsafeRetrieveOneOutEdge[E <: Singleton with AnyDynamoEdge {
-    type Tpe <: From[dynamoVertex.Tpe] with OneOut }](e: E): RetrieveOutEdge[E] = new RetrieveOutEdge[E](e) {
+  implicit def unsafeGetOneOutEdge[E <: Singleton with AnyDynamoEdge {
+    type Tpe <: From[dynamoVertex.Tpe] with OneOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
       val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
@@ -35,8 +28,8 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     }
   }
 
-  implicit def unsafeRetrieveManyOutEdge[E <: Singleton with AnyDynamoEdge {
-    type Tpe <: From[dynamoVertex.Tpe] with ManyOut }](e: E): RetrieveOutEdge[E] = new RetrieveOutEdge[E](e) {
+  implicit def unsafeGetManyOutEdge[E <: Singleton with AnyDynamoEdge {
+    type Tpe <: From[dynamoVertex.Tpe] with ManyOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
       val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
@@ -44,8 +37,8 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     }
   }
 
-  implicit def unsafeRetrieveOneInEdge[E <: Singleton with AnyDynamoEdge {
-    type Tpe <: To[dynamoVertex.Tpe] with OneIn }](e: E): RetrieveInEdge[E] = new RetrieveInEdge[E](e) {
+  implicit def unsafeGetOneInEdge[E <: Singleton with AnyDynamoEdge {
+    type Tpe <: To[dynamoVertex.Tpe] with OneIn }](e: E): GetInEdge[E] = new GetInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
       val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
@@ -53,8 +46,8 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     }
   }
 
-  implicit def unsafeRetrieveManyInEdge[E <: Singleton with AnyDynamoEdge {
-    type Tpe <: To[dynamoVertex.Tpe] with ManyIn }](e: E): RetrieveInEdge[E] = new RetrieveInEdge[E](e) {
+  implicit def unsafeGetManyInEdge[E <: Singleton with AnyDynamoEdge {
+    type Tpe <: To[dynamoVertex.Tpe] with ManyIn }](e: E): GetInEdge[E] = new GetInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
       val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
@@ -62,7 +55,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     }
   }
 
-  private def getValue(rep: Rep, attributeName : String) : String = rep.get(attributeName).get.getS
+  private def getValue[T](rep: Rep, attributeName : String) : T = rep.get(attributeName).get.getS.asInstanceOf[T]
 
   private def getId(rep: Rep) : String = getValue(rep, id.label)
 

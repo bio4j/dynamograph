@@ -2,8 +2,7 @@ package com.bio4j.dynamograph
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import ohnosequences.scarph._
-import ohnosequences.scarph.SmthHasProperty._
-import com.bio4j.dynamograph.dao.go.{AnyDynamoDbDao, DynamoDbDao}
+import com.bio4j.dynamograph.dao.go.{AnyDynamoDbDao}
 import com.bio4j.dynamograph.model.GeneralSchema._
 
 
@@ -21,9 +20,9 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
   val target: Target
 
 
-  implicit def unsafeGetProperty[P <: AnyProperty: PropertyOf[this.Tpe]#is](p: P) =
-    new GetProperty[P](p) {
-      def apply(rep: dynamoEdge.Rep): p.Raw = getValue(rep, p.label).asInstanceOf[p.Raw]
+  implicit def unsafeGetProperty[P <: AnyProperty: Property.Of[this.Tpe]#is](p: P) =
+    new PropertyGetter[P](p) {
+      def apply(rep: dynamoEdge.Rep) : Out = getValue(rep, p.label).asInstanceOf[Out]
     }
 
   implicit object sourceGetter extends GetSource[Source](source) {
