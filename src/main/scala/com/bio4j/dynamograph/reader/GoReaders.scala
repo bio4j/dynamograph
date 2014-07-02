@@ -6,23 +6,23 @@ import com.bio4j.dynamograph.{AnyDynamoEdge, AnyDynamoVertex, ServiceProvider}
 
 object GoReaders {
 
-  val goTermVertexReader = new VertexReader(GoTerm, GoTermTable, ServiceProvider.getDynamoDbExecutor())
+  val goTermVertexReader = new VertexReader(GoTerm, GoTermTable, ServiceProvider.dynamoDbExecutor())
 
-  val goNamespaceVertexReader = new VertexReader(GoNamespaces, GoNamespacesTable, ServiceProvider.getDynamoDbExecutor())
+  val goNamespaceVertexReader = new VertexReader(GoNamespaces, GoNamespacesTable, ServiceProvider.dynamoDbExecutor())
 
-  val isAEdgeReader = new EdgeReader(IsA, IsATables, ServiceProvider.getDynamoDbExecutor())
+  val isAEdgeReader = new EdgeReader(IsA, IsATables, ServiceProvider.dynamoDbExecutor())
 
-  val hasPartEdgeReader = new EdgeReader(HasPart, HasPartTables, ServiceProvider.getDynamoDbExecutor())
+  val hasPartEdgeReader = new EdgeReader(HasPart, HasPartTables, ServiceProvider.dynamoDbExecutor())
 
-  val partOfEdgeReader = new EdgeReader(PartOf, PartOfTables, ServiceProvider.getDynamoDbExecutor())
+  val partOfEdgeReader = new EdgeReader(PartOf, PartOfTables, ServiceProvider.dynamoDbExecutor())
 
-  val regulatesEdgeReader = new EdgeReader(Regulates, RegulatesTables, ServiceProvider.getDynamoDbExecutor())
+  val regulatesEdgeReader = new EdgeReader(Regulates, RegulatesTables, ServiceProvider.dynamoDbExecutor())
 
-  val negativelyRegulatesEdgeReader = new EdgeReader(NegativelyRegulates, NegativelyRegulatesTables, ServiceProvider.getDynamoDbExecutor())
+  val negativelyRegulatesEdgeReader = new EdgeReader(NegativelyRegulates, NegativelyRegulatesTables, ServiceProvider.dynamoDbExecutor())
 
-  val positivelyRegulatesEdgeReader = new EdgeReader(PositivelyRegulates, PositivelyRegulatesTables, ServiceProvider.getDynamoDbExecutor())
+  val positivelyRegulatesEdgeReader = new EdgeReader(PositivelyRegulates, PositivelyRegulatesTables, ServiceProvider.dynamoDbExecutor())
 
-  val namespaceEdgeReader = new EdgeReader(Namespace, NamespaceTables, ServiceProvider.getDynamoDbExecutor())
+  val namespaceEdgeReader = new EdgeReader(Namespace, NamespaceTables, ServiceProvider.dynamoDbExecutor())
 
   def main(args: Array[String]) {
     println(namespaceEdgeReader == positivelyRegulatesEdgeReader)

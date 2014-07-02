@@ -24,4 +24,9 @@ object TableGoImplementation {
   case object RegulatesTables extends EdgeTables(Regulates, "GoRegulates", EU)
 
   case object NamespaceTables extends EdgeTables(Namespace, "GoNamespaceEdges", EU)
+
+  val vertexTables = List(GoTermTable  ,GoNamespacesTable)
+
+  val edgeTables : List[EdgeTables[_,_]] = List(IsATables, HasPartTables, PartOfTables, NegativelyRegulatesTables,
+    PositivelyRegulatesTables, RegulatesTables, NamespaceTables)
 }

@@ -11,7 +11,7 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   final type Raw = Map[String, AttributeValue]
 
-  val dao: AnyDynamoDbDao = ServiceProvider.getDao()
+  val dao: AnyDynamoDbDao = ServiceProvider.dao
 
   type Source <: AnyVertex.ofType[Tpe#SourceType] with AnyDynamoVertex
   val source: Source
@@ -22,15 +22,15 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   implicit def unsafeGetProperty[P <: AnyProperty: Property.Of[this.Tpe]#is](p: P) =
     new PropertyGetter[P](p) {
-      def apply(rep: dynamoEdge.Rep) : Out = getValue(rep, p.label).asInstanceOf[Out]
+      def apply(rep: dynamoEdge.Rep) : p.Raw = getValue(rep, p.label).asInstanceOf[p.Raw]
     }
 
-  implicit object sourceGetter extends GetSource[Source](source) {
-    def apply(rep: dynamoEdge.Rep): source.Rep =
+  implicit object sourceGetter extends GetSource {
+    def apply(rep: dynamoEdge.Rep): Out =
       source ->> dao.get(getValue(rep,sourceId.label), source)
   }
 
-  implicit object targetGetter extends GetTarget[Target](target) {
+  implicit object targetGetter extends GetTarget {
     def apply(rep: dynamoEdge.Rep): target.Rep =
       target ->> dao.get(getValue(rep,targetId.label), target)
   }

@@ -4,9 +4,9 @@ import com.bio4j.dynamograph.model.go.GoImplementation._
 import com.bio4j.dynamograph.model.GeneralSchema.{relationId, targetId, sourceId, id}
 import com.bio4j.dynamograph.parser.{ParsingContants, SingleElement}
 import com.amazonaws.services.dynamodbv2.model.{PutItemRequest, AttributeValue}
-import com.bio4j.dynamograph.AnyDynamoEdge
 import com.bio4j.dynamograph.model.go.GoSchema._
 import com.bio4j.dynamograph.writer.GoWriters
+import ohnosequences.scarph.ops.default._
 
 
 class GoMapper extends AnyMapper{

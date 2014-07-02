@@ -11,7 +11,7 @@ bucketSuffix := "era7.com"
 scalaVersion := "2.11.1"
 
 libraryDependencies ++= Seq(
-  "ohnosequences" %% "scarph" % "0.1.0-SNAPSHOT",
+  "ohnosequences" %% "scarph" % "0.1.0",
   "ohnosequences" %% "tabula" % "0.1.0-SNAPSHOT",
   "com.amazonaws" % "aws-java-sdk" % "1.8.0",
   "org.scala-lang.modules" %% "scala-xml" % "1.0.2",

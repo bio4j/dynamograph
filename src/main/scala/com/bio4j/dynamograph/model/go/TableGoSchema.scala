@@ -22,16 +22,11 @@ object TableGoSchema {
 
 
   abstract class EdgeTables[ET <: AnyDynamoEdge, R <: AnyRegion](val et : ET,val tablaName: String, val region: R) {
-    class InTable extends CompositeKeyTable(s"${tablaName}_IN", nodeId, relationId, region)
-    class OutTable extends CompositeKeyTable(s"${tablaName}_OUT", nodeId, relationId, region)
-    class EdgeTable extends HashKeyTable(tablaName, relationId, region)
+    case object inTable extends CompositeKeyTable(s"${tablaName}_IN", nodeId, relationId, region)
+    case object outTable extends CompositeKeyTable(s"${tablaName}_OUT", nodeId, relationId, region)
+    case object edgeTable extends HashKeyTable(tablaName, relationId, region)
 
     type EdgeTpe = et.type
-
-    val inTable : InTable = new InTable
-    val outTable: OutTable = new OutTable
-    val edgeTable: EdgeTable = new EdgeTable
-
   }
 
 }

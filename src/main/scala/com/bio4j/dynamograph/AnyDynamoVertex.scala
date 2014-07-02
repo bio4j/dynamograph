@@ -11,11 +11,11 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
   final type Raw = Map[String, AttributeValue]
 
-  val dao: AnyDynamoDbDao = ServiceProvider.getDao()
+  val dao: AnyDynamoDbDao = ServiceProvider.dao
 
   implicit def unsafeGetProperty[P <: AnyProperty: Property.Of[this.Tpe]#is](p: P) =
     new PropertyGetter[P](p) {
-      def apply(rep: Rep): Out = getValue(rep, p.label)
+      def apply(rep: Rep): p.Raw = getValue(rep, p.label)
     }
 
 
@@ -63,5 +63,9 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
 class DynamoVertex[VT <: Singleton with AnyVertexType](val tpe: VT) extends AnyDynamoVertex {
   type Tpe = VT
+}
+
+object AnyDynamoVertex{
+  type ofType[VT <: AnyVertexType] = AnyDynamoVertex { type Tpe = VT }
 }
 
