@@ -1,18 +1,17 @@
 package com.bio4j.dynamograph
 
-import java.util.Map
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import ohnosequences.scarph._
-import ohnosequences.scarph.SmthHasProperty._
-import com.bio4j.dynamograph.dao.go.DynamoDbDao
+import com.bio4j.dynamograph.dao.go.{AnyDynamoDbDao}
+import com.bio4j.dynamograph.model.GeneralSchema._
 
 
 trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
 
-  final type Raw = DynamoRawEdge
+  final type Raw = Map[String, AttributeValue]
 
-  val dao: DynamoDbDao = ServiceProvider.getDao()
+  val dao: AnyDynamoDbDao = ServiceProvider.dao
 
   type Source <: AnyVertex.ofType[Tpe#SourceType] with AnyDynamoVertex
   val source: Source
@@ -21,20 +20,22 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
   val target: Target
 
 
-  implicit def unsafeGetProperty[P <: AnyProperty: PropertyOf[this.Tpe]#is](p: P) =
-    new GetProperty[P](p) {
-      def apply(rep: dynamoEdge.Rep): p.Raw = rep.getAttributeValue(p.label).asInstanceOf[p.Raw]
+  implicit def unsafeGetProperty[P <: AnyProperty: Property.Of[this.Tpe]#is](p: P) =
+    new PropertyGetter[P](p) {
+      def apply(rep: dynamoEdge.Rep) : p.Raw = getValue(rep, p.label).asInstanceOf[p.Raw]
     }
 
-  implicit object sourceGetter extends GetSource[Source](source) {
-    def apply(rep: dynamoEdge.Rep): source.Rep =
-      source ->> dao.get(rep.source)
+  implicit object sourceGetter extends GetSource {
+    def apply(rep: dynamoEdge.Rep): Out =
+      source ->> dao.get(getValue(rep,sourceId.label), source)
   }
 
-  implicit object targetGetter extends GetTarget[Target](target) {
+  implicit object targetGetter extends GetTarget {
     def apply(rep: dynamoEdge.Rep): target.Rep =
-      target ->> dao.get(rep.target)
+      target ->> dao.get(getValue(rep,targetId.label), target)
   }
+
+  private def getValue(rep: Rep, attributeName : String) : String = rep.get(attributeName).get.getS
 
 }
 

@@ -1,68 +1,71 @@
 package com.bio4j.dynamograph
 
 import ohnosequences.scarph._
-import ohnosequences.scarph.AnyProperty.ReadFrom
-import ohnosequences.scarph.SmthHasProperty.PropertyOf
-import com.bio4j.dynamograph.dao.go.DynamoDbDao
+import com.bio4j.dynamograph.dao.go.{AnyDynamoDbDao, DynamoDbDao}
+import com.bio4j.dynamograph.model.GeneralSchema.id
+import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import scala.collection.JavaConverters._
 
 
 trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
-  final type Raw = DynamoRawVertex
+  final type Raw = Map[String, AttributeValue]
 
-  val dao: DynamoDbDao = ServiceProvider.getDao()
+  val dao: AnyDynamoDbDao = ServiceProvider.dao
 
-  implicit def readFromDynamoVertex(vr: Rep) =
-    new ReadFrom[Rep](vr) {
-      def apply[P <: AnyProperty](p: P): p.Raw = vr.getAttributeValue(p.label).asInstanceOf[p.Raw]
-    }
-
-  implicit def unsafeGetProperty[P <: AnyProperty: PropertyOf[this.Tpe]#is](p: P) =
-    new GetProperty[P](p) {
-      def apply(rep: Rep): p.Raw = rep.getAttributeValue(p.label).asInstanceOf[p.Raw]
+  implicit def unsafeGetProperty[P <: AnyProperty: Property.Of[this.Tpe]#is](p: P) =
+    new PropertyGetter[P](p) {
+      def apply(rep: Rep): p.Raw = getValue(rep, p.label)
     }
 
 
-  implicit def unsafeRetrieveOneOutEdge[E <: Singleton with AnyEdge {
-    type Tpe <: From[dynamoVertex.Tpe] with OneOut }](e: E): RetrieveOutEdge[E] = new RetrieveOutEdge[E](e) {
+  implicit def unsafeGetOneOutEdge[E <: Singleton with AnyDynamoEdge {
+    type Tpe <: From[dynamoVertex.Tpe] with OneOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
-      val it = dao.getOutRelationships(rep.id).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.headOption: Option[e.Rep]
     }
   }
 
-  implicit def unsafeRetrieveManyOutEdge[E <: Singleton with AnyEdge {
-    type Tpe <: From[dynamoVertex.Tpe] with ManyOut }](e: E): RetrieveOutEdge[E] = new RetrieveOutEdge[E](e) {
+  implicit def unsafeGetManyOutEdge[E <: Singleton with AnyDynamoEdge {
+    type Tpe <: From[dynamoVertex.Tpe] with ManyOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
-      val it = dao.getOutRelationships(rep.id).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.toList: List[e.Rep]
     }
   }
 
-  implicit def unsafeRetrieveOneInEdge[E <: Singleton with AnyEdge {
-    type Tpe <: To[dynamoVertex.Tpe] with OneIn }](e: E): RetrieveInEdge[E] = new RetrieveInEdge[E](e) {
+  implicit def unsafeGetOneInEdge[E <: Singleton with AnyDynamoEdge {
+    type Tpe <: To[dynamoVertex.Tpe] with OneIn }](e: E): GetInEdge[E] = new GetInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
-      val it = dao.getOutRelationships(rep.id).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.headOption: Option[e.Rep]
     }
   }
 
-  implicit def unsafeRetrieveManyInEdge[E <: Singleton with AnyEdge {
-    type Tpe <: To[dynamoVertex.Tpe] with ManyIn }](e: E): RetrieveInEdge[E] = new RetrieveInEdge[E](e) {
+  implicit def unsafeGetManyInEdge[E <: Singleton with AnyDynamoEdge {
+    type Tpe <: To[dynamoVertex.Tpe] with ManyIn }](e: E): GetInEdge[E] = new GetInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
-      val it = dao.getOutRelationships(rep.id).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
       it.toList: List[e.Rep]
     }
   }
+
+  private def getValue[T](rep: Rep, attributeName : String) : T = rep.get(attributeName).get.getS.asInstanceOf[T]
+
+  private def getId(rep: Rep) : String = getValue(rep, id.label)
 
 }
 
 class DynamoVertex[VT <: Singleton with AnyVertexType](val tpe: VT) extends AnyDynamoVertex {
   type Tpe = VT
+}
+
+object AnyDynamoVertex{
+  type ofType[VT <: AnyVertexType] = AnyDynamoVertex { type Tpe = VT }
 }
 
