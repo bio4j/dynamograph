@@ -13,6 +13,7 @@ scalaVersion := "2.11.1"
 libraryDependencies ++= Seq(
   "ohnosequences" %% "scarph" % "0.1.0",
   "ohnosequences" %% "tabula" % "0.1.0-SNAPSHOT",
+  //"com.typesafe.scala-logging" %% "scala-logging-slf4j" % "3.0.0", currentlu unavailable for 2.11
   "com.amazonaws" % "aws-java-sdk" % "1.8.0",
   "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
   "org.scalatest" %% "scalatest" % "2.1.6" % "test"
