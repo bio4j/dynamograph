@@ -1,7 +1,7 @@
 package com.bio4j.dynamograph.model.go
 
 import com.bio4j.dynamograph.model.go.TableGoSchema.{EdgeTables, VertexTable}
-import ohnosequences.tabula.{AnyRegion, EU}
+import ohnosequences.tabula.EU
 import com.bio4j.dynamograph.model.go.GoImplementation._
 
 
@@ -25,7 +25,7 @@ object TableGoImplementation {
 
   case object NamespaceTables extends EdgeTables(Namespace, "GoNamespaceEdges", EU)
 
-  val vertexTables = List(GoTermTable  ,GoNamespacesTable)
+  val vertexTables = List(GoTermTable, GoNamespacesTable)
 
   val edgeTables : List[EdgeTables[_,_]] = List(IsATables, HasPartTables, PartOfTables, NegativelyRegulatesTables,
     PositivelyRegulatesTables, RegulatesTables, NamespaceTables)
