@@ -5,6 +5,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import com.amazonaws.{AmazonClientException, AmazonServiceException}
+import java.util
 
 
 class DynamoDbExecutor(val ddb: AmazonDynamoDB) extends AnyDynamoDbExecutor {
@@ -39,6 +40,22 @@ class DynamoDbExecutor(val ddb: AmazonDynamoDB) extends AnyDynamoDbExecutor {
     ddb.getItem(request).getItem match {
       case null => Map()
       case item: java.util.Map[String,AttributeValue] => item.asScala.toMap
+    }
+  }
+
+  override def execute(requests : List[PutItemRequest]) : Unit = withinTry {
+    val writeRequestItems : java.util.Map[String,java.util.List[WriteRequest]] = new util.HashMap[String,java.util.List[WriteRequest]]()
+    for (request <- requests){
+      if (!writeRequestItems.containsKey(request.getTableName)){
+        writeRequestItems.put(request.getTableName,new util.ArrayList[WriteRequest]())
+      }
+      writeRequestItems.get(request.getTableName).add(new WriteRequest().withPutRequest(new PutRequest().withItem(request.getItem)))
+    }
+    val request = new BatchWriteItemRequest().withRequestItems(writeRequestItems)
+    var result = ddb.batchWriteItem(request)
+    while (result.getUnprocessedItems.size() > 0){
+      request.withRequestItems(result.getUnprocessedItems)
+      result = ddb.batchWriteItem(request)
     }
   }
 

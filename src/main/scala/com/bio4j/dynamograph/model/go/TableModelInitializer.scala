@@ -2,10 +2,6 @@ package com.bio4j.dynamograph.model.go
 
 import ohnosequences.tabula._
 import com.bio4j.dynamograph.ServiceProvider
-import ohnosequences.tabula.InitialState
-import ohnosequences.tabula.InitialThroughput
-import ohnosequences.tabula.CreateTable
-import ohnosequences.tabula.DeleteTable
 import com.bio4j.dynamograph.model.go.TableGoSchema.VertexTable
 
 
