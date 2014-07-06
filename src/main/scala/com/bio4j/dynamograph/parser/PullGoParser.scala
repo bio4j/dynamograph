@@ -50,10 +50,11 @@ class PullGoParser(val src: Source) extends AnyGoParser {
 
   private def parseSingleProperty(label : String, parser: XMLEventReader) : (String, String) = {
     var done = false
-    var value : String = null
+    var value : String = ""
     while (parser.hasNext && !done){
       parser.next match {
-        case EvText(text) => value = text
+        case EvText(text) => value += text
+        case EvEntityRef(entity) => value += entity
         case EvElemEnd(_, endLabel) if label == endLabel => done = true
         case _ =>
       }

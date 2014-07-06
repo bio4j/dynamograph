@@ -12,6 +12,7 @@ import com.amazonaws.services.dynamodbv2.model.LimitExceededException
 import scala.math._
 import ohnosequences.tabula.Account
 import ohnosequences.tabula.impl.DynamoDBExecutors
+import com.bio4j.dynamograph.mapper.{GoMapper, AnyMapper}
 
 object ServiceProvider extends AnyServiceProvider {
 
@@ -20,6 +21,8 @@ object ServiceProvider extends AnyServiceProvider {
   val ddb : AmazonDynamoDBClient = new AmazonDynamoDBClient(CredentialProviderChains.default)
 
   val dynamoDbExecutor : AnyDynamoDbExecutor = new DynamoDbExecutor(ddb)
+
+  val mapper : AnyMapper = new GoMapper()
 
   val executors = new DynamoDBExecutors(
     new DynamoDBClient(EU, ddb) {
