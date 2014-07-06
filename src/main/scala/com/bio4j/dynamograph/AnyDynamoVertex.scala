@@ -1,7 +1,7 @@
 package com.bio4j.dynamograph
 
 import ohnosequences.scarph._
-import com.bio4j.dynamograph.dao.go.{AnyDynamoDbDao, DynamoDbDao}
+import com.bio4j.dynamograph.dao.go.AnyDynamoDbDao
 import com.bio4j.dynamograph.model.GeneralSchema.id
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import scala.collection.JavaConverters._
@@ -23,7 +23,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: From[dynamoVertex.Tpe] with OneOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[List[e.Rep]]
       it.headOption: Option[e.Rep]
     }
   }
@@ -32,8 +32,8 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: From[dynamoVertex.Tpe] with ManyOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
-      it.toList: List[e.Rep]
+      val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[List[e.Rep]]
+      it: List[e.Rep]
     }
   }
 
@@ -41,7 +41,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: To[dynamoVertex.Tpe] with OneIn }](e: E): GetInEdge[E] = new GetInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[List[e.Rep]]
       it.headOption: Option[e.Rep]
     }
   }
@@ -50,12 +50,12 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: To[dynamoVertex.Tpe] with ManyIn }](e: E): GetInEdge[E] = new GetInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[java.lang.Iterable[e.Rep]].asScala
+      val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[List[e.Rep]]
       it.toList: List[e.Rep]
     }
   }
 
-  private def getValue[T](rep: Rep, attributeName : String) : T = rep.get(attributeName).get.getS.asInstanceOf[T]
+  private def getValue[T](rep: Rep, attributeName : String) : T = rep.get(attributeName).getOrElse(new AttributeValue().withS("")).getS.asInstanceOf[T]
 
   private def getId(rep: Rep) : String = getValue(rep, id.label)
 
