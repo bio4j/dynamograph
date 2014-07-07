@@ -2,7 +2,7 @@ package com.bio4j.dynamograph
 
 import ohnosequences.tabula.{EU, Attribute}
 import ohnosequences.scarph.{ManyToMany, VertexType}
-import com.bio4j.dynamograph.model.go.TableGoSchema.VertexTable
+import com.bio4j.dynamograph.model.go.TableGoSchema.{EdgeTables, VertexTable}
 import com.bio4j.dynamograph.model.go.GoImplementation.GoTerm
 
 object testModel {
