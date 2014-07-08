@@ -16,7 +16,8 @@ libraryDependencies ++= Seq(
   //"com.typesafe.scala-logging" %% "scala-logging-slf4j" % "3.0.0", currentlu unavailable for 2.11
   "com.amazonaws" % "aws-java-sdk" % "1.8.0",
   "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
-  "org.scalatest" %% "scalatest" % "2.1.6" % "test"
+  "org.scalatest" %% "scalatest" % "2.1.6" % "test",
+  "org.specs2" %% "specs2" % "2.3.12" % "test"
 )
 
 dependencyOverrides ++= Set(
