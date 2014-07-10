@@ -6,12 +6,15 @@ import ohnosequences.tabula.AnyRegion
 import scala.collection.JavaConversions._
 import com.bio4j.dynamograph.AnyDynamoVertex
 
+trait AnyVertexWriter extends AnyWriter{
+  type Element <: AnyDynamoVertex
+}
 
-class VertexWriter[VT <:AnyDynamoVertex, R <:AnyRegion](val vType: VT, val vertexTable : VertexTable[VT,R]) extends AnyVertexWriter {
-  type writeType = PutItemRequest
-  type vertexType = VT
+class VertexWriter[V <: AnyDynamoVertex, R <: AnyRegion]
+  (val element: V, val vertexTable : VertexTable[V,R]) extends AnyVertexWriter {
 
-  def write(vertex: vertexType#Rep) : List[writeType] = {
-    return List(new PutItemRequest().withTableName(vertexTable.tableName).withItem(vertex))
-  }
+  type Element = V
+
+  def write(rep: element.Rep): List[WriteType] =
+    List(new PutItemRequest().withTableName(vertexTable.tableName).withItem(rep))
 }

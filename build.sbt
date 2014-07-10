@@ -10,6 +10,8 @@ bucketSuffix := "era7.com"
 
 scalaVersion := "2.11.1"
 
+skip in update := true
+
 libraryDependencies ++= Seq(
   "ohnosequences" %% "scarph" % "0.1.0",
   "ohnosequences" %% "tabula" % "0.1.0-SNAPSHOT",

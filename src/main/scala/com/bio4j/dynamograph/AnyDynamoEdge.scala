@@ -35,7 +35,8 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
       target ->> dao.get(getValue(rep,targetId.label), target)
   }
 
-  private def getValue(rep: Rep, attributeName : String) : String = rep.get(attributeName).getOrElse(new AttributeValue().withS("")).getS
+  // NOTE: why was it private?
+  def getValue(rep: Rep, attributeName : String) : String = rep.get(attributeName).getOrElse(new AttributeValue().withS("")).getS
 
 }
 

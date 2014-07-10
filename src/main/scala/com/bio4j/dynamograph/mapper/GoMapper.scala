@@ -17,8 +17,11 @@ class GoMapper extends AnyMapper{
 
     def toWriteOperation(attributes: Map[String,String]) : List[PutItemRequest]   = {
       val targetIdentifier : String = attrValue(attributes, targetId.label)
-      val rawEdge = Map(relationId.label -> (vertexId + targetIdentifier), sourceId.label -> vertexId, targetId.label -> targetIdentifier).
-        mapValues(mapValue)
+      val rawEdge = Map(
+        relationId.label -> (vertexId + targetIdentifier), 
+        sourceId.label   -> vertexId, 
+        targetId.label   -> targetIdentifier
+      ).mapValues(mapValue)
       createEdge(attrValue(attributes, ParsingContants.relationType), rawEdge)
     }
     GoWriters.goTermVertexWriter.write(vertex) ::: element.edges.map(toWriteOperation).flatten
@@ -26,16 +29,16 @@ class GoMapper extends AnyMapper{
 
   private def mapValue(x : String) : AttributeValue = new AttributeValue().withS(x)
 
+  // NOTE: I don't get smth here, but this `.get` doesn't look nice in general
   private def attrValue(attributes : Map[String, String], name : String) : String = attributes.get(name).get
 
-  private def createEdge(relationType : String, rawEdge : Map[String, AttributeValue]) : List[PutItemRequest] = relationType match {
-    case relType if relType == IsAType.label => GoWriters.isAEdgeWriter.write (IsA ->> rawEdge)
-    case relType if relType == HasPartType.label => GoWriters.hasPartEdgeWriter.write (HasPart ->> rawEdge)
-    case relType if relType == PartOfType.label => GoWriters.partOfEdgeWriter.write (PartOf ->> rawEdge)
-    case relType if relType == NegativelyRegulatesType.label => GoWriters.negativelyRegulatesEdgeWriter.write (NegativelyRegulates ->> rawEdge)
-    case relType if relType == PositivelyRegulatesType.label => GoWriters.positivelyRegulatesEdgeWriter.write (PositivelyRegulates ->> rawEdge)
-    case relType if relType == RegulatesType.label => GoWriters.regulatesEdgeWriter.write (Regulates ->> rawEdge)
-    case relType if relType == NamespaceType.label => GoWriters.namespaceEdgeWriter.write (Namespace ->> rawEdge)
+  // NOTE: the general problem that appears here is that we want to _map a value to a type_.
+  // i.e. you want to get a type depending on a value. and generally there is no good solution for this in Scala.
+  private def createEdge(relationType: String, rawEdge: Map[String, AttributeValue]): List[PutItemRequest] = {
+    GoWriters.edgeWritersMap.get(relationType) match {
+      case None => List() // no writer were found for this label
+      case Some(writer) => writer.write(writer.element ->> rawEdge)
+    }
   }
 
 }

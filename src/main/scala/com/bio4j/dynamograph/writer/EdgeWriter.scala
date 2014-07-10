@@ -8,22 +8,33 @@ import scala.collection.JavaConversions._
 import com.bio4j.dynamograph.model.GeneralSchema._
 import com.bio4j.dynamograph.AnyDynamoEdge
 
+trait AnyEdgeWriter extends AnyWriter{
+  type Element <: AnyDynamoEdge
+}
 
-class EdgeWriter[ET <:AnyDynamoEdge, R <: AnyRegion](val eType: ET, val edgeTables: EdgeTables[ET,R]) extends AnyEdgeWriter{
-  type writeType = PutItemRequest
-  type edgeType = ET
+class EdgeWriter[E <: AnyDynamoEdge, R <: AnyRegion]
+  (val element: E, val edgeTables: EdgeTables[E,R]) extends AnyEdgeWriter{
 
-  def write(edge: edgeType#Rep) : List[writeType] = {
-    val inTableAttrs = Map(edgeTables.inTable.hashKey.label -> new AttributeValue().withS(getValue(edge, targetId.label)),edgeTables.inTable.rangeKey.label -> new AttributeValue().withS(getValue(edge, relationId.label)))
-    val outTableAttrs = Map(edgeTables.outTable.hashKey.label -> new AttributeValue().withS(getValue(edge, sourceId.label)),edgeTables.outTable.rangeKey.label -> new AttributeValue().withS(getValue(edge, relationId.label)))
+  type Element = E
 
-    val inTableRequest = new PutItemRequest().withTableName(edgeTables.inTable.name).withItem(inTableAttrs)
+  def write(rep: element.Rep): List[WriteType] = {
+    val inTableAttrs = Map(
+      edgeTables.inTable.hashKey.label  -> new AttributeValue().withS(element.getValue(rep, targetId.label)),
+      edgeTables.inTable.rangeKey.label -> new AttributeValue().withS(element.getValue(rep, relationId.label))
+    )
+    val outTableAttrs = Map(
+      edgeTables.outTable.hashKey.label  -> new AttributeValue().withS(element.getValue(rep, sourceId.label)),
+      edgeTables.outTable.rangeKey.label -> new AttributeValue().withS(element.getValue(rep, relationId.label))
+    )
+
+    val inTableRequest  = new PutItemRequest().withTableName(edgeTables.inTable.name).withItem(inTableAttrs)
     val outTableRequest = new PutItemRequest().withTableName(edgeTables.outTable.name).withItem(outTableAttrs)
-    val tableRequest = new PutItemRequest().withTableName(edgeTables.edgeTable.name).withItem(edge)
+    val tableRequest    = new PutItemRequest().withTableName(edgeTables.edgeTable.name).withItem(rep)
     
-    return List(inTableRequest,outTableRequest, tableRequest)
+    List(inTableRequest, outTableRequest, tableRequest)
   }
 
-  private def getValue(rep: edgeType#Rep, attributeName : String) : String = rep.get(attributeName).get.getS
+  // NOTE: we don't need it here, because we have it in the `AnyDynamoEdge` type
+  // private def getValue(rep: edge.Rep, attributeName: String) : String = rep.get(attributeName).get.getS
 }
 
