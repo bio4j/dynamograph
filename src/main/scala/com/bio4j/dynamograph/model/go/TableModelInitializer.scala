@@ -2,19 +2,34 @@ package com.bio4j.dynamograph.model.go
 
 import ohnosequences.tabula._
 import com.bio4j.dynamograph.ServiceProvider
-import com.bio4j.dynamograph.model.go.TableGoSchema.VertexTable
+import shapeless.Poly1
+import com.bio4j.dynamograph.model.go.TableGoImplementation.{GoTermTable, GoNamespacesTable}
 
 
 object TableModelInitializer {
 
   val service = ServiceProvider.service
 
+  object createTable extends Poly1{
+    import ServiceProvider.executors._
+    implicit def caseGoTermTable = at[GoTermTable.type](x =>
+      service please CreateTable(x, InitialState(x, service.account, InitialThroughput(1,1))))
+    implicit def caseGoNamespaceTable = at[GoNamespacesTable.type](x =>
+      service please CreateTable(x, InitialState(x, service.account, InitialThroughput(1,1))))
+  }
+
+  object deleteTable extends Poly1{
+    import ServiceProvider.executors._
+    implicit def caseGoTermTable = at[GoTermTable.type](x =>
+      service please DeleteTable(x, Active(x, service.account, InitialThroughput(1,1))))
+    implicit def caseGoNamespaceTable = at[GoNamespacesTable.type](x =>
+      service please DeleteTable(x, Active(x, service.account, InitialThroughput(1,1))))
+  }
+
   def initialize() = {
     import ServiceProvider.executors._
-    for (table <- TableGoImplementation.vertexTables){
-      val casted = table.asInstanceOf[Singleton with VertexTable[_,_]]
-      service please CreateTable(casted, InitialState(casted, service.account, InitialThroughput(1,1)))
-    }
+
+    TableGoImplementation.vertexTables map createTable
 
     for (edgeTablesAggregate <- TableGoImplementation.edgeTables){
       service please CreateTable(edgeTablesAggregate.inTable, InitialState(edgeTablesAggregate.inTable, service.account, InitialThroughput(1,1)))
@@ -25,10 +40,8 @@ object TableModelInitializer {
 
   def clear() = {
     import ServiceProvider.executors._
-    for (table <- TableGoImplementation.vertexTables){
-      val casted = table.asInstanceOf[Singleton with VertexTable[_,_]]
-      service please DeleteTable(casted, Active(casted, service.account, ThroughputStatus(1,1)))
-    }
+
+    TableGoImplementation.vertexTables map deleteTable
 
     for (edgeTablesAggregate <- TableGoImplementation.edgeTables){
       service please DeleteTable(edgeTablesAggregate.inTable, Active(edgeTablesAggregate.inTable, service.account, ThroughputStatus(1,1)))
