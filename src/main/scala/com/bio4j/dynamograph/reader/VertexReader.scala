@@ -9,11 +9,10 @@ import scala.collection.JavaConversions._
 import com.bio4j.dynamograph.dynamodb.AnyDynamoDbExecutor
 
 
-class VertexReader[VT <: AnyDynamoVertex,R <: AnyRegion](val vType : VT ,val vertexTable : VertexTable[VT,R], val dbExecutor : AnyDynamoDbExecutor) extends AnyVertexReader{
-  type returnType = Map[String,AttributeValue]
-  type vertexType = vType.type
+class VertexReader[VT <: AnyDynamoVertex,R <: AnyRegion](val vertexType : VT ,val vertexTable : VertexTable[VT,R], val dbExecutor : AnyDynamoDbExecutor) extends AnyVertexReader{
+  type VertexType = VT
 
-  def read(identifier : id.Raw) : returnType = {
+  def read(identifier : id.Raw) : ReturnType = {
     val request = new GetItemRequest()
       .withTableName(vertexTable.tableName)
       .withKey(Map(id.label -> new AttributeValue().withS(identifier)))

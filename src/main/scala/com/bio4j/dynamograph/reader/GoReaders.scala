@@ -6,40 +6,30 @@ import com.bio4j.dynamograph.{AnyDynamoEdge, AnyDynamoVertex, ServiceProvider}
 
 object GoReaders {
 
-  val goTermVertexReader = new VertexReader(GoTerm, GoTermTable, ServiceProvider.dynamoDbExecutor)
+  case object goTermVertexReader            extends VertexReader(GoTerm, GoTermTable, ServiceProvider.dynamoDbExecutor)
+  case object goNamespaceVertexReader       extends VertexReader(GoNamespaces, GoNamespacesTable, ServiceProvider.dynamoDbExecutor)
 
-  val goNamespaceVertexReader = new VertexReader(GoNamespaces, GoNamespacesTable, ServiceProvider.dynamoDbExecutor)
+  case object isAEdgeReader                 extends EdgeReader(IsA, IsATables, ServiceProvider.dynamoDbExecutor)
+  case object hasPartEdgeReader             extends EdgeReader(HasPart, HasPartTables, ServiceProvider.dynamoDbExecutor)
+  case object partOfEdgeReader              extends EdgeReader(PartOf, PartOfTables, ServiceProvider.dynamoDbExecutor)
+  case object regulatesEdgeReader           extends EdgeReader(Regulates, RegulatesTables, ServiceProvider.dynamoDbExecutor)
+  case object negativelyRegulatesEdgeReader extends EdgeReader(NegativelyRegulates, NegativelyRegulatesTables, ServiceProvider.dynamoDbExecutor)
+  case object positivelyRegulatesEdgeReader extends EdgeReader(PositivelyRegulates, PositivelyRegulatesTables, ServiceProvider.dynamoDbExecutor)
+  case object namespaceEdgeReader           extends EdgeReader(Namespace, NamespaceTables, ServiceProvider.dynamoDbExecutor)
 
-  val isAEdgeReader = new EdgeReader(IsA, IsATables, ServiceProvider.dynamoDbExecutor)
+  val vertexReaders = Map[AnyDynamoVertex,AnyVertexReader] (
+     goTermVertexReader.vertexType      -> goTermVertexReader,
+     goNamespaceVertexReader.vertexType -> goNamespaceVertexReader
+  )
 
-  val hasPartEdgeReader = new EdgeReader(HasPart, HasPartTables, ServiceProvider.dynamoDbExecutor)
-
-  val partOfEdgeReader = new EdgeReader(PartOf, PartOfTables, ServiceProvider.dynamoDbExecutor)
-
-  val regulatesEdgeReader = new EdgeReader(Regulates, RegulatesTables, ServiceProvider.dynamoDbExecutor)
-
-  val negativelyRegulatesEdgeReader = new EdgeReader(NegativelyRegulates, NegativelyRegulatesTables, ServiceProvider.dynamoDbExecutor)
-
-  val positivelyRegulatesEdgeReader = new EdgeReader(PositivelyRegulates, PositivelyRegulatesTables, ServiceProvider.dynamoDbExecutor)
-
-  val namespaceEdgeReader = new EdgeReader(Namespace, NamespaceTables, ServiceProvider.dynamoDbExecutor)
-
-  def main(args: Array[String]) {
-    println(namespaceEdgeReader == positivelyRegulatesEdgeReader)
-  }
-
-  def vertexReader[VT <: AnyDynamoVertex](vt : VT) = vertexReaders.find(p => p.vType == vt)
-
-  def edgeReader[ET <: AnyDynamoEdge](et: ET) = edgeReaders.find(p => p.eType == et)
-
-  val vertexReaders = goTermVertexReader :: goNamespaceVertexReader :: Nil
-
-  val edgeReaders = namespaceEdgeReader ::
-    positivelyRegulatesEdgeReader ::
-    negativelyRegulatesEdgeReader ::
-    regulatesEdgeReader ::
-    partOfEdgeReader ::
-    hasPartEdgeReader ::
-    isAEdgeReader :: Nil
+  val edgeReaders = Map[AnyDynamoEdge, AnyEdgeReader](
+    namespaceEdgeReader.edgeType            -> namespaceEdgeReader,
+    positivelyRegulatesEdgeReader.edgeType  -> positivelyRegulatesEdgeReader,
+    negativelyRegulatesEdgeReader.edgeType  -> negativelyRegulatesEdgeReader,
+    regulatesEdgeReader.edgeType            -> regulatesEdgeReader,
+    partOfEdgeReader.edgeType               -> partOfEdgeReader,
+    hasPartEdgeReader.edgeType              -> hasPartEdgeReader,
+    isAEdgeReader.edgeType                  -> isAEdgeReader
+  )
 
 }

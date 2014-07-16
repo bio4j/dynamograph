@@ -10,15 +10,14 @@ import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 
 
-class EdgeReader[ET <: AnyDynamoEdge, R <: AnyRegion](val eType : ET,  val edgeTables: EdgeTables[ET,R],  val dbExecutor : AnyDynamoDbExecutor) extends AnyEdgeReader {
-  type returnType = List[Map[String,AttributeValue]]
-  type edgeType = eType.type
+class EdgeReader[ET <: AnyDynamoEdge, R <: AnyRegion](val edgeType : ET,  val edgeTables: EdgeTables[ET,R],  val dbExecutor : AnyDynamoDbExecutor) extends AnyEdgeReader {
+  type EdgeType = ET
 
-  def readOut(vId : id.Raw) : returnType = read(vId, edgeTables.outTable.name)
+  def readOut(vId : id.Raw) : ReturnType = read(vId, edgeTables.outTable.name)
 
-  def readIn(vId : id.Raw) : returnType = read(vId, edgeTables.inTable.name)
+  def readIn(vId : id.Raw) : ReturnType = read(vId, edgeTables.inTable.name)
 
-  private def read(vId : id.Raw, linkingTableName : String) : returnType = {
+  private def read(vId : id.Raw, linkingTableName : String) : ReturnType = {
     val hashKeyCondition = new Condition()
       .withComparisonOperator(ComparisonOperator.EQ)
       .withAttributeValueList(new AttributeValue().withS(vId));
