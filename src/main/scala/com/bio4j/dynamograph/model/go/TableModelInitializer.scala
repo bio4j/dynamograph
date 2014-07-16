@@ -2,7 +2,7 @@ package com.bio4j.dynamograph.model.go
 
 import ohnosequences.tabula._
 import com.bio4j.dynamograph.ServiceProvider
-import shapeless.Poly1
+import shapeless._
 import com.bio4j.dynamograph.model.go.TableGoImplementation.{GoTermTable, GoNamespacesTable}
 
 
@@ -26,7 +26,7 @@ object TableModelInitializer {
       service please DeleteTable(x, Active(x, service.account, InitialThroughput(1,1))))
   }
 
-  def initialize() = {
+  def initialize(): Unit = {
     import ServiceProvider.executors._
 
     TableGoImplementation.vertexTables map createTable
@@ -38,7 +38,7 @@ object TableModelInitializer {
     }
   }
 
-  def clear() = {
+  def clear(): Unit = {
     import ServiceProvider.executors._
 
     TableGoImplementation.vertexTables map deleteTable
