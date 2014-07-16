@@ -4,24 +4,32 @@ import com.bio4j.dynamograph.model.go.TableGoSchema.{EdgeTables, VertexTable}
 import ohnosequences.tabula.EU
 import com.bio4j.dynamograph.model.go.GoImplementation._
 import shapeless.HNil
+import com.bio4j.dynamograph.model.GeneralSchema._
+import ohnosequences.typesets._
+import com.bio4j.dynamograph.model.go.GoSchema._
 
 
 object TableGoImplementation {
 
-  case object GoTermTable               extends VertexTable(GoTerm, "GoTerm", EU)
-  case object GoNamespacesTable         extends VertexTable(GoNamespaces, "GoNamespaces", EU)
+  val edgeStandardAttributes = relationId :~:
+    sourceId :~:
+    targetId :~:
+    ∅
 
-  case object IsATables                 extends EdgeTables(IsA, "GoIsA", EU)
-  case object HasPartTables             extends EdgeTables(HasPart, "GoHasPart",EU)
-  case object PartOfTables              extends EdgeTables(PartOf, "GoPartOf", EU)
-  case object NegativelyRegulatesTables extends EdgeTables(NegativelyRegulates, "GoNegativelyRegulates", EU)
-  case object PositivelyRegulatesTables extends EdgeTables(PositivelyRegulates, "GoPositivelyRegulates", EU)
-  case object RegulatesTables           extends EdgeTables(Regulates, "GoRegulates", EU)
-  case object NamespaceTables           extends EdgeTables(Namespace, "GoNamespaceEdges", EU)
+  case object GoTermTable               extends VertexTable(GoTerm, "GoTerm", EU, id :~: name :~: definition :~: comment :~: ∅)
+  case object GoNamespacesTable         extends VertexTable(GoNamespaces, "GoNamespaces", EU, id :~: ∅)
+
+  case object IsATables                 extends EdgeTables(IsA, "GoIsA", EU, edgeStandardAttributes)
+  case object HasPartTables             extends EdgeTables(HasPart, "GoHasPart",EU, edgeStandardAttributes)
+  case object PartOfTables              extends EdgeTables(PartOf, "GoPartOf", EU, edgeStandardAttributes)
+  case object NegativelyRegulatesTables extends EdgeTables(NegativelyRegulates, "GoNegativelyRegulates", EU, edgeStandardAttributes)
+  case object PositivelyRegulatesTables extends EdgeTables(PositivelyRegulates, "GoPositivelyRegulates", EU, edgeStandardAttributes)
+  case object RegulatesTables           extends EdgeTables(Regulates, "GoRegulates", EU, edgeStandardAttributes)
+  case object NamespaceTables           extends EdgeTables(Namespace, "GoNamespaceEdges", EU, edgeStandardAttributes)
 
   val vertexTables = GoTermTable ::
-                     GoNamespacesTable ::
-                     HNil
+                   GoNamespacesTable ::
+                   HNil
 
   val edgeTables = IsATables ::
                    HasPartTables ::
