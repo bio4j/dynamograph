@@ -4,6 +4,7 @@ import ohnosequences.tabula._
 import com.bio4j.dynamograph.ServiceProvider
 import shapeless._
 import com.bio4j.dynamograph.model.go.TableGoImplementation.{GoTermTable, GoNamespacesTable}
+import com.bio4j.dynamograph.model.go.TableGoSchema.EdgeTables
 
 
 object TableModelInitializer {
@@ -12,41 +13,41 @@ object TableModelInitializer {
 
   object createTable extends Poly1{
     import ServiceProvider.executors._
-    implicit def caseGoTermTable = at[GoTermTable.type](x =>
-      service please CreateTable(x, InitialState(x, service.account, InitialThroughput(1,1))))
-    implicit def caseGoNamespaceTable = at[GoNamespacesTable.type](x =>
-      service please CreateTable(x, InitialState(x, service.account, InitialThroughput(1,1))))
+    implicit def caseAnyHashKeyTable[T<: scala.Singleton with AnyHashKeyTable] = at[T](x =>
+      service please CreateTable(x, InitialState(x, service.account, InitialThroughput(1,1)))
+    )
+    implicit def caseAnyCompositeTable[T<: EdgeTables[_,_]] = at[T](x => {
+        service please CreateTable(x.inTable, InitialState(x.inTable, service.account, InitialThroughput(1,1)))
+        service please CreateTable(x.outTable, InitialState(x.outTable, service.account, InitialThroughput(1,1)))
+        service please CreateTable(x.edgeTable, InitialState(x.edgeTable, service.account, InitialThroughput(1,1)))
+      }
+    )
   }
 
   object deleteTable extends Poly1{
     import ServiceProvider.executors._
-    implicit def caseGoTermTable = at[GoTermTable.type](x =>
-      service please DeleteTable(x, Active(x, service.account, InitialThroughput(1,1))))
-    implicit def caseGoNamespaceTable = at[GoNamespacesTable.type](x =>
-      service please DeleteTable(x, Active(x, service.account, InitialThroughput(1,1))))
+    implicit def caseAnyHashKeyTable[T<: scala.Singleton with AnyHashKeyTable] = at[T](x =>
+      service please DeleteTable(x, Active(x, service.account, InitialThroughput(1,1)))
+    )
+    implicit def caseAnyCompositeTable[T<: EdgeTables[_,_]] = at[T](x => {
+        service please DeleteTable(x.inTable, Active(x.inTable, service.account, ThroughputStatus(1,1)))
+        service please DeleteTable(x.outTable, Active(x.outTable, service.account, ThroughputStatus(1,1)))
+        service please DeleteTable(x.edgeTable, Active(x.edgeTable, service.account, ThroughputStatus(1,1)))
+      }
+    )
   }
 
   def initialize(): Unit = {
     import ServiceProvider.executors._
 
     TableGoImplementation.vertexTables map createTable
-
-    for (edgeTablesAggregate <- TableGoImplementation.edgeTables){
-      service please CreateTable(edgeTablesAggregate.inTable, InitialState(edgeTablesAggregate.inTable, service.account, InitialThroughput(1,1)))
-      service please CreateTable(edgeTablesAggregate.outTable, InitialState(edgeTablesAggregate.outTable, service.account, InitialThroughput(1,1)))
-      service please CreateTable(edgeTablesAggregate.edgeTable, InitialState(edgeTablesAggregate.edgeTable, service.account, InitialThroughput(1,1)))
-    }
+    TableGoImplementation.edgeTables map createTable
   }
 
   def clear(): Unit = {
     import ServiceProvider.executors._
 
     TableGoImplementation.vertexTables map deleteTable
-
-    for (edgeTablesAggregate <- TableGoImplementation.edgeTables){
-      service please DeleteTable(edgeTablesAggregate.inTable, Active(edgeTablesAggregate.inTable, service.account, ThroughputStatus(1,1)))
-      service please DeleteTable(edgeTablesAggregate.outTable, Active(edgeTablesAggregate.outTable, service.account, ThroughputStatus(1,1)))
-      service please DeleteTable(edgeTablesAggregate.edgeTable, Active(edgeTablesAggregate.edgeTable, service.account, ThroughputStatus(1,1)))
-    }
+    TableGoImplementation.edgeTables map deleteTable
   }
 }
