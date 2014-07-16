@@ -1,4 +1,9 @@
 package bio4j.dynamograph
 
-class Dynamograph {
+import com.bio4j.dynamograph.model.go.TableModelInitializer
+
+object Dynamograph {
+  def main(args: Array[String]) {
+    TableModelInitializer.initialize()
+  }
 }

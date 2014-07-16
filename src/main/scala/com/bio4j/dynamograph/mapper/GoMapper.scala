@@ -21,7 +21,7 @@ class GoMapper extends AnyMapper{
         mapValues(mapValue)
       createEdge(attrValue(attributes, ParsingContants.relationType), rawEdge)
     }
-    GoWriters.GoTermVertexWriter.write(vertex) ::: element.edges.map(toWriteOperation).flatten
+    GoWriters.goTermVertexWriter.write(vertex) ::: element.edges.map(toWriteOperation).flatten
   }
 
   private def mapValue(x : String) : AttributeValue = new AttributeValue().withS(x)
@@ -29,13 +29,13 @@ class GoMapper extends AnyMapper{
   private def attrValue(attributes : Map[String, String], name : String) : String = attributes.get(name).get
 
   private def createEdge(relationType : String, rawEdge : Map[String, AttributeValue]) : List[PutItemRequest] = relationType match {
-    case relType if relType == IsAType.label => GoWriters.IsAEdgeWriter.write (IsA ->> rawEdge)
-    case relType if relType == HasPartType.label => GoWriters.HasPartEdgeWriter.write (HasPart ->> rawEdge)
-    case relType if relType == PartOfType.label => GoWriters.PartOfEdgeWriter.write (PartOf ->> rawEdge)
-    case relType if relType == NegativelyRegulatesType.label => GoWriters.NegativelyRegulatesEdgeWriter.write (NegativelyRegulates ->> rawEdge)
-    case relType if relType == PositivelyRegulatesType.label => GoWriters.PositivelyRegulatesEdgeWriter.write (PositivelyRegulates ->> rawEdge)
-    case relType if relType == RegulatesType.label => GoWriters.RegulatesEdgeWriter.write (Regulates ->> rawEdge)
-    case relType if relType == NamespaceType.label => GoWriters.NamespaceEdgeWriter.write (Namespace ->> rawEdge)
+    case relType if relType == IsAType.label => GoWriters.isAEdgeWriter.write (IsA ->> rawEdge)
+    case relType if relType == HasPartType.label => GoWriters.hasPartEdgeWriter.write (HasPart ->> rawEdge)
+    case relType if relType == PartOfType.label => GoWriters.partOfEdgeWriter.write (PartOf ->> rawEdge)
+    case relType if relType == NegativelyRegulatesType.label => GoWriters.negativelyRegulatesEdgeWriter.write (NegativelyRegulates ->> rawEdge)
+    case relType if relType == PositivelyRegulatesType.label => GoWriters.positivelyRegulatesEdgeWriter.write (PositivelyRegulates ->> rawEdge)
+    case relType if relType == RegulatesType.label => GoWriters.regulatesEdgeWriter.write (Regulates ->> rawEdge)
+    case relType if relType == NamespaceType.label => GoWriters.namespaceEdgeWriter.write (Namespace ->> rawEdge)
   }
 
 }

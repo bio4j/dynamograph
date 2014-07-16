@@ -50,10 +50,11 @@ class PullGoParser(val src: Source) extends AnyGoParser {
 
   private def parseSingleProperty(label : String, parser: XMLEventReader) : (String, String) = {
     var done = false
-    var value : String = null
+    var value : String = ""
     while (parser.hasNext && !done){
       parser.next match {
-        case EvText(text) => value = text
+        case EvText(text) => value += text
+        case EvEntityRef(entity) => value += entity
         case EvElemEnd(_, endLabel) if label == endLabel => done = true
         case _ =>
       }
@@ -87,12 +88,19 @@ class PullGoParser(val src: Source) extends AnyGoParser {
     while (parser.hasNext && !done){
       parser.next match {
         case EvElemEnd(_, "subClassOf") => done = true
-        case EvElemStart(pre, "onProperty", attrs, _) => rType = PullGoParser.relationMapping.get(getAttributeValue(attrs, PullGoParser.resource).get).get
+        case EvElemStart(pre, "onProperty", attrs, _) => {
+          val rVal = getAttributeValue(attrs, PullGoParser.resource).get
+          if (PullGoParser.relationMapping.contains(rVal))
+            rType = PullGoParser.relationMapping.get(getAttributeValue(attrs, PullGoParser.resource).get).get
+        }
         case EvElemStart(pre, "someValuesFrom", attrs, _) => value = StringPrefixMatcher(getAttributeValue(attrs, PullGoParser.resource))
         case _ =>
       }
     }
-    Map(ParsingContants.relationType -> rType, targetId.label -> value)
+    if (rType != null)
+      Map(ParsingContants.relationType -> rType, targetId.label -> value)
+    else
+      Map()
   }
 
   private def getAttributeValue(attrs : scala.xml.MetaData, attrName : String) : Option[String] = {

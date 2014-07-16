@@ -2,25 +2,35 @@ package com.bio4j.dynamograph.writer
 
 import com.bio4j.dynamograph.model.go.GoImplementation._
 import com.bio4j.dynamograph.model.go.TableGoImplementation._
+import com.bio4j.dynamograph.model.go.GoSchema._
 
 object GoWriters {
 
-  object GoTermVertexWriter extends VertexWriter(GoTerm, GoTermTable)
+  val goTermVertexWriter = new VertexWriter(GoTerm, GoTermTable)
 
-  object GoNamespaceVertexWriter extends VertexWriter(GoNamespaces, GoNamespacesTable)
+  val goNamespaceVertexWriter = new VertexWriter(GoNamespaces, GoNamespacesTable)
 
-  object IsAEdgeWriter extends EdgeWriter(IsA, IsATables)
+  val isAEdgeWriter = new EdgeWriter(IsA, IsATables)
 
-  object PartOfEdgeWriter extends EdgeWriter(PartOf, PartOfTables)
+  val partOfEdgeWriter = new EdgeWriter(PartOf, PartOfTables)
 
-  object HasPartEdgeWriter extends EdgeWriter(HasPart, HasPartTables)
+  val hasPartEdgeWriter = new EdgeWriter(HasPart, HasPartTables)
 
-  object PositivelyRegulatesEdgeWriter extends EdgeWriter(PositivelyRegulates, PositivelyRegulatesTables)
+  val positivelyRegulatesEdgeWriter = new EdgeWriter(PositivelyRegulates, PositivelyRegulatesTables)
 
-  object NegativelyRegulatesEdgeWriter extends EdgeWriter(NegativelyRegulates, NegativelyRegulatesTables)
+  val negativelyRegulatesEdgeWriter = new EdgeWriter(NegativelyRegulates, NegativelyRegulatesTables)
 
-  object RegulatesEdgeWriter extends EdgeWriter(Regulates, RegulatesTables)
+  val regulatesEdgeWriter = new EdgeWriter(Regulates, RegulatesTables)
 
-  object NamespaceEdgeWriter extends EdgeWriter(Namespace, NamespaceTables)
+  val namespaceEdgeWriter = new EdgeWriter(Namespace, NamespaceTables)
+
+  val edgeWriters = Map(IsAType.label -> isAEdgeWriter,
+    PartOfType.label -> partOfEdgeWriter,
+    HasPartType.label -> hasPartEdgeWriter,
+    PositivelyRegulatesType.label -> positivelyRegulatesEdgeWriter,
+    NegativelyRegulatesType.label -> negativelyRegulatesEdgeWriter,
+    RegulatesType.label -> regulatesEdgeWriter,
+    NamespaceType.label -> namespaceEdgeWriter)
+
 
 }

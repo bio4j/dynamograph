@@ -7,7 +7,7 @@ import scala.collection.JavaConversions._
 import com.bio4j.dynamograph.AnyDynamoVertex
 
 
-abstract class VertexWriter[VT <:AnyDynamoVertex, R <:AnyRegion](val vType: VT, val vertexTable : VertexTable[VT,R]) extends AnyVertexWriter {
+class VertexWriter[VT <:AnyDynamoVertex, R <:AnyRegion](val vType: VT, val vertexTable : VertexTable[VT,R]) extends AnyVertexWriter {
   type writeType = PutItemRequest
   type vertexType = VT
 

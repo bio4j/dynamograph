@@ -9,7 +9,7 @@ import com.bio4j.dynamograph.model.GeneralSchema._
 import com.bio4j.dynamograph.AnyDynamoEdge
 
 
-abstract class EdgeWriter[ET <:AnyDynamoEdge, R <: AnyRegion](val eType: ET, val edgeTables: EdgeTables[ET,R]) extends AnyEdgeWriter{
+class EdgeWriter[ET <:AnyDynamoEdge, R <: AnyRegion](val eType: ET, val edgeTables: EdgeTables[ET,R]) extends AnyEdgeWriter{
   type writeType = PutItemRequest
   type edgeType = ET
 
