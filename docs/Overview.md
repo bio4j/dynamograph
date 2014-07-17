@@ -43,9 +43,9 @@ Mentioned assumption has profound impact on design of tables that reflects this 
 ## Interactions with other tools
 
 Between others dynamogprah uses next tools and libraries:
-- (tabula)[3]
-- (scarph)[4]
-- (aws-sdk)[5]
+- [tabula][3]
+- [scarph][4]
+- [aws-sdk][5]
 
 [1]: http://aws.amazon.com/dynamodb/
 [2]: http://en.wikipedia.org/wiki/Graph_(mathematics)
