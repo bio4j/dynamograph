@@ -3,6 +3,8 @@
 Dynamograph is graph database based on DynamoDB database. It was designed for storing biological data but it could be used
  for storing each type of data
 
+This part of documentation provides generall overview of the project.
+
 ## Word etymology
 
 Dynamograph (Dynamo-Graph) comes from connection of two words: [DynamoDB][1] and [Graph][2]. Each of them are equally important as express two orthogonal things:
@@ -38,6 +40,10 @@ Mentioned assumption has profound impact on design of tables that reflects this 
 - **in-vertex** - vertex to which come directed edge
 - **out-vertex** - vertex from which come directed edge
 </aside>
+
+## Why DynamoDB?
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit.
 
 
 ## Interactions with other tools
