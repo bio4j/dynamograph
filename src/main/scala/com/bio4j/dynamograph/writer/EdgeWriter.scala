@@ -5,7 +5,7 @@ import com.bio4j.dynamograph.model.go.TableGoSchema.EdgeTables
 import ohnosequences.tabula.AnyRegion
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import scala.collection.JavaConversions._
-import com.bio4j.dynamograph.model.GeneralSchema._
+import com.bio4j.dynamograph.model.Properties._
 import com.bio4j.dynamograph.AnyDynamoEdge
 
 

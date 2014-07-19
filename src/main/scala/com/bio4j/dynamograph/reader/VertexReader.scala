@@ -4,7 +4,7 @@ import com.amazonaws.services.dynamodbv2.model.{AttributeValue, GetItemRequest}
 import com.bio4j.dynamograph.model.go.TableGoSchema.VertexTable
 import ohnosequences.tabula.AnyRegion
 import com.bio4j.dynamograph.AnyDynamoVertex
-import com.bio4j.dynamograph.model.GeneralSchema.id
+import com.bio4j.dynamograph.model.Properties.id
 import scala.collection.JavaConversions._
 import com.bio4j.dynamograph.dynamodb.AnyDynamoDbExecutor
 

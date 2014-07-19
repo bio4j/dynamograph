@@ -1,7 +1,7 @@
 package com.bio4j.dynamograph.reader
 
 import com.bio4j.dynamograph.{AnyDynamoEdge, AnyDynamoVertex}
-import com.bio4j.dynamograph.model.GeneralSchema.id
+import com.bio4j.dynamograph.model.Properties.id
 
 trait AnyReader {
   type returnType

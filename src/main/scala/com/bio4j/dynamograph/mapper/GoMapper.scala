@@ -1,7 +1,7 @@
 package com.bio4j.dynamograph.mapper
 
 import com.bio4j.dynamograph.model.go.GoImplementation._
-import com.bio4j.dynamograph.model.GeneralSchema.{relationId, targetId, sourceId, id}
+import com.bio4j.dynamograph.model.Properties.{relationId, targetId, sourceId, id}
 import com.bio4j.dynamograph.parser.{ParsingContants, SingleElement}
 import com.amazonaws.services.dynamodbv2.model.{PutItemRequest, AttributeValue}
 import com.bio4j.dynamograph.model.go.GoSchema._

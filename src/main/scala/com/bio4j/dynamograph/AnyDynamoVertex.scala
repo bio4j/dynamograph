@@ -2,7 +2,7 @@ package com.bio4j.dynamograph
 
 import ohnosequences.scarph._
 import com.bio4j.dynamograph.dao.go.{AnyDynamoDbDao, DynamoDbDao}
-import com.bio4j.dynamograph.model.GeneralSchema.id
+import com.bio4j.dynamograph.model.Properties.id
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import scala.collection.JavaConverters._
 

@@ -3,7 +3,7 @@ package com.bio4j.dynamograph
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import ohnosequences.scarph._
 import com.bio4j.dynamograph.dao.go.{AnyDynamoDbDao}
-import com.bio4j.dynamograph.model.GeneralSchema._
+import com.bio4j.dynamograph.model.Properties._
 
 
 trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>

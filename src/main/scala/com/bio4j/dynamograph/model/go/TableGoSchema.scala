@@ -2,7 +2,8 @@ package com.bio4j.dynamograph.model.go
 
 import ohnosequences.tabula._
 import com.bio4j.dynamograph.{AnyDynamoVertex, AnyDynamoEdge}
-import com.bio4j.dynamograph.model.GeneralSchema._
+ import com.bio4j.dynamograph.model.Properties._
+import shapeless._
 
 
 object TableGoSchema {
@@ -27,6 +28,8 @@ object TableGoSchema {
     case object edgeTable extends HashKeyTable(tablaName, relationId, region)
 
     type EdgeTpe = et.type
+
+    val tables = inTable :: outTable :: edgeTable :: HNil
   }
 
 }

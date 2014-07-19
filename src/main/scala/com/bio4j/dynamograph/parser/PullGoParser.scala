@@ -2,7 +2,7 @@ package com.bio4j.dynamograph.parser
 
 import scala.xml.pull._
 import scala.io.Source
-import com.bio4j.dynamograph.model.GeneralSchema.{id, targetId}
+import com.bio4j.dynamograph.model.Properties.{id, targetId}
 import com.bio4j.dynamograph.model.go.GoSchema._
 import scala.xml.MetaData
 
