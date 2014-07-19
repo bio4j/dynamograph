@@ -4,6 +4,7 @@ import ohnosequences.tabula.{EU, Attribute}
 import ohnosequences.scarph.{ManyToMany, VertexType}
 import com.bio4j.dynamograph.model.go.TableGoSchema.{EdgeTables, VertexTable}
 import com.bio4j.dynamograph.model.go.GoImplementation.GoTerm
+import ohnosequences.typesets._
 
 object testModel {
 
@@ -19,8 +20,8 @@ object testModel {
 
   case object testEdge extends DynamoEdge(testVertex,testEdgeType,testVertex)
 
-  case object testVertexTable extends VertexTable(testVertex, "TestVertex", EU)
+  case object testVertexTable extends VertexTable(testVertex, "TestVertex", EU, id :~: ∅)
 
-  case object testEdgeTable extends EdgeTables(testEdge, "TestVertex", EU)
+  case object testEdgeTable extends EdgeTables(testEdge, "TestVertex", EU, id :~: ∅)
 
  }

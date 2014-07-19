@@ -2,22 +2,27 @@ package com.bio4j.dynamograph.writer
 
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest
 import com.bio4j.dynamograph.model.go.TableGoSchema.EdgeTables
-import ohnosequences.tabula.AnyRegion
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import scala.collection.JavaConversions._
 import com.bio4j.dynamograph.model.GeneralSchema._
 import com.bio4j.dynamograph.AnyDynamoEdge
+import ohnosequences.typesets._
+import ohnosequences.tabula._
+import scala.reflect._
+
 
 trait AnyEdgeWriter extends AnyWriter{
   type Element <: AnyDynamoEdge
 }
 
-class EdgeWriter[E <: AnyDynamoEdge, R <: AnyRegion]
-  (val element: E, val edgeTables: EdgeTables[E,R]) extends AnyEdgeWriter{
+class EdgeWriter[E <: AnyDynamoEdge, R <: AnyRegion, As <: TypeSet : ClassTag, Rw <: TypeSet : ClassTag]
+  (val element: E, val edgeTables: EdgeTables[E, R, As, Rw]) extends AnyEdgeWriter{
 
   type Element = E
 
+
   def write(rep: element.Rep): List[WriteType] = {
+
     val inTableAttrs = Map(
       edgeTables.inTable.hashKey.label  -> new AttributeValue().withS(element.getValue(rep, targetId.label)),
       edgeTables.inTable.rangeKey.label -> new AttributeValue().withS(element.getValue(rep, relationId.label))

@@ -6,15 +6,13 @@ import com.bio4j.dynamograph.model.go.GoImplementation._
 import shapeless.HNil
 import com.bio4j.dynamograph.model.GeneralSchema._
 import ohnosequences.typesets._
+import ohnosequences.tabula._
 import com.bio4j.dynamograph.model.go.GoSchema._
 
 
 object TableGoImplementation {
 
-  val edgeStandardAttributes = relationId :~:
-    sourceId :~:
-    targetId :~:
-    ∅
+  val edgeStandardAttributes =  relationId :~: sourceId :~:targetId :~: ∅
 
   case object GoTermTable               extends VertexTable(GoTerm, "GoTerm", EU, id :~: name :~: definition :~: comment :~: ∅)
   case object GoNamespacesTable         extends VertexTable(GoNamespaces, "GoNamespaces", EU, id :~: ∅)
@@ -31,12 +29,11 @@ object TableGoImplementation {
                    GoNamespacesTable ::
                    HNil
 
-  val edgeTables = IsATables ::
-                   HasPartTables ::
-                   PartOfTables ::
-                   NegativelyRegulatesTables ::
-                   PositivelyRegulatesTables ::
-                   RegulatesTables ::
-                   NamespaceTables ::
-                   HNil
+  val edgeTables = IsATables.tables :::
+                   HasPartTables.tables :::
+                   PartOfTables.tables :::
+                   NegativelyRegulatesTables.tables :::
+                   PositivelyRegulatesTables.tables :::
+                   RegulatesTables.tables :::
+                   NamespaceTables.tables
 }
