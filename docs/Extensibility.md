@@ -5,3 +5,6 @@ This part of documentation cover next topics:
 - What to do in order to support another datasets
 
 ### Extending
+
+### Supporting additional datasets
+
