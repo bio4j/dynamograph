@@ -4,7 +4,6 @@ import ohnosequences.tabula._
 import com.bio4j.dynamograph.{AnyDynamoVertex, AnyDynamoEdge}
 import com.bio4j.dynamograph.model.GeneralSchema._
 import ohnosequences.typesets._
-import scala.reflect._
 import shapeless._
 
 
