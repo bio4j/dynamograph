@@ -7,9 +7,10 @@ import com.bio4j.dynamograph.AnyDynamoVertex
 import com.bio4j.dynamograph.model.GeneralSchema.id
 import scala.collection.JavaConversions._
 import com.bio4j.dynamograph.dynamodb.AnyDynamoDbExecutor
+import ohnosequences.typesets.TypeSet
 
 
-class VertexReader[VT <: AnyDynamoVertex,R <: AnyRegion](val vertexType : VT ,val vertexTable : VertexTable[VT,R], val dbExecutor : AnyDynamoDbExecutor) extends AnyVertexReader{
+class VertexReader[VT <: AnyDynamoVertex,R <: AnyRegion, As <: TypeSet, Rw <: TypeSet](val vertexType : VT ,val vertexTable : VertexTable[VT, R, As, Rw], val dbExecutor : AnyDynamoDbExecutor) extends AnyVertexReader{
   type VertexType = VT
 
   def read(identifier : id.Raw) : ReturnType = {

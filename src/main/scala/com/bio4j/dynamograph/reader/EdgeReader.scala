@@ -8,9 +8,10 @@ import com.bio4j.dynamograph.model.GeneralSchema.{nodeId, id, relationId}
 import com.bio4j.dynamograph.dynamodb.AnyDynamoDbExecutor
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
+import ohnosequences.typesets.TypeSet
 
 
-class EdgeReader[ET <: AnyDynamoEdge, R <: AnyRegion](val edgeType : ET,  val edgeTables: EdgeTables[ET,R],  val dbExecutor : AnyDynamoDbExecutor) extends AnyEdgeReader {
+class EdgeReader[ET <: AnyDynamoEdge, R <: AnyRegion, As <: TypeSet, Rw<: TypeSet](val edgeType : ET,  val edgeTables: EdgeTables[ET, R, As,Rw],  val dbExecutor : AnyDynamoDbExecutor) extends AnyEdgeReader {
   type EdgeType = ET
 
   def readOut(vId : id.Raw) : ReturnType = read(vId, edgeTables.outTable.name)
