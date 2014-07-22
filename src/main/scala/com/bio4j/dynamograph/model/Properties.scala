@@ -13,7 +13,7 @@ object Properties {
   case object name            extends Attribute[String]
   case object definition      extends Attribute[String]
   case object comment         extends Attribute[String]
-  case object number          extends Attribute[Long]
+  case object number          extends Attribute[Int]
   case object scientificName  extends Attribute[String]
 
  }

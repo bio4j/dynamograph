@@ -35,7 +35,7 @@ class PullGoParser(val src: Source) extends AnyGoParser {
         case _ => ()
       }
     }
-    SingleElement(vertex, edges)
+    SingleElement(GoTermType.label, vertex, edges)
   }
 
   private def skip(label: String,parser: XMLEventReader) = {
