@@ -12,7 +12,8 @@ Document is divided into several units - each of them cover different aspect of 
 4. [Project usage][4]
 5. [Supported datasets][5]
 6. [Examplary layout description][6]
-7. [Summary][7]
+7. [Extensibility][7]
+8. [Summary][8]
 
 [1]: Overview.md
 [2]: Functionalities.md
@@ -20,5 +21,6 @@ Document is divided into several units - each of them cover different aspect of 
 [4]: Usage.md
 [5]: Datasets.md
 [6]: GoTableLayout.md
-[7]: Summary.md
+[7]: Extensibility.md
+[8]: Summary.md
 
