@@ -6,7 +6,10 @@ import com.bio4j.dynamograph.model.GeneralSchema._
 import ohnosequences.typesets._
 import shapeless._
 import ohnosequences.scarph.AnyProperty
-import shapeless.::
+import ohnosequences.tabula.impl.ImplicitConversions.{fromSDKRep, toSDKRep}
+import toSDKRep._
+import fromSDKRep._
+import com.amazonaws.services.dynamodbv2.model.AttributeValue
 
 
 object TableGoSchema {
@@ -32,6 +35,15 @@ object TableGoSchema {
     type Attributes = As
     type Representation = Rw
     case object vertexItem    extends Item[table.type, As, Rw](table, attributes)
+
+
+    def itemRep(sdkRep : Map[String, AttributeValue]) = {
+      case object toSDKRepAndPropertyTuple extends Poly1 {
+        implicit def default[A <: Singleton with AnyProperty] =
+          at[A](a => (sdkRep, a))
+      }
+      attributes.map(fromSDKRep)
+    }
   }
 
 

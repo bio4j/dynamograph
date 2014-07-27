@@ -7,9 +7,11 @@ import ohnosequences.typesets.TypeSet
 import ohnosequences.tabula.impl.ImplicitConversions._
 import toSDKRep._
 import fromSDKRep._
+import shapeless.Poly1
 import ohnosequences.tabula.impl.actions.InHashKeyTable
 import ohnosequences.tabula.Active
 import ohnosequences.tabula.ThroughputStatus
+import ohnosequences.scarph.AnyProperty
 
 trait AnyVertexWriter extends AnyWriter{
   type Element <: AnyDynamoVertex
@@ -21,8 +23,7 @@ class VertexWriter[V <: AnyDynamoVertex, R <: AnyRegion, As <:TypeSet, Rw <: Typ
   type Element = V
 
   def write(rep: element.Rep): List[WriteType] = {
-
-    List(InHashKeyTable(vertexTable.table, Active(vertexTable.table,  ServiceProvider.service.account,
-      ThroughputStatus(1,1))) putItem vertexTable.vertexItem withValue rep)
+    List(InHashKeyTable(vertexTable.table, Active(vertexTable.table, ServiceProvider.service.account,
+      ThroughputStatus(1, 1))) putItem vertexTable.vertexItem withValue vertexTable.itemRep(rep))
   }
 }
