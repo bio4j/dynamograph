@@ -1,16 +1,19 @@
 package com.bio4j.dynamograph
 
-import ohnosequences.tabula.{EU, Attribute}
-import ohnosequences.scarph.{ManyToMany, VertexType}
+import ohnosequences.scarph.{ManyToMany, VertexType, Property}
 import com.bio4j.dynamograph.model.go.TableGoSchema.{EdgeTables, VertexTable}
 import com.bio4j.dynamograph.model.go.GoImplementation.GoTerm
 import ohnosequences.typesets._
+import ohnosequences.tabula._
+import ohnosequences.scarph._
+import ohnosequences.tabula.impl._, ImplicitConversions._
 
 object testModel {
 
-  case object id extends Attribute[Int]
+  // Integer, no Int
+  case object id extends Property[Integer]
 
-  case object name extends Attribute[String]
+  case object name extends Property[String]
 
   object testVertexType extends VertexType("TestVertexType")
 
@@ -20,6 +23,7 @@ object testModel {
 
   case object testEdge extends DynamoEdge(testVertex,testEdgeType,testVertex)
 
+  // TODO id clashes with something, that's why this fails
   case object testVertexTable extends VertexTable(testVertex, "TestVertex", EU, id :~: ∅)
 
   case object testEdgeTable extends EdgeTables(testEdge, "TestVertex", EU, id :~: ∅)

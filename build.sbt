@@ -13,7 +13,7 @@ scalaVersion := "2.11.1"
 skip in update := true
 
 libraryDependencies ++= Seq(
-  "ohnosequences" %% "scarph" % "0.1.0",
+  "ohnosequences" %% "scarph" % "0.2.0-SNAPSHOT",
   "ohnosequences" %% "tabula" % "0.1.0-SNAPSHOT",
   //"com.typesafe.scala-logging" %% "scala-logging-slf4j" % "3.0.0", currentlu unavailable for 2.11
   "com.amazonaws" % "aws-java-sdk" % "1.8.0",
