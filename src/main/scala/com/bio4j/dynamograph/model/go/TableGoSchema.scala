@@ -42,7 +42,7 @@ object TableGoSchema {
         implicit def default[A <: Singleton with AnyProperty] =
           at[A](a => (sdkRep, a))
       }
-      attributes.map(fromSDKRep)
+      attributes.mapHList(toSDKRepAndPropertyTuple).map(fromSDKRep)
     }
   }
 
