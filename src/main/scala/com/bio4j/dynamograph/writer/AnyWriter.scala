@@ -3,11 +3,12 @@ package com.bio4j.dynamograph.writer
 import ohnosequences.scarph._
 import com.bio4j.dynamograph.{AnyDynamoEdge, AnyDynamoVertex}
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest
+import ohnosequences.tabula.AnyPutItemAction
 
 
 trait AnyWriter {
-  // NOTE: maybe you had this unset here on purpose, I don't know
-  type WriteType = PutItemRequest
+
+  type WriteType = AnyPutItemAction
 
   // NOTE: First I would unify vertex and edge writers more, because they really differ only 
   // in the upper bound for the "element type" (vertex or edge)

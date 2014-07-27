@@ -11,7 +11,7 @@ import scala.collection.JavaConverters._
 import ohnosequences.typesets.TypeSet
 
 
-class EdgeReader[ET <: AnyDynamoEdge, R <: AnyRegion, As <: TypeSet, Rw<: TypeSet](val edgeType : ET,  val edgeTables: EdgeTables[ET, R, As,Rw],  val dbExecutor : AnyDynamoDbExecutor) extends AnyEdgeReader {
+class EdgeReader[ET <: AnyDynamoEdge](val edgeType : ET,  val edgeTables: EdgeTables[ET, _],  val dbExecutor : AnyDynamoDbExecutor) extends AnyEdgeReader {
   type EdgeType = ET
 
   def readOut(vId : id.Raw) : ReturnType = read(vId, edgeTables.outTable.name)

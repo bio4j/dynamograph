@@ -22,21 +22,21 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   implicit def unsafeGetProperty[P <: AnyProperty: Property.Of[this.Tpe]#is](p: P) =
     new PropertyGetter[P](p) {
-      def apply(rep: dynamoEdge.Rep) : p.Raw = getValue(rep, p.label).asInstanceOf[p.Raw]
+      def apply(rep: Rep) : p.Raw = getValue(rep, p).asInstanceOf[p.Raw]
     }
 
   implicit object sourceGetter extends GetSource {
     def apply(rep: dynamoEdge.Rep): Out =
-      source ->> dao.get(getValue(rep,sourceId.label), source)
+      source ->> dao.get(getValue(rep,sourceId), source)
   }
 
   implicit object targetGetter extends GetTarget {
     def apply(rep: dynamoEdge.Rep): target.Rep =
-      target ->> dao.get(getValue(rep,targetId.label), target)
+      target ->> dao.get(getValue(rep,targetId), target)
   }
 
   // NOTE: why was it private?
-  def getValue(rep: Rep, attributeName : String) : String = rep.get(attributeName).getOrElse(new AttributeValue().withS("")).getS
+  def getValue[P <: AnyProperty](rep: Rep, p : P) : String = rep.get(p.label).getOrElse(new AttributeValue().withS("")).getS
 
 }
 
@@ -48,4 +48,8 @@ T <: Singleton with AnyVertex.ofType[ET#TargetType] with AnyDynamoVertex
   type Source = S
   type Tpe = ET
   type Target = T
+}
+
+object AnyDynamoEdge{
+  type ofType[ET <: AnyEdgeType] = AnyDynamoEdge { type Tpe = ET }
 }

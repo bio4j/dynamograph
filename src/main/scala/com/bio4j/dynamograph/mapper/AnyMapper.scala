@@ -1,9 +1,9 @@
 package com.bio4j.dynamograph.mapper
 
 import com.bio4j.dynamograph.parser.SingleElement
-import com.amazonaws.services.dynamodbv2.model.PutItemRequest
+import ohnosequences.tabula.AnyPutItemAction
 
 trait AnyMapper {
-  def map(element: SingleElement) : List[PutItemRequest]
+  def map(element: SingleElement) : List[AnyPutItemAction]
 
 }

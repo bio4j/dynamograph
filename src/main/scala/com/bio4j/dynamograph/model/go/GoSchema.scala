@@ -2,6 +2,9 @@ package com.bio4j.dynamograph.model.go
 
 import ohnosequences.scarph._
 import com.bio4j.dynamograph.model.GeneralSchema.id
+import ohnosequences.typesets._
+import ohnosequences.tabula.{Item, Represented}
+import com.bio4j.dynamograph.model.go.TableGoImplementation.IsATables
 
 object GoSchema {
 
@@ -18,6 +21,7 @@ object GoSchema {
   implicit val GoTermType_comment    = GoTermType has comment
 
   object GoNamespacesType extends VertexType("GoNamespace")
+
   implicit val GoNamespacesType_id         = GoNamespacesType has id
 
   // Edge Types
@@ -27,7 +31,7 @@ object GoSchema {
   case object NegativelyRegulatesType extends ManyToMany (GoTermType, "negativelyRegulates", GoTermType)
   case object PositivelyRegulatesType extends ManyToMany (GoTermType, "positivelyRegulates", GoTermType)
   case object RegulatesType           extends ManyToMany (GoTermType, "regulates", GoTermType)
-  case object NamespaceType           extends ManyToOne (GoTermType, "namespace", GoNamespacesType)
+  case object NamespaceType           extends ManyToOne  (GoTermType, "namespace", GoNamespacesType)
 
 }
 
