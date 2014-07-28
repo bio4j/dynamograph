@@ -18,20 +18,12 @@ object GoSchema {
   case object comment     extends Property[String]
 
   // Vertex Type
-  object GoTermType       extends DynamoVertexType("GoTerm", id :~: GoSchema.name :~: comment :~: definition :~: ∅){
-//    val attributes = id :~: GoSchema.name :~: comment :~: definition :~: ∅
-  }
+  object GoTermType       extends DynamoVertexType("GoTerm", id :~: GoSchema.name :~: comment :~: definition :~: ∅)
   implicit val GoTermType_properties = GoTermType has GoTermType.attributes
-//  implicit val GoTermType_id         = GoTermType has id
-//  implicit val GoTermType_name       = GoTermType has name
-//  implicit val GoTermType_definition = GoTermType has definition
-//  implicit val GoTermType_comment    = GoTermType has comment
 
-  object GoNamespacesType extends DynamoVertexType("GoNamespace",  id :~: ∅){
-//    val attributes = id :~: ∅
-  }
+
+  object GoNamespacesType extends DynamoVertexType("GoNamespace",  id :~: ∅)
   implicit val GoNamespacesType_properties = GoNamespacesType has GoNamespacesType.attributes
-  //implicit val GoNamespacesType_id         = GoNamespacesType has id
 
   // Edge Types
   case object HasPartType             extends ManyToMany (GoTermType, "hasPart", GoTermType)
