@@ -59,7 +59,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
   }
 }
 
-class DynamoVertex[VT <: Singleton with DynamoVertexType, Rw <: TypeSet](val tpe: VT)(implicit r: Represented.By[VT#Attributes,Rw]) extends AnyDynamoVertex {
+class DynamoVertex[VT <: Singleton with DynamoVertexType,As <: TypeSet, Rw <: TypeSet](val tpe: VT, val attributes :As)(implicit r: Represented.By[VT#Attributes,Rw]) extends AnyDynamoVertex {
   type Tpe = VT
   final type Raw = Rw
 }

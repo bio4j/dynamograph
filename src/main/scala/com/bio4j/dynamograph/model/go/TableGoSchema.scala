@@ -25,7 +25,7 @@ object TableGoSchema {
     val region: R,
     val attributes: As
   )(implicit
-    val representedAttributes: Represented.By[As, Rw],
+    val representedAttributes: ohnosequences.typesets.Represented.By[As, Rw],
     val attributesBound: As << AnyProperty,
     val propertiesHaveValidTypes: everyElementOf[Rw]#isOneOf[ValidValues]
   ){

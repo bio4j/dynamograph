@@ -1,20 +1,17 @@
 package com.bio4j.dynamograph.model.go
 
 import com.bio4j.dynamograph.model.go.TableGoSchema.{EdgeTables, VertexTable}
-import ohnosequences.tabula.EU
-import com.bio4j.dynamograph.model.go.GoImplementation._
 import shapeless.HNil
-import com.bio4j.dynamograph.model.GeneralSchema._
 import ohnosequences.typesets._
 import ohnosequences.tabula._
 import com.bio4j.dynamograph.model.go.GoSchema._
-import com.bio4j.dynamograph.model.go.GoSchema
+import com.bio4j.dynamograph.model.go.GoImplementation._
 
 
 object TableGoImplementation {
 
-  case object GoTermTable               extends VertexTable(GoTerm, "GoTerm", EU, id :~: GoSchema.name :~: comment :~: definition :~: ∅)
-  case object GoNamespacesTable         extends VertexTable(GoNamespaces, "GoNamespaces", EU, id :~: ∅)
+  case object GoTermTable               extends VertexTable(GoTerm, "GoTerm", EU, GoTermType.attributes)
+  case object GoNamespacesTable         extends VertexTable(GoNamespaces, "GoNamespaces", EU, GoNamespacesType.attributes)
 
   case object IsATables                 extends EdgeTables(IsA, "GoIsA", EU)
   case object HasPartTables             extends EdgeTables(HasPart, "GoHasPart",EU)
