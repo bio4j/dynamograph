@@ -1,8 +1,6 @@
 package com.bio4j.dynamograph
 
-import ohnosequences.scarph.{ManyToMany, VertexType, Property}
 import com.bio4j.dynamograph.model.go.TableGoSchema.{EdgeTables, VertexTable}
-import com.bio4j.dynamograph.model.go.GoImplementation.GoTerm
 import ohnosequences.typesets._
 import ohnosequences.tabula._
 import ohnosequences.scarph._
@@ -26,6 +24,6 @@ object testModel {
   // TODO id clashes with something, that's why this fails
   case object testVertexTable extends VertexTable(testVertex, "TestVertex", EU, id :~: ∅)
 
-  case object testEdgeTable extends EdgeTables(testEdge, "TestVertex", EU, id :~: ∅)
+  case object testEdgeTable extends EdgeTables(testEdge, "TestVertex", EU)
 
  }

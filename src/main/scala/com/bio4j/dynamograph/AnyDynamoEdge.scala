@@ -42,8 +42,8 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
 class DynamoEdge[
 ET <: AnyEdgeType,
-S <: Singleton with AnyVertex.ofType[ET#SourceType] with AnyDynamoVertex,
-T <: Singleton with AnyVertex.ofType[ET#TargetType] with AnyDynamoVertex
+S <: Singleton with AnyDynamoVertex.ofType[ET#SourceType] with AnyDynamoVertex,
+T <: Singleton with AnyDynamoVertex.ofType[ET#TargetType] with AnyDynamoVertex
 ](val source: S, val tpe: ET, val target: T) extends AnyDynamoEdge {
   type Source = S
   type Tpe = ET

@@ -4,6 +4,7 @@ import ohnosequences.scarph._
 import com.bio4j.dynamograph.{AnyDynamoEdge, AnyDynamoVertex}
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest
 import ohnosequences.tabula.AnyPutItemAction
+import ohnosequences.typesets.Representable
 
 
 trait AnyWriter {

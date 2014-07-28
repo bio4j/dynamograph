@@ -1,28 +1,24 @@
 package com.bio4j.dynamograph.model.go
 
 import ohnosequences.scarph._
-import com.bio4j.dynamograph.model.GeneralSchema.id
+import com.bio4j.dynamograph.model.GeneralSchema._
 import ohnosequences.typesets._
-import ohnosequences.tabula.{Item, Represented}
-import com.bio4j.dynamograph.model.go.TableGoImplementation.IsATables
-import com.amazonaws.services.dynamodbv2.model.AttributeValue
-import shapeless.Poly1
-import ohnosequences.tabula.impl.ImplicitConversions.fromSDKRep
 import com.bio4j.dynamograph.DynamoVertexType
 
 object GoSchema {
 
-  // Properties
-  case object name        extends Property[String]
-  case object definition  extends Property[String]
-  case object comment     extends Property[String]
+
 
   // Vertex Type
-  object GoTermType       extends DynamoVertexType("GoTerm", id :~: GoSchema.name :~: comment :~: definition :~: ∅)
+  object GoTermType       extends DynamoVertexType("GoTerm"){
+    override val attributes = id :~: name :~: comment :~: definition :~: ∅
+  }
   implicit val GoTermType_properties = GoTermType has GoTermType.attributes
 
 
-  object GoNamespacesType extends DynamoVertexType("GoNamespace",  id :~: ∅)
+  object GoNamespacesType extends DynamoVertexType("GoNamespace"){
+    override val attributes = id :~: ∅
+  }
   implicit val GoNamespacesType_properties = GoNamespacesType has GoNamespacesType.attributes
 
   // Edge Types

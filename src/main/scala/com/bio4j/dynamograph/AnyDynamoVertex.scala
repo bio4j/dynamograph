@@ -3,15 +3,15 @@ package com.bio4j.dynamograph
 import ohnosequences.scarph._
 import com.bio4j.dynamograph.dao.go.AnyDynamoDbDao
 import com.bio4j.dynamograph.model.GeneralSchema.id
-import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import scala.collection.JavaConverters._
 import ohnosequences.tabula.AnyItem
 import ohnosequences.tabula.AnyItem._
+import ohnosequences.typesets._
 
 
 trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
-  type Raw <: AnyItem
+  type Raw <: AnyItem#Raw
 
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 
@@ -59,11 +59,12 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
   }
 }
 
-class DynamoVertex[VT <: Singleton with DynamoVertexType](val tpe: VT) extends AnyDynamoVertex {
+class DynamoVertex[VT <: Singleton with DynamoVertexType, Rw <: TypeSet](val tpe: VT)(implicit r: Represented.By[VT#Attributes,Rw]) extends AnyDynamoVertex {
   type Tpe = VT
+  final type Raw = Rw
 }
 
 object AnyDynamoVertex{
-  type ofType[VT <: DynamoVertexType] = AnyDynamoVertex { type Tpe = VT }
+  type ofType[VT <: DynamoVertexType, Rw <: TypeSet] = AnyDynamoVertex { type Tpe = VT }
 }
 
