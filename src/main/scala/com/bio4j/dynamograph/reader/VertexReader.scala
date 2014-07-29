@@ -10,7 +10,7 @@ import com.bio4j.dynamograph.dynamodb.AnyDynamoDbExecutor
 import ohnosequences.typesets.TypeSet
 
 
-class VertexReader[VT <: AnyDynamoVertex](val vertexType : VT ,val vertexTable : VertexTable[VT, _, _, _], val dbExecutor : AnyDynamoDbExecutor) extends AnyVertexReader{
+class VertexReader[VT <: AnyDynamoVertex](val vertexType : VT ,val vertexTable : VertexTable[VT, _], val dbExecutor : AnyDynamoDbExecutor) extends AnyVertexReader{
   type VertexType = VT
 
   def read(identifier : id.Raw) : ReturnType = {

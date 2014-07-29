@@ -26,7 +26,7 @@ class EdgeWriter[E <: AnyDynamoEdge, R <: AnyRegion]
 
 
   def write(rep: element.Rep): List[WriteType] = {
-    val edgeRep = edgeTables.item ->> (
+    val edgeRep = edgeTables.item fields (
         (relationId     ->> element.getValue(rep, relationId)) :~:
         (sourceId       ->> element.getValue(rep, sourceId)) :~:
         (targetId       ->> element.getValue(rep, targetId)) :~:
@@ -34,9 +34,9 @@ class EdgeWriter[E <: AnyDynamoEdge, R <: AnyRegion]
       )
 
     val inTableRequest  = InCompositeKeyTable(edgeTables.inTable,   Active(edgeTables.inTable,    ServiceProvider.service.account,
-      ThroughputStatus(1,1))) putItem edgeTables.inItem  withValue (edgeRep as edgeTables.inItem)
+      ThroughputStatus(1,1))) putItem edgeTables.inItem  withValue (edgeTables.inItem fields (edgeRep as edgeTables.inItem.record):edgeTables.inItem.record.Raw)
     val outTableRequest = InCompositeKeyTable(edgeTables.outTable,  Active(edgeTables.outTable,   ServiceProvider.service.account,
-      ThroughputStatus(1,1))) putItem edgeTables.outItem withValue (edgeRep as edgeTables.outItem)
+      ThroughputStatus(1,1))) putItem edgeTables.outItem withValue (edgeTables.outItem fields (edgeRep as edgeTables.outItem.record):edgeTables.outItem.record.Raw)
     val tableRequest    = InHashKeyTable(edgeTables.edgeTable, Active(edgeTables.edgeTable,  ServiceProvider.service.account,
       ThroughputStatus(1,1))) putItem edgeTables.item    withValue  edgeRep
 

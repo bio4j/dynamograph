@@ -12,13 +12,15 @@ object GoSchema {
 
   // Vertex Type
   object GoTermType       extends DynamoVertexType("GoTerm"){
-    override val attributes = id :~: name :~: comment :~: definition :~: ∅
+    val attributes = id :~: name :~: comment :~: definition :~: ∅
+    case object record extends Record(attributes)
   }
   implicit val GoTermType_properties = GoTermType has GoTermType.attributes
 
 
   object GoNamespacesType extends DynamoVertexType("GoNamespace"){
-    override val attributes = id :~: ∅
+    val attributes = id :~: ∅
+    case object record extends Record(attributes)
   }
   implicit val GoNamespacesType_properties = GoNamespacesType has GoNamespacesType.attributes
 

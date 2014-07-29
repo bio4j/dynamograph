@@ -7,8 +7,8 @@ import com.bio4j.dynamograph.model.go.GoSchema._
 object GoWriters {
 
   // NOTE: we can extend `VertexWriter`/`EdgeWriter`, so why not to have nice singletons?
-  case object goTermVertexWriter            extends VertexWriter(GoTerm, GoTermTable)
-  case object goNamespaceVertexWriter       extends VertexWriter(GoNamespaces, GoNamespacesTable)
+  case object goTermVertexWriter            extends VertexWriter(GoTermType, GoTermTable)
+  case object goNamespaceVertexWriter       extends VertexWriter(GoNamespacesType, GoNamespacesTable)
 
   case object isAEdgeWriter                 extends EdgeWriter(IsA, IsATables)
   case object partOfEdgeWriter              extends EdgeWriter(PartOf, PartOfTables)

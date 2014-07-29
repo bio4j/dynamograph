@@ -7,8 +7,8 @@ import com.bio4j.dynamograph.model.go.GoSchema._
 object GoImplementation {
 
   // vertices
-  case object GoTerm              extends DynamoVertex(GoTermType, GoTermType.attributes)
-  case object GoNamespaces        extends DynamoVertex(GoNamespacesType, GoNamespacesType.attributes)
+  case object GoTerm              extends DynamoVertex(GoTermType)
+  case object GoNamespaces        extends DynamoVertex(GoNamespacesType)
 
   //edges
   case object HasPart             extends DynamoEdge(GoTerm, HasPartType, GoTerm)

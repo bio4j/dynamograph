@@ -1,11 +1,11 @@
 package com.bio4j.dynamograph
 
 import ohnosequences.scarph.VertexType
-import ohnosequences.typesets.TypeSet
+import ohnosequences.typesets.{AnyRecord, TypeSet}
 import ohnosequences.tabula.{AnyItem, Item}
 
 
-abstract class DynamoVertexType[As <:TypeSet ](override val label: String) extends VertexType(label){
-  type Attributes = As
-  val attributes : Attributes
+abstract class DynamoVertexType(override val label: String) extends VertexType(label){
+  type VertexRecord <: AnyRecord
+  val record : VertexRecord
 }

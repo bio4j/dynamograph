@@ -11,7 +11,7 @@ import ohnosequences.typesets._
 
 trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
-  type Raw <: AnyItem#Raw
+  type Raw <: AnyRecord#Values
 
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 
@@ -59,12 +59,13 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
   }
 }
 
-class DynamoVertex[VT <: Singleton with DynamoVertexType,As <: TypeSet, Rw <: TypeSet](val tpe: VT, val attributes :As)(implicit r: Represented.By[VT#Attributes,Rw]) extends AnyDynamoVertex {
+class DynamoVertex[VT <: Singleton with DynamoVertexType](val tpe: VT) extends AnyDynamoVertex {
   type Tpe = VT
-  final type Raw = Rw
+  final type Raw = VT#VertexRecord#Values
 }
 
 object AnyDynamoVertex{
-  type ofType[VT <: DynamoVertexType, Rw <: TypeSet] = AnyDynamoVertex { type Tpe = VT }
+  type ofType[VT <: DynamoVertexType] = AnyDynamoVertex { type Tpe = VT }
 }
+
 

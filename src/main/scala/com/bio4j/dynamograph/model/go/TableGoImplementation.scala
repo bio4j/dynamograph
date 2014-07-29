@@ -10,8 +10,8 @@ import com.bio4j.dynamograph.model.go.GoImplementation._
 
 object TableGoImplementation {
 
-  case object GoTermTable               extends VertexTable(GoTerm, "GoTerm", EU, GoTermType.attributes)
-  case object GoNamespacesTable         extends VertexTable(GoNamespaces, "GoNamespaces", EU, GoNamespacesType.attributes)
+  case object GoTermTable               extends VertexTable(GoTermType, "GoTerm", EU)
+  case object GoNamespacesTable         extends VertexTable(GoNamespacesType, "GoNamespaces", EU)
 
   case object IsATables                 extends EdgeTables(IsA, "GoIsA", EU)
   case object HasPartTables             extends EdgeTables(HasPart, "GoHasPart",EU)

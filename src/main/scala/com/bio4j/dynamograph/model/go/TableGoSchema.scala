@@ -1,7 +1,7 @@
 package com.bio4j.dynamograph.model.go
 
 import ohnosequences.tabula._
-import com.bio4j.dynamograph.{AnyDynamoVertex, AnyDynamoEdge}
+import com.bio4j.dynamograph.{DynamoVertexType, AnyDynamoVertex, AnyDynamoEdge}
 import com.bio4j.dynamograph.model.GeneralSchema._
 import ohnosequences.typesets._
 import shapeless._
@@ -15,34 +15,16 @@ object TableGoSchema {
 
 
   class VertexTable[
-    VT <: AnyDynamoVertex,
-    R <: AnyRegion,
-    As <: ohnosequences.typesets.TypeSet,
-    Rw <: ohnosequences.typesets.TypeSet
+    VT <: DynamoVertexType,
+    R <: AnyRegion
   ](
     val vt : VT,
     val tableName : String,
-    val region: R,
-    val attributes: As
-  )(implicit
-    val representedAttributes: ohnosequences.typesets.Represented.By[As, Rw],
-    val attributesBound: As << AnyProperty,
-    val propertiesHaveValidTypes: everyElementOf[Rw]#isOneOf[ValidValues]
+    val region: R
   ){
     case object table extends HashKeyTable(tableName, id, region)
-    type VertexTpe = vt.type
-    type Attributes = As
-    type Representation = Rw
-    case object vertexItem    extends Item[table.type, As, Rw](table, attributes)
-
-
-    def itemRep(sdkRep : Map[String, AttributeValue]) = {
-      case object toSDKRepAndPropertyTuple extends Poly1 {
-        implicit def default[A <: Singleton with AnyProperty] =
-          at[A](a => (sdkRep, a))
-      }
-      attributes.mapHList(toSDKRepAndPropertyTuple).map(fromSDKRep)
-    }
+    type VertexTpe = VT
+    case object vertexItem    extends Item(table, vt.record)
   }
 
 
@@ -60,9 +42,13 @@ object TableGoSchema {
     case object outTable  extends CompositeKeyTable(s"${tablaName}_OUT", sourceId, relationId, region)
     case object edgeTable extends HashKeyTable(tablaName, relationId, region)
 
-    case object inItem    extends Item(inTable, targetId :~: relationId :~: ∅)
-    case object outItem   extends Item(outTable, sourceId :~: relationId :~: ∅)
-    case object item      extends Item(edgeTable, relationId :~: sourceId :~: targetId :~: ∅)
+    case object inRecord  extends Record(targetId :~: relationId :~: ∅)
+    case object outRecord extends Record(sourceId :~: relationId :~: ∅)
+    case object record    extends Record(relationId :~: sourceId :~: targetId :~: ∅)
+
+    case object inItem    extends Item(inTable, inRecord)
+    case object outItem   extends Item(outTable, outRecord)
+    case object item      extends Item(edgeTable, record)
 
     val tables = inTable :: outTable :: edgeTable :: HNil
 
