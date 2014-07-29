@@ -4,25 +4,19 @@ import ohnosequences.scarph._
 import com.bio4j.dynamograph.model.GeneralSchema._
 import ohnosequences.typesets._
 import ohnosequences.typesets.Represented._
-import com.bio4j.dynamograph.DynamoVertexType
 
 object GoSchema {
 
-
-
+  val goTermAttributes = id :~: name :~: comment :~: definition :~: ∅
+  case object GoTermRecord extends Record(goTermAttributes)
   // Vertex Type
-  object GoTermType       extends DynamoVertexType("GoTerm"){
-    val attributes = id :~: name :~: comment :~: definition :~: ∅
-    case object record extends Record(attributes)
-  }
-  implicit val GoTermType_properties = GoTermType has GoTermType.attributes
+  object GoTermType       extends SealedVertexType("GoTerm",GoTermRecord)
+  implicit val GoTermType_properties = GoTermType has goTermAttributes
 
-
-  object GoNamespacesType extends DynamoVertexType("GoNamespace"){
-    val attributes = id :~: ∅
-    case object record extends Record(attributes)
-  }
-  implicit val GoNamespacesType_properties = GoNamespacesType has GoNamespacesType.attributes
+  val goNamespacesAttributes = id :~: ∅
+  case object GoNamespacesRecord extends Record(goNamespacesAttributes)
+  object GoNamespacesType extends SealedVertexType("GoNamespace", GoNamespacesRecord)
+  implicit val GoNamespacesType_properties = GoNamespacesType has goNamespacesAttributes
 
   // Edge Types
   case object HasPartType             extends ManyToMany (GoTermType, "hasPart", GoTermType)

@@ -9,14 +9,11 @@ import ohnosequences.tabula.AnyItem._
 import ohnosequences.typesets._
 
 
-trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
-
-  type Tpe <: DynamoVertexType
-  type Raw <: Tpe#VertexRecord#Values
+trait AnyDynamoVertex extends AnySealedVertex { dynamoVertex =>
 
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 
-  implicit def unsafeGetProperty[P <: AnyProperty: Property.Of[this.Tpe]#is](p: P) =
+  implicit def unsafeGetProperty[P <: Singleton with AnyProperty: Property.Of[this.Tpe]#is](p: P) =
     new PropertyGetter[P](p) {
       def apply(rep: dynamoVertex.Rep): p.Raw = rep.get(p)
     }
@@ -59,13 +56,12 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
   }
 }
 
-class DynamoVertex[VT <: Singleton with DynamoVertexType](val tpe: VT) extends AnyDynamoVertex {
+class DynamoVertex[VT <: Singleton with AnySealedVertexType](val tpe: VT) extends AnyDynamoVertex {
   type Tpe = VT
-  final type Raw = VT#VertexRecord#Values
 }
 
 object AnyDynamoVertex{
-  type ofType[VT <: DynamoVertexType] = AnyDynamoVertex { type Tpe = VT }
+  type ofType[VT <: Singleton with AnySealedVertexType] = AnyDynamoVertex { type Tpe = VT }
 }
 
 

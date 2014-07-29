@@ -1,7 +1,7 @@
 package com.bio4j.dynamograph.model.go
 
 import ohnosequences.tabula._
-import com.bio4j.dynamograph.{DynamoVertexType, AnyDynamoVertex, AnyDynamoEdge}
+import com.bio4j.dynamograph.{AnyDynamoVertex, AnyDynamoEdge}
 import com.bio4j.dynamograph.model.GeneralSchema._
 import ohnosequences.typesets._
 import shapeless._
@@ -9,13 +9,14 @@ import ohnosequences.tabula.impl.ImplicitConversions.{fromSDKRep, toSDKRep}
 import toSDKRep._
 import fromSDKRep._
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
+import ohnosequences.scarph.AnySealedVertexType
 
 
 object TableGoSchema {
 
 
   class VertexTable[
-    VT <: DynamoVertexType,
+    VT <: AnySealedVertexType,
     R <: AnyRegion
   ](
     val vt : VT,
@@ -24,7 +25,7 @@ object TableGoSchema {
   ){
     case object table extends HashKeyTable(tableName, id, region)
     type VertexTpe = VT
-    case object vertexItem    extends Item[table.type, vt.VertexRecord](table, vt.record)
+    case object vertexItem    extends Item(table, vt.record)
   }
 
 
