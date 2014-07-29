@@ -6,6 +6,6 @@ import ohnosequences.tabula.{AnyItem, Item}
 
 
 abstract class DynamoVertexType(override val label: String) extends VertexType(label){
-  type VertexRecord <: AnyRecord
+  type VertexRecord <: Singleton with AnyRecord
   val record : VertexRecord
 }

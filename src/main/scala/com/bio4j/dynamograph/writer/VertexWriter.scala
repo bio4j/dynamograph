@@ -21,8 +21,8 @@ class VertexWriter[V <: DynamoVertexType, R <: AnyRegion]
 
   type Element = V
 
-  def write(rep: element.record.Values): List[WriteType] = {
+  def write(rep: element.record.Raw): List[WriteType] = {
     List(InHashKeyTable(vertexTable.table, Active(vertexTable.table, ServiceProvider.service.account,
-      ThroughputStatus(1, 1))) putItem vertexTable.vertexItem withValue rep)
+      ThroughputStatus(1, 1))) putItem vertexTable.vertexItem withValue (element.record ->> rep))
   }
 }

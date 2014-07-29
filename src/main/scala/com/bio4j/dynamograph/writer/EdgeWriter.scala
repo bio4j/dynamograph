@@ -34,9 +34,9 @@ class EdgeWriter[E <: AnyDynamoEdge, R <: AnyRegion]
       )
 
     val inTableRequest  = InCompositeKeyTable(edgeTables.inTable,   Active(edgeTables.inTable,    ServiceProvider.service.account,
-      ThroughputStatus(1,1))) putItem edgeTables.inItem  withValue (edgeTables.inItem fields (edgeRep as edgeTables.inItem.record):edgeTables.inItem.record.Raw)
+      ThroughputStatus(1,1))) putItem edgeTables.inItem  withValue (edgeTables.inItem fields ((edgeRep as edgeTables.inItem.record):edgeTables.inItem.record.Raw))
     val outTableRequest = InCompositeKeyTable(edgeTables.outTable,  Active(edgeTables.outTable,   ServiceProvider.service.account,
-      ThroughputStatus(1,1))) putItem edgeTables.outItem withValue (edgeTables.outItem fields (edgeRep as edgeTables.outItem.record):edgeTables.outItem.record.Raw)
+      ThroughputStatus(1,1))) putItem edgeTables.outItem withValue (edgeTables.outItem fields ((edgeRep as edgeTables.outItem.record):edgeTables.outItem.record.Raw))
     val tableRequest    = InHashKeyTable(edgeTables.edgeTable, Active(edgeTables.edgeTable,  ServiceProvider.service.account,
       ThroughputStatus(1,1))) putItem edgeTables.item    withValue  edgeRep
 

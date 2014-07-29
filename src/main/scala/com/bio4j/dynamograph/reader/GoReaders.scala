@@ -3,11 +3,12 @@ package com.bio4j.dynamograph.reader
 import com.bio4j.dynamograph.model.go.GoImplementation._
 import com.bio4j.dynamograph.model.go.TableGoImplementation._
 import com.bio4j.dynamograph.{AnyDynamoVertex, AnyDynamoEdge, ServiceProvider}
+import com.bio4j.dynamograph.model.go.GoSchema.{GoTermType, GoNamespacesType}
 
 object GoReaders {
 
-  case object goTermVertexReader            extends VertexReader(GoTerm, GoTermTable, ServiceProvider.dynamoDbExecutor)
-  case object goNamespaceVertexReader       extends VertexReader(GoNamespaces, GoNamespacesTable, ServiceProvider.dynamoDbExecutor)
+  case object goTermVertexReader            extends VertexReader(GoTermType, GoTermTable, ServiceProvider.dynamoDbExecutor)
+  case object goNamespaceVertexReader       extends VertexReader(GoNamespacesType, GoNamespacesTable, ServiceProvider.dynamoDbExecutor)
 
   case object isAEdgeReader                 extends EdgeReader(IsA, IsATables, ServiceProvider.dynamoDbExecutor)
   case object hasPartEdgeReader             extends EdgeReader(HasPart, HasPartTables, ServiceProvider.dynamoDbExecutor)

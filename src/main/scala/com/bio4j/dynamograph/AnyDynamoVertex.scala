@@ -11,14 +11,14 @@ import ohnosequences.typesets._
 
 trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
-  type Raw <: AnyRecord#Values
+  type Tpe <: DynamoVertexType
+  type Raw <: Tpe#VertexRecord#Values
 
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 
-
   implicit def unsafeGetProperty[P <: AnyProperty: Property.Of[this.Tpe]#is](p: P) =
     new PropertyGetter[P](p) {
-      def apply(rep: Rep): p.Raw = rep.get(p)
+      def apply(rep: dynamoVertex.Rep): p.Raw = rep.get(p)
     }
 
 

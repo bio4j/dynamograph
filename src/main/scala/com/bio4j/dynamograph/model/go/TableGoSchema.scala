@@ -24,7 +24,7 @@ object TableGoSchema {
   ){
     case object table extends HashKeyTable(tableName, id, region)
     type VertexTpe = VT
-    case object vertexItem    extends Item(table, vt.record)
+    case object vertexItem    extends Item[table.type, vt.VertexRecord](table, vt.record)
   }
 
 
