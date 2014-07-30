@@ -14,18 +14,46 @@ import ohnosequences.scarph.AnySealedVertexType
 
 object TableGoSchema {
 
+  trait AnyVertexTable { vertexTable => 
+
+    type VertexTpe <: Singleton with AnySealedVertexType
+    val vt: VertexTpe
+
+    type Region <: AnyRegion
+    val region: Region
+
+    type Table <: AnyHashKeyTable { type Region = vertexTable.Region }
+    val table: Table
+
+    // provided implicitly at construction
+    val recordValuesAreOK: everyElementOf[VertexTpe#Record#Values]#isOneOf[ValidValues]
+
+    type VertexItem <: AnyItem.ofTable[Table] with AnyItem { type Record = VertexTpe#Record }
+    val vertexItem: VertexItem
+  }
 
   class VertexTable[
-    VT <: AnySealedVertexType,
+    VT <: Singleton with AnySealedVertexType,
     R <: AnyRegion
   ](
     val vt : VT,
     val tableName : String,
     val region: R
-  ){
-    case object table extends HashKeyTable(tableName, id, region)
+  )(
+    implicit val recordValuesAreOK: everyElementOf[VT#Record#Values]#isOneOf[ValidValues]
+  ) 
+  extends AnyVertexTable {
+
     type VertexTpe = VT
-    case object vertexItem    extends Item(table, vt.record)
+    type Region = R
+
+    type Table = Table.type
+    val table = Table
+    case object Table extends HashKeyTable(tableName, id, region)
+
+    type VertexItem = VertexItem.type
+    val vertexItem = VertexItem
+    case object VertexItem extends Item[Table, VertexTpe#Record](table, vt.record)
   }
 
 
