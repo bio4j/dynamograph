@@ -19,6 +19,8 @@ This group of functionalities concentrate on uploading data to DynamoDB. Between
 - execute upload instructions
 
 Description of typical workflow for uploading data could be found on [architecture][2] page.
+What is extremely important is that writing data to db is organized in streams - part of data is red from file, parsed, translated into intermediate form and saved to db.
+Such organization protect programs from gigantic memory usage and enables processing extremely big volumes of data.
 
 Based on Dynamoraph functionalities concentrated around writing another project/task was build: [dynamograph-ddwriter][3]
 
