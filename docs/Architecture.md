@@ -8,6 +8,7 @@ General plan of system could be described with next layers:
 - DynamoDB
 
 Diagram below present layered architecture of the system:
+
 ![Layered architecture][architecture]
 
 ###Writing
