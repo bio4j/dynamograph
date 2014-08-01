@@ -4,10 +4,10 @@ All operations offered by Dynamograph are strongly related to the data manipulat
 General plan of system could be described with next layers:
 - user interface layer - there are functions offered for the user of the system
 - scala model layer - there is definition of data model
-- database layer - this layer contains function responsible for data maniupulation, communication with database
+- database layer - this layer contains function responsible for data manipulation, communication with database
 - DynamoDB
 
-Diagram below present layered achitecture of the system:
+Diagram below present layered architecture of the system:
 ![Layered architecture][architecture]
 
 ###Writing
@@ -23,7 +23,7 @@ Diagram below represent standard workflow of saving data to db.
 
 ##### Parsing/gathering data
 
-This phase is responsible for parsing data located in source files and storing them in an intermediate format. At begining files with data are parsed into singleElements which are further processed to the universal representation. This step is specific for type of dataset - in other words for each of dataset this phase should be different.
+This phase is responsible for parsing data located in source files and storing them in an intermediate format. At beginning files with data are parsed into singleElements which are further processed to the universal representation. This step is specific for type of dataset - in other words for each of dataset this phase should be different.
 
 
 ##### Uploading data to DynamoDB
@@ -34,9 +34,9 @@ Thanks to organizing writing into 2 phases and introducing intermediate format i
 
 ### Reading
 
-Reading could also be divided into two steps but seperation is not visible at first glance. Responsibilities for mentionad layers are as follow:
+Reading could also be divided into two steps but separation is not visible at first glance. Responsibilities for mentioned layers are as follow:
 - interpreting user request and translating raw data returned from database layer
-- executing low level request and returng raw data from database
+- executing low level request and returning raw data from database
 
 Diagram below represent typical reading workflow
 ![Reading workflow][reading]
