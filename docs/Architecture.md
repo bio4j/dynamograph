@@ -1,5 +1,15 @@
 ## General architecture
 
+All operations offered by Dynamograph are strongly related to the data manipulation. As a result application architecture is concentrated mainly around data.
+General plan of system could be described with next layers:
+- user interface layer - there are functions offered for the user of the system
+- scala model layer - there is definition of data model
+- database layer - this layer contains function responsible for data maniupulation, communication with database
+- DynamoDB
+
+Diagram below present layered achitecture of the system:
+![Layered architecture][architecture]
+
 ###Writing
 
 Writing data to DynamoDb could be divide into 2 phases:
@@ -20,18 +30,18 @@ This phase is responsible for parsing data located in source files and storing t
 
 There happens real writes to database. Data stored in intermediate format is translated into DynamoDb requests which are further executed. This step is specific for database to which data will be saved.
 
-
 Thanks to organizing writing into 2 phases and introducing intermediate format it is easy to extend collection of supported datasets or use another database. All things that developer must do is just implementing proper phase (parsing ow uploading) depending what he or she is trying to achieve.
 
-
-
-
-
-
-
 ### Reading
+
+Reading could also be divided into two steps but seperation is not visible at first
+
+
+
 ![Reading workflow][reading]
+
 
 
 [writing]: img/Write.png
 [reading]: img/Read.png
+[architecture]: img/Architecture.png
