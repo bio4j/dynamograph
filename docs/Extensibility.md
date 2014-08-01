@@ -5,6 +5,8 @@ This part of documentation cover next topics:
 - How to extends functionality of Dynamograph
 - What to do in order to support another datasets
 
+### Code organization
+
 ### Extending offered functionalities
 
 Dynamograph offers the most important functions from bio4j perspective

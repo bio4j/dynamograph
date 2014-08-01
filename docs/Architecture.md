@@ -34,14 +34,17 @@ Thanks to organizing writing into 2 phases and introducing intermediate format i
 
 ### Reading
 
-Reading could also be divided into two steps but seperation is not visible at first
+Reading could also be divided into two steps but seperation is not visible at first glance. Responsibilities for mentionad layers are as follow:
+- interpreting user request and translating raw data returned from database layer
+- executing low level request and returng raw data from database
 
-
-
+Diagram below represent typical reading workflow
 ![Reading workflow][reading]
 
+Reading is the most important part of offered operation set.
 
 
-[writing]: img/Write.png
-[reading]: img/Read.png
-[architecture]: img/Architecture.png
+
+[writing]: img/write.png
+[reading]: img/read.png
+[architecture]: img/architecture.png
