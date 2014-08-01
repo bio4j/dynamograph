@@ -2,10 +2,25 @@
 
 This part of documentation cover next topics:
 
+- Code organization
 - How to extends functionality of Dynamograph
 - What to do in order to support another datasets
 
 ### Code organization
+
+Code is organized in packages that divide code into different responsibilities:
+- base package - utils methods, general common code
+- reader - store code for translating high level read request to the DynamoDB requests
+- writer - contains code responsible for interpreting save request and passing them to database
+- parser - classes and functions for turning raw data into intermediate form
+- model - definiton of scala model for supported datasets
+- mapper - sources for mapping intermediate parser output to the abstract intermediate format
+- dao - there is code that orchestrate database requests
+
+Diagram below presents package organization of the project
+
+![Package organization][packages]
+
 
 ### Extending offered functionalities
 
@@ -22,4 +37,5 @@ Additionally there is need to define separates types for relationships(i.e IsATy
 
 Currently there is also need to write some more configuration that enables working with new dataset, but it is highly probably that in future release there will not be such requirement.
 
+[packages]: img/packages.png
 
