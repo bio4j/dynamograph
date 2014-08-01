@@ -13,7 +13,7 @@ Code is organized in packages that divide code into different responsibilities:
 - reader - store code for translating high level read request to the DynamoDB requests
 - writer - contains code responsible for interpreting save request and passing them to database
 - parser - classes and functions for turning raw data into intermediate form
-- model - definiton of scala model for supported datasets
+- model - definition of scala model for supported datasets
 - mapper - sources for mapping intermediate parser output to the abstract intermediate format
 - dao - there is code that orchestrate database requests
 

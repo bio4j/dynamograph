@@ -10,7 +10,7 @@ Before you will be able to use Dynamograph you must meet some requirements:
 - installed git and other basic tools
 - for some specific use cases you should have permissions for s3, sqs, ec2
 
-When you succesfully meet all mentioned requriement you can proceed to further steps.
+When you successfully meet all mentioned requirement you can proceed to further steps.
 
 ### Initialization steps
 

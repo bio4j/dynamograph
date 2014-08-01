@@ -19,7 +19,7 @@ Dynamograph comes from connection of two words: [DynamoDB][1] and [Graph][2]. Ea
 
 Dynamograph was designed for storing biomedical data like Gene Ontology, ncbiTaxonomy etc. As a result some assumptions were made to facilitate work with dynamoDB and take advantage of database characteristic.
 The most important assumptions that introduce changes to architecture of solution:
-- writing is completely separated from reading - in fact writing data to the database occurs only at the beginning - fulfilment _??_ of database. After uploading data system offers only read operations
+- writing is completely separated from reading - in fact writing data to the database occurs only at the beginning. After uploading data system offers only read operations
 - static data model - once defined it will not change over time
 - connection between edges are directed - each of the node have in-edges as well as out-edges
 

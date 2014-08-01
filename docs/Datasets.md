@@ -4,7 +4,7 @@ Below you can find description of currently supported datasets.
 
 ### Gene onthology
 
-What is gene ontology? "Gene onthology describes how gene produces behave in cellular context ..." (from [1][1])
+What is gene ontology? "Gene ontology describes how gene produces behave in cellular context ..." (from [1][1])
 It was first type of dataset supported by dynamograph.
 
 #### Model
@@ -28,8 +28,8 @@ The most important node is Description of the model presents types of the nodes 
 - part of
 - regulates
 - negatively regulates
-- positively regualtes
-- namepsace
+- positively regulates
+- namespace
 
 ### Ncbi Taxonomy
 
