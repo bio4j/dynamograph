@@ -40,9 +40,12 @@ Reading could also be divided into two steps but separation is not visible at fi
 - executing low level request and returning raw data from database
 
 Diagram below represent typical reading workflow
+
 ![Reading workflow][reading]
 
-Reading is the most important part of offered operation set.
+When user invokes method for getting specific data request is passed to the `DynamoDBDao` which is responsible for orchestration of requests related to DB.
+As a next step mentioned class pass request further to the correct reader which translates high level query to the DynamoDB interface. Last step in request part involve communicating with DynamoDB.
+Response from database is returned synchronously to the reader which returned raw data to the model object by DynamoDB. Specific model instance interpret raw data and returns instance of the object with proper type.
 
 
 
