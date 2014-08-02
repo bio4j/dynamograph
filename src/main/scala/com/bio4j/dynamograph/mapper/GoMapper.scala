@@ -25,7 +25,7 @@ class GoMapper extends AnyMapper{
 
   override def map(element: SingleElement): List[AnyPutItemAction] = {
     val vertexAttrs = element.vertexAttributes
-    case class valueMapper(val vertexAttrs : Map[String,String]) extends Poly1{
+    case object valueMapper extends Poly1{
       implicit def caseN[A <: Singleton with AnyProperty.ofValue[Integer]] =
         at[A]( a => (a is vertexAttrs(a.label).toInt): A#Rep )
       implicit def caseS[A <: Singleton with AnyProperty.ofValue[String]] =
