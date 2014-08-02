@@ -21,20 +21,19 @@ import scala.Some
 class GoMapper extends AnyMapper{
 
 
-  case class valueMapper(val vertexAttrs : Map[String,String]) extends Poly1{
-    implicit def caseN[A <: Singleton with AnyProperty.ofValue[Integer]] =
-      at[A]( a => (a is vertexAttrs(a.label).toInt): A#Rep )
-    implicit def caseS[A <: Singleton with AnyProperty.ofValue[String]] =
-      at[A]( a => (a is vertexAttrs(a.label)): A#Rep )
-  }
+
 
   override def map(element: SingleElement): List[AnyPutItemAction] = {
     val vertexAttrs = element.vertexAttributes
-
-    val mapper =  valueMapper(vertexAttrs)
+    case class valueMapper(val vertexAttrs : Map[String,String]) extends Poly1{
+      implicit def caseN[A <: Singleton with AnyProperty.ofValue[Integer]] =
+        at[A]( a => (a is vertexAttrs(a.label).toInt): A#Rep )
+      implicit def caseS[A <: Singleton with AnyProperty.ofValue[String]] =
+        at[A]( a => (a is vertexAttrs(a.label)): A#Rep )
+    }
     val value = GoTerm ->> (
       GoTerm.raw(
-        GoTerm fields(GoTerm.tpe.record.properties.map(mapper)),"")
+        GoTerm fields(GoTerm.tpe.record.properties.map(valueMapper)),"")
       )
     val vertex = GoTerm ->> element.vertexAttributes.mapValues(mapValue)
     val vertexId : String = vertex.get(id)
