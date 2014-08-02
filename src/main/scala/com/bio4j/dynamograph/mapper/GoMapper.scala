@@ -1,20 +1,44 @@
 package com.bio4j.dynamograph.mapper
 
 import com.bio4j.dynamograph.model.go.GoImplementation._
-import com.bio4j.dynamograph.model.GeneralSchema.{relationId, targetId, sourceId, id}
+import com.bio4j.dynamograph.model.GeneralSchema._
 import com.bio4j.dynamograph.parser.{ParsingContants, SingleElement}
 import com.amazonaws.services.dynamodbv2.model.{PutItemRequest, AttributeValue}
 import com.bio4j.dynamograph.model.go.GoSchema._
 import com.bio4j.dynamograph.writer.GoWriters
 import ohnosequences.scarph.ops.default._
-import ohnosequences.tabula.AnyPutItemAction
+import ohnosequences.tabula._
+import ohnosequences.typesets._
+import ohnosequences.typesets.{AnyProperty, TypeSet}
+import scala.annotation.tailrec
+import com.bio4j.dynamograph.parser.SingleElement
+import scala.Some
+import shapeless._, poly._
+import com.bio4j.dynamograph.parser.SingleElement
+import scala.Some
 
 
 class GoMapper extends AnyMapper{
 
+
+  case class valueMapper(val vertexAttrs : Map[String,String]) extends Poly1{
+    implicit def caseN[A <: Singleton with AnyProperty.ofValue[Integer]] =
+      at[A]( a => (a is vertexAttrs(a.label).toInt): A#Rep )
+    implicit def caseS[A <: Singleton with AnyProperty.ofValue[String]] =
+      at[A]( a => (a is vertexAttrs(a.label)): A#Rep )
+  }
+
   override def map(element: SingleElement): List[AnyPutItemAction] = {
+    val vertexAttrs = element.vertexAttributes
+
+    val mapper =  valueMapper(vertexAttrs)
+    val value = GoTerm ->> (
+      GoTerm.raw(
+        GoTerm fields(GoTerm.tpe.record.properties.map(mapper)),"")
+      )
     val vertex = GoTerm ->> element.vertexAttributes.mapValues(mapValue)
     val vertexId : String = vertex.get(id)
+    vertex.recordEntry
 
     def toWriteOperation(attributes: Map[String,String]) : List[AnyPutItemAction]   = {
       val targetIdentifier : String = attrValue(attributes, targetId.label)
@@ -25,7 +49,7 @@ class GoMapper extends AnyMapper{
       ).mapValues(mapValue)
       createEdge(attrValue(attributes, ParsingContants.relationType), rawEdge)
     }
-    GoWriters.goTermVertexWriter.write(vertex) ::: element.edges.map(toWriteOperation).flatten
+    GoWriters.goTermVertexWriter.write(value) ::: element.edges.map(toWriteOperation).flatten
   }
 
   private def mapValue(x : String) : AttributeValue = new AttributeValue().withS(x)

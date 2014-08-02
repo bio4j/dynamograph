@@ -12,6 +12,7 @@ import ohnosequences.tabula.impl.actions.InHashKeyTable
 import ohnosequences.tabula.Active
 import ohnosequences.tabula.ThroughputStatus
 import ohnosequences.scarph.{AnySealedVertexType, AnySealedVertex}
+import com.amazonaws.services.dynamodbv2.model.AttributeValue
 
 trait AnyVertexWriter extends AnyWriter{
   type Element <: AnyDynamoVertex
@@ -22,8 +23,8 @@ class VertexWriter[V <: AnySealedVertexType, R <: AnyRegion]
 
   type Element = V
 
-  def write(rep: element.Record#Raw): List[WriteType] = {
+  def write(rep: vertexTable.vertexItem.Raw): List[WriteType] = {
     List(InHashKeyTable(vertexTable.table, Active(vertexTable.table, ServiceProvider.service.account,
-      ThroughputStatus(1, 1))) putItem vertexTable.vertexItem withValue rep)
+      ThroughputStatus(1, 1))) putItem vertexTable.vertexItem withValue (vertexTable.vertexItem ->> rep))
   }
 }

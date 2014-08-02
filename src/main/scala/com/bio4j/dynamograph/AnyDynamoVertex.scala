@@ -13,6 +13,8 @@ trait AnyDynamoVertex extends AnySealedVertex { dynamoVertex =>
 
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 
+  type Other = String
+
   implicit def unsafeGetProperty[P <: Singleton with AnyProperty: Property.Of[this.Tpe]#is](p: P) =
     new PropertyGetter[P](p) {
       def apply(rep: dynamoVertex.Rep): p.Raw = rep.get(p)
