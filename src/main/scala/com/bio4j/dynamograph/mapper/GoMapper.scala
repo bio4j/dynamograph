@@ -18,26 +18,23 @@ import com.bio4j.dynamograph.parser.SingleElement
 import scala.Some
 
 
+
+
 class GoMapper extends AnyMapper{
-
-
-
 
   override def map(element: SingleElement): List[AnyPutItemAction] = {
     val vertexAttrs = element.vertexAttributes
     case object valueMapper extends Poly1{
       implicit def caseN[A <: Singleton with AnyProperty.ofValue[Integer]] =
-        at[A]( a => (a is vertexAttrs(a.label).toInt): A#Rep )
+        at[A]{ a : A => (a ->> vertexAttrs(a.label).toInt.asInstanceOf[a.Raw]): A#Rep }
       implicit def caseS[A <: Singleton with AnyProperty.ofValue[String]] =
-        at[A]( a => (a is vertexAttrs(a.label)): A#Rep )
+        at[A]{ a : A => (a ->> vertexAttrs(a.label).asInstanceOf[a.Raw]): A#Rep }
     }
     val value = GoTerm ->> (
       GoTerm.raw(
         GoTerm fields(GoTerm.tpe.record.properties.map(valueMapper)),"")
       )
-    val vertex = GoTerm ->> element.vertexAttributes.mapValues(mapValue)
-    val vertexId : String = vertex.get(id)
-    vertex.recordEntry
+    val vertexId : String = value.get(id)
 
     def toWriteOperation(attributes: Map[String,String]) : List[AnyPutItemAction]   = {
       val targetIdentifier : String = attrValue(attributes, targetId.label)
@@ -48,7 +45,7 @@ class GoMapper extends AnyMapper{
       ).mapValues(mapValue)
       createEdge(attrValue(attributes, ParsingContants.relationType), rawEdge)
     }
-    GoWriters.goTermVertexWriter.write(value) ::: element.edges.map(toWriteOperation).flatten
+    GoWriters.goTermVertexWriter.write(value.recordEntry) ::: element.edges.map(toWriteOperation).flatten
   }
 
   private def mapValue(x : String) : AttributeValue = new AttributeValue().withS(x)

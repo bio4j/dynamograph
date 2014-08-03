@@ -15,16 +15,10 @@ trait AnyDynamoVertex extends AnySealedVertex { dynamoVertex =>
 
   type Other = String
 
-  implicit def unsafeGetProperty[P <: Singleton with AnyProperty: Property.Of[this.Tpe]#is](p: P) =
-    new PropertyGetter[P](p) {
-      def apply(rep: dynamoVertex.Rep): p.Raw = rep.get(p)
-    }
-
-
   implicit def unsafeGetOneOutEdge[E <: Singleton with AnyDynamoEdge {
     type Tpe <: From[dynamoVertex.Tpe] with OneOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
-    def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
+    def apply(rep: dynamoVertex.Rep)(implicit isThere: id.type ∈ dynamoVertex.tpe.record.Properties, lookup: Lookup[dynamoVertex.tpe.record.Values, id.Entry]): e.tpe.Out[e.Rep] = {
       val it = dao.getOutRelationships(rep.get(id), e).asInstanceOf[List[e.Rep]]
       it.headOption: Option[e.Rep]
     }
@@ -33,7 +27,7 @@ trait AnyDynamoVertex extends AnySealedVertex { dynamoVertex =>
   implicit def unsafeGetManyOutEdge[E <: Singleton with AnyDynamoEdge {
     type Tpe <: From[dynamoVertex.Tpe] with ManyOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
-    def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
+    def apply(rep: dynamoVertex.Rep)(implicit isThere: id.type ∈ dynamoVertex.tpe.record.Properties, lookup: Lookup[dynamoVertex.tpe.record.Values, id.Entry]): e.tpe.Out[e.Rep] = {
       val it = dao.getOutRelationships(rep.get(id),e).asInstanceOf[List[e.Rep]]
       it: List[e.Rep]
     }
@@ -42,7 +36,7 @@ trait AnyDynamoVertex extends AnySealedVertex { dynamoVertex =>
   implicit def unsafeGetOneInEdge[E <: Singleton with AnyDynamoEdge {
     type Tpe <: To[dynamoVertex.Tpe] with OneIn }](e: E): GetInEdge[E] = new GetInEdge[E](e) {
 
-    def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
+    def apply(rep: dynamoVertex.Rep)(implicit isThere: id.type ∈ dynamoVertex.tpe.record.Properties, lookup: Lookup[dynamoVertex.tpe.record.Values, id.Entry]): e.tpe.In[e.Rep] = {
       val it = dao.getOutRelationships(rep.get(id),e).asInstanceOf[List[e.Rep]]
       it.headOption: Option[e.Rep]
     }
@@ -51,7 +45,7 @@ trait AnyDynamoVertex extends AnySealedVertex { dynamoVertex =>
   implicit def unsafeGetManyInEdge[E <: Singleton with AnyDynamoEdge {
     type Tpe <: To[dynamoVertex.Tpe] with ManyIn }](e: E): GetInEdge[E] = new GetInEdge[E](e) {
 
-    def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
+    def apply(rep: dynamoVertex.Rep)(implicit isThere: id.type ∈ dynamoVertex.tpe.record.Properties, lookup: Lookup[dynamoVertex.tpe.record.Values, id.Entry]): e.tpe.In[e.Rep] = {
       val it = dao.getOutRelationships(rep.get(id), e).asInstanceOf[List[e.Rep]]
       it.toList: List[e.Rep]
     }
