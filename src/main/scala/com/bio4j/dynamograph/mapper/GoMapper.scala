@@ -20,10 +20,13 @@ import scala.Some
 
 
 
-class GoMapper extends AnyMapper{
+class GoMapper extends AnyMapper {
 
   override def map(element: SingleElement): List[AnyPutItemAction] = {
+
     val vertexAttrs = element.vertexAttributes
+
+    // TODO you don't need all this tagging, I'll fix it later
     case object valueMapper extends Poly1{
       implicit def caseN[A <: Singleton with AnyProperty.ofValue[Integer]] =
         at[A]{ a : A => (a ->> vertexAttrs(a.label).toInt.asInstanceOf[a.Raw]): A#Rep }
@@ -45,7 +48,8 @@ class GoMapper extends AnyMapper{
       ).mapValues(mapValue)
       createEdge(attrValue(attributes, ParsingContants.relationType), rawEdge)
     }
-    GoWriters.goTermVertexWriter.write(value.recordEntry) ::: element.edges.map(toWriteOperation).flatten
+
+    GoWriters.goTermVertexWriter.write(value) ::: element.edges.map(toWriteOperation).flatten
   }
 
   private def mapValue(x : String) : AttributeValue = new AttributeValue().withS(x)

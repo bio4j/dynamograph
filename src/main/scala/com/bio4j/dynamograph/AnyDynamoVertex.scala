@@ -11,6 +11,8 @@ import ohnosequences.typesets._
 
 trait AnyDynamoVertex extends AnySealedVertex { dynamoVertex =>
 
+  // TODO move this to have a VertexTable and use that
+
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 
   type Other = String

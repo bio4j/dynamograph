@@ -9,15 +9,16 @@ import com.bio4j.dynamograph.model.go.TableGoSchema.EdgeTables
 
 object TableModelInitializer {
 
+  // TODO class with method for this etc
   val service = ServiceProvider.service
 
-  object createTable extends Poly1{
+  object createTable extends Poly1 {
     implicit def caseAnyTable[T <: Singleton with AnyTable, E <: Executor.For[CreateTable[T]]]
     (implicit exec: CreateTable[T] => E) =
       at[T](t => service please CreateTable(t, InitialState(t, service.account, InitialThroughput(1,1))))
   }
 
-  object deleteTable extends Poly1{
+  object deleteTable extends Poly1 {
     implicit def caseAnyTable[T <: Singleton with AnyTable, E <: Executor.For[DeleteTable[T]]]
     (implicit exec: DeleteTable[T] => E) =
       at[T](t => service please DeleteTable(t, Active(t, service.account, InitialThroughput(1,1))))

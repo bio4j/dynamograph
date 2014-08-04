@@ -1,26 +1,24 @@
 package com.bio4j.dynamograph.writer
 
-import com.bio4j.dynamograph.model.go.TableGoSchema.EdgeTables
+import com.bio4j.dynamograph.model._
 
 import com.bio4j.dynamograph.model.GeneralSchema._
 import com.bio4j.dynamograph.{ServiceProvider, AnyDynamoEdge}
+
 import ohnosequences.typesets._
-import ohnosequences.tabula._
+
+import ohnosequences.tabula._, impl._, ImplicitConversions._, impl.actions._, toSDKRep._, fromSDKRep._
+
 import ohnosequences.scarph._, ops.default._
-import ohnosequences.tabula.impl._, ImplicitConversions._
-import ohnosequences.tabula.impl.actions._
-import ohnosequences.tabula.ThroughputStatus
-import toSDKRep._
-import fromSDKRep._
 
 
-
-trait AnyEdgeWriter extends AnyWriter{
+trait AnyEdgeWriter extends AnyWriter {
+  
   type Element <: AnyDynamoEdge
 }
 
 class EdgeWriter[E <: AnyDynamoEdge, R <: AnyRegion]
-  (val element: E, val edgeTables: EdgeTables[E, R]) extends AnyEdgeWriter{
+  (val element: E, val edgeTables: EdgeTables[E, R]) extends AnyEdgeWriter {
 
   type Element = E
 

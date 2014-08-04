@@ -10,7 +10,7 @@ object GoSchema {
   val goTermAttributes = id :~: name :~: comment :~: definition :~: ∅
   case object GoTermRecord extends Record(goTermAttributes)
   // Vertex Type
-  object GoTermType       extends SealedVertexType("GoTerm",GoTermRecord)
+  object GoTermType       extends SealedVertexType("GoTerm", GoTermRecord)
   implicit val GoTermType_properties = GoTermType has goTermAttributes
 
   val goNamespacesAttributes = id :~: ∅
@@ -19,6 +19,7 @@ object GoSchema {
   implicit val GoNamespacesType_properties = GoNamespacesType has goNamespacesAttributes
 
   // Edge Types
+  // TODO sealed edge types
   case object HasPartType             extends ManyToMany (GoTermType, "hasPart", GoTermType)
   case object IsAType                 extends ManyToMany (GoTermType, "isA", GoTermType)
   case object PartOfType              extends ManyToMany (GoTermType, "partOf", GoTermType)

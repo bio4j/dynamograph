@@ -7,8 +7,8 @@ import com.bio4j.dynamograph.model.go.GoSchema.{GoTermType, GoNamespacesType}
 
 object GoReaders {
 
-  case object goTermVertexReader            extends VertexReader(GoTermType, GoTermTable, ServiceProvider.dynamoDbExecutor)
-  case object goNamespaceVertexReader       extends VertexReader(GoNamespacesType, GoNamespacesTable, ServiceProvider.dynamoDbExecutor)
+  case object goTermVertexReader            extends VertexReader(GoTermTable, ServiceProvider.dynamoDbExecutor)
+  case object goNamespaceVertexReader       extends VertexReader( GoNamespacesTable, ServiceProvider.dynamoDbExecutor)
 
   case object isAEdgeReader                 extends EdgeReader(IsA, IsATables, ServiceProvider.dynamoDbExecutor)
   case object hasPartEdgeReader             extends EdgeReader(HasPart, HasPartTables, ServiceProvider.dynamoDbExecutor)
