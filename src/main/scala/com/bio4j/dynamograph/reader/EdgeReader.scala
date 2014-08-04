@@ -1,6 +1,5 @@
 package com.bio4j.dynamograph.reader
 
-import com.bio4j.dynamograph.model.go.TableGoSchema.EdgeTables
 import ohnosequences.tabula.AnyRegion
 import com.bio4j.dynamograph.AnyDynamoEdge
 import com.amazonaws.services.dynamodbv2.model._
@@ -9,16 +8,20 @@ import com.bio4j.dynamograph.dynamodb.AnyDynamoDbExecutor
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import ohnosequences.typesets.TypeSet
+import com.bio4j.dynamograph.model.AnyEdgeTables
 
 
-class EdgeReader[ET <: AnyDynamoEdge](val edgeType : ET,  val edgeTables: EdgeTables[ET, _],  val dbExecutor : AnyDynamoDbExecutor) extends AnyEdgeReader {
-  type EdgeType = ET
+trait AnyEdgeReader { edgeReader =>
+  type EdgeTables <: Singleton with AnyEdgeTables
+  val edgeTables : EdgeTables
 
-  def readOut(vId : id.Raw) : ReturnType = read(vId, edgeTables.outTable.name)
+  val dbExecutor : AnyDynamoDbExecutor
 
-  def readIn(vId : id.Raw) : ReturnType = read(vId, edgeTables.inTable.name)
+  def readOut(vId : id.Raw) : List[Map[String,AttributeValue]] = read(vId, edgeTables.outTable.name)
 
-  private def read(vId : id.Raw, linkingTableName : String) : ReturnType = {
+  def readIn(vId : id.Raw) : List[Map[String,AttributeValue]] = read(vId, edgeTables.inTable.name)
+
+  private def read(vId : id.Raw, linkingTableName : String) : List[Map[String,AttributeValue]] = {
     val hashKeyCondition = new Condition()
       .withComparisonOperator(ComparisonOperator.EQ)
       .withAttributeValueList(new AttributeValue().withS(vId));
@@ -35,5 +38,10 @@ class EdgeReader[ET <: AnyDynamoEdge](val edgeType : ET,  val edgeTables: EdgeTa
       Map(edgeTables.edgeTable.name -> new KeysAndAttributes().withKeys(tableKeys)))
     dbExecutor.execute(batchRequest)
   }
+
+}
+
+class EdgeReader[ET <: Singleton with AnyEdgeTables](val edgeTables: ET,  val dbExecutor : AnyDynamoDbExecutor) extends AnyEdgeReader {
+  type EdgeTables = ET
 
 }
