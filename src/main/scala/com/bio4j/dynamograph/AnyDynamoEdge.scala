@@ -28,12 +28,12 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   implicit object sourceGetter extends GetSource {
     def apply(rep: dynamoEdge.Rep): Out =
-      source ->> dao.get(getValue(rep,sourceId), source)
+      source ->> source.raw (dao.get(getValue(rep,sourceId), dynamoEdge.source).right.get, "")
   }
 
   implicit object targetGetter extends GetTarget {
     def apply(rep: dynamoEdge.Rep): target.Rep =
-      target ->> dao.get(getValue(rep,targetId), target)
+      target ->> target.raw (dao.get(getValue(rep,targetId), dynamoEdge.target).right.get, "")
   }
 
   // NOTE: why was it private?
