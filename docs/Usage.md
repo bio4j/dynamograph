@@ -43,6 +43,34 @@ Part of the code that will upload data could be similar to listing below:
     }
 ```
 
-### Using Dynamograph in user programs
+### Using Dynamograph for reading
+
+In order to use Dynamograph you must specify next environment variables with proper values for you aws account
+ ```
+ AWS_ACCESS_KEY 
+ AWS_SECRET_KEK
+ ```
+ Next step involves running Dynamograph operation like reading edges, vertices i.e.
+
+ Let's imagine that you have GoTerm and you want to find all GoTerm that are part of given term. All you need to do is just to execute next method
+ ```scala
+ val vertex: GoTerm // vertex that you have
+ val partOfTerms = vertex getOutV(PartOf) // there you will have GoTerms that are part of vertex GoTerm
+ ```
+ On the other hand if you wish to get simple property value you must invoke next functions:
+ ```scala
+ val vertex: GoTerm // vertex that you have
+ val attributeValue = vertex get (id) // there you will get value of the id attribute 
+ ```
+ As you can see usage of Dynamograh when you have vertices or edges are extremely easy, but what in case that you want to get some vertex but everything you know about vertex is just `id`.
+ In such case dynamograph offer special service that you can use for it. Code below presents how to use it:
+ ```scala
+ val result = ServiceProvider.dao.get(id_of_the_vertex,vertex_type) 
+ // result of this invocation returns vertex with given id and type - in case of success otherwise exception
+ ```
+ Similar functions you can find for searching edges.
+
+
+
 
 
