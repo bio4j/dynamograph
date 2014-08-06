@@ -1,13 +1,10 @@
 package com.bio4j.dynamograph.reader
 
-import ohnosequences.tabula.AnyRegion
-import com.bio4j.dynamograph.AnyDynamoEdge
 import com.amazonaws.services.dynamodbv2.model._
 import com.bio4j.dynamograph.model.GeneralSchema.{nodeId, id, relationId}
 import com.bio4j.dynamograph.dynamodb.AnyDynamoDbExecutor
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
-import ohnosequences.typesets.TypeSet
 import com.bio4j.dynamograph.model.AnyEdgeTables
 
 

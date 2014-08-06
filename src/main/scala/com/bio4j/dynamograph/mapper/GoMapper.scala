@@ -15,7 +15,6 @@ import com.bio4j.dynamograph.parser.SingleElement
 import scala.Some
 import shapeless._, poly._
 import com.bio4j.dynamograph.parser.SingleElement
-import scala.Some
 
 
 
@@ -62,7 +61,7 @@ class GoMapper extends AnyMapper {
   private def createEdge(relationType: String, rawEdge: Map[String, AttributeValue]): List[AnyPutItemAction] = {
     GoWriters.edgeWritersMap.get(relationType) match {
       case None => List() // no writer were found for this label
-      case Some(writer) => writer.write(writer.element ->> rawEdge)
+      case Some(writer) => writer.write(writer.dynamoEdge ->> rawEdge)
     }
   }
 

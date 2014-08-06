@@ -1,5 +1,6 @@
 package com.bio4j.dynamograph.writer
 
+import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.bio4j.dynamograph.model._
 
 import com.bio4j.dynamograph.model.GeneralSchema._
@@ -12,35 +13,55 @@ import ohnosequences.tabula._, impl._, ImplicitConversions._, impl.actions._, to
 import ohnosequences.scarph._, ops.default._
 
 
-trait AnyEdgeWriter extends AnyWriter {
-  
-  type Element <: AnyDynamoEdge
-}
+trait AnyEdgeWriter { edgeWriter =>
 
-class EdgeWriter[E <: AnyDynamoEdge, R <: AnyRegion]
-  (val element: E, val edgeTables: EdgeTables[E, R]) extends AnyEdgeWriter {
+  type DynamoEdge <: Singleton with AnyDynamoEdge
+  val dynamoEdge : DynamoEdge
 
-  type Element = E
+  type EdgeTables <: Singleton with AnyEdgeTables
+  val edgeTables: EdgeTables
 
+  type EdgeTable = edgeTables.EdgeTable
+  val edgeTable: EdgeTable = edgeTables.edgeTable
+  type EdgeItem = edgeTables.EdgeItem
+  val edgeItem: EdgeItem = edgeTables.edgeItem
 
-  def write(rep: element.Rep): List[WriteType] = {
-    val edgeRep = edgeTables.item fields (
-        (relationId     ->> element.getValue(rep, relationId)) :~:
-        (sourceId       ->> element.getValue(rep, sourceId)) :~:
-        (targetId       ->> element.getValue(rep, targetId)) :~:
+  type OutTable = edgeTables.OutTable
+  val outTable: OutTable = edgeTables.outTable
+  type OutItem = edgeTables.OutItem
+  val outItem: OutItem = edgeTables.outItem
+
+  type InTable = edgeTables.InTable
+  val inTable: InTable = edgeTables.inTable
+  type InItem = edgeTables.InItem
+  val inItem: InItem = edgeTables.inItem
+
+  def write(rep: dynamoEdge.Rep)(implicit transf: From.Item[EdgeItem, SDKRep]): List[AnyPutItemAction] = {
+    val edgeRep = edgeItem fields (
+        (relationId       ->> dynamoEdge.getValue(rep, relationId)) :~:
+        (sourceId       ->> dynamoEdge.getValue(rep, sourceId)) :~:
+        (targetId       ->> dynamoEdge.getValue(rep, targetId)) :~:
         ∅
       )
 
-    val inTableRequest  = InCompositeKeyTable(edgeTables.inTable,   Active(edgeTables.inTable,    ServiceProvider.service.account,
-      ThroughputStatus(1,1))) putItem edgeTables.inItem  withValue (edgeTables.inItem fields ((edgeRep as edgeTables.inItem.record):edgeTables.inItem.record.Raw))
-    val outTableRequest = InCompositeKeyTable(edgeTables.outTable,  Active(edgeTables.outTable,   ServiceProvider.service.account,
-      ThroughputStatus(1,1))) putItem edgeTables.outItem withValue (edgeTables.outItem fields ((edgeRep as edgeTables.outItem.record):edgeTables.outItem.record.Raw))
-    val tableRequest    = InHashKeyTable(edgeTables.edgeTable, Active(edgeTables.edgeTable,  ServiceProvider.service.account,
-      ThroughputStatus(1,1))) putItem edgeTables.item    withValue  edgeRep
-
+    val inTableRequest  = InCompositeKeyTable(inTable,   Active(inTable,    ServiceProvider.service.account,
+      ThroughputStatus(1,1))) putItem inItem  withValue (inItem fields ((edgeRep as inItem.record):inItem.record.Raw))
+    val outTableRequest = InCompositeKeyTable(outTable,  Active(outTable,   ServiceProvider.service.account,
+      ThroughputStatus(1,1))) putItem outItem withValue (outItem fields ((edgeRep as outItem.record):outItem.record.Raw))
+    val tableRequest    = InHashKeyTable(edgeTable, Active(edgeTable,  ServiceProvider.service.account,
+      ThroughputStatus(1,1))) putItem edgeItem    withValue  edgeRep
 
     List(inTableRequest, outTableRequest, tableRequest)
   }
+}
+
+class EdgeWriter[E <: AnyDynamoEdge, ET <: AnyEdgeTables](val dynamoEdge : E, val edgeTables: ET) extends AnyEdgeWriter {
+
+  type DynamoEdge = E
+  type EdgeTables = ET
+
+
+
 
 }
 
