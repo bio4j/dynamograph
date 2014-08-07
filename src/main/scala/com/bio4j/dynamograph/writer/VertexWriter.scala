@@ -24,7 +24,7 @@ trait AnyVertexWriter { vertexWriter =>
   type Item = vertexTable.VertexItem
   val item: Item = vertexTable.vertexItem
 
-  type Record = vertexTable.record.type
+  type Record = vertexTable.Record
   val record = vertexTable.record
 
   // write an item

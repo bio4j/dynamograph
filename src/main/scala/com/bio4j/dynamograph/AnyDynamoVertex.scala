@@ -13,11 +13,14 @@ trait AnyDynamoVertex extends AnySealedVertex { dynamoVertex =>
 
   // TODO move this to have a VertexTable and use that
 
+  type Tpe <: Singleton with AnySealedVertexType
+
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 
   type Other = String
 
   implicit def unsafeGetOneOutEdge[E <: Singleton with AnyDynamoEdge {
+    
     type Tpe <: From[dynamoVertex.Tpe] with OneOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep)(implicit isThere: id.type ∈ dynamoVertex.tpe.record.Properties, lookup: Lookup[dynamoVertex.tpe.record.Values, id.Entry]): e.tpe.Out[e.Rep] = {
@@ -26,8 +29,10 @@ trait AnyDynamoVertex extends AnySealedVertex { dynamoVertex =>
     }
   }
 
-  implicit def unsafeGetManyOutEdge[E <: Singleton with AnyDynamoEdge {
-    type Tpe <: From[dynamoVertex.Tpe] with ManyOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
+  implicit def unsafeGetManyOutEdge [
+    E <: Singleton with AnyDynamoEdge {type Tpe <: From[dynamoVertex.Tpe] with ManyOut }
+  ]
+  (e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep)(implicit isThere: id.type ∈ dynamoVertex.tpe.record.Properties, lookup: Lookup[dynamoVertex.tpe.record.Values, id.Entry]): e.tpe.Out[e.Rep] = {
       val it = dao.getOutRelationships(rep.get(id),e).asInstanceOf[List[e.Rep]]

@@ -5,9 +5,15 @@ import ohnosequences.scarph.{AnySealedVertexType, VertexType, AnyEdgeType, AnyVe
 import com.bio4j.dynamograph.reader.GoReaders
 import com.bio4j.dynamograph.{AnyDynamoEdge, AnyDynamoVertex}
 
-class DynamoDbDao extends AnyDynamoDbDao{
+class DynamoDbDao extends AnyDynamoDbDao {
 
-  def get[VT <: Singleton with AnySealedVertexType](id : String, vertexType : VT) : Either[String, vertexType.record.Rep] = GoReaders.reader(vertexType).read(id)
+
+  // TODO why not use a reader of the corresponding type here?
+  def get[VT <: Singleton with AnySealedVertexType](id : String, vertexType : VT): Either[String, vertexType.record.Rep] = {
+
+      GoReaders.reader(vertexType).read(id)
+
+    } 
 
   def getInRelationships(id : String, et : AnyDynamoEdge) : List[Map[String,AttributeValue]] = GoReaders.edgeReaders.get(et).get.readIn(id)
 

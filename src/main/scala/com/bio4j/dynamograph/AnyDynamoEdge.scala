@@ -14,10 +14,14 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 
-  type Source <: AnyVertex.ofType[Tpe#SourceType] with AnyDynamoVertex
+  type Source <:  AnyDynamoVertex
+                  with AnyVertex { type Tpe <: Singleton with AnySealedVertexType with dynamoEdge.Tpe#SourceType }
+  
   val source: Source
 
-  type Target <: AnyVertex.ofType[Tpe#TargetType] with AnyDynamoVertex
+  type Target <:  AnyDynamoVertex 
+                  with AnyVertex { type Tpe <: Singleton with AnySealedVertexType with dynamoEdge.Tpe#TargetType }
+
   val target: Target
 
 
@@ -26,14 +30,32 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
       def apply(rep: Rep) : p.Raw = getValue(rep, p).asInstanceOf[p.Raw]
     }
 
-  implicit object sourceGetter extends GetSource {
-    def apply(rep: dynamoEdge.Rep): Out =
-      source ->> source.raw (dao.get(getValue(rep,sourceId), dynamoEdge.source).right.get, "")
+  object sourceGetter extends GetSource {
+
+    def apply(rep: dynamoEdge.Rep): Out = source ->> {
+
+      val srcId = getValue(rep, sourceId)
+
+      val couldBeRecordEntry = dao.get[source.tpe.type]( srcId, source.tpe )
+
+      val recordEntry = couldBeRecordEntry.right.get
+
+      source.raw ( recordEntry, "" )
+    }
   }
 
   implicit object targetGetter extends GetTarget {
-    def apply(rep: dynamoEdge.Rep): target.Rep =
-      target ->> target.raw (dao.get(getValue(rep,targetId), dynamoEdge.target).right.get, "")
+
+    def apply(rep: dynamoEdge.Rep): target.Rep = target ->> {
+
+      val tgtId = getValue(rep, targetId)
+
+      val couldBeRecordEntry = dao.get[target.tpe.type]( tgtId, target.tpe )
+      
+      val recordEntry = couldBeRecordEntry.right.get
+
+      target.raw ( recordEntry, "" )
+    }
   }
 
   // NOTE: why was it private?

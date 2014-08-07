@@ -34,8 +34,14 @@ class GoMapper extends AnyMapper {
     }
     val value = GoTerm ->> (
       GoTerm.raw(
-        GoTerm fields(GoTerm.tpe.record.properties.map(valueMapper)),"")
+        GoTerm fields GoTerm.tpe.record.properties.map(valueMapper), "")
       )
+
+    // WARNING I have no way to turn this into an item!
+    val valueFields = value.fields
+
+    val itemV = GoWriters.goTermVertexWriter.item ->> valueFields
+
     val vertexId : String = value.get(id)
 
     def toWriteOperation(attributes: Map[String,String]) : List[AnyPutItemAction]   = {
@@ -48,7 +54,7 @@ class GoMapper extends AnyMapper {
       createEdge(attrValue(attributes, ParsingContants.relationType), rawEdge)
     }
 
-    GoWriters.goTermVertexWriter.write(value) ::: element.edges.map(toWriteOperation).flatten
+    GoWriters.goTermVertexWriter.write(itemV) ::: element.edges.map(toWriteOperation).flatten
   }
 
   private def mapValue(x : String) : AttributeValue = new AttributeValue().withS(x)
