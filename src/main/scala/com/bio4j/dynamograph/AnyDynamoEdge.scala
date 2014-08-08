@@ -7,39 +7,27 @@ import com.bio4j.dynamograph.model.GeneralSchema._
 import ohnosequences.typesets.{Property, AnyProperty}
 
 
-trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
+trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
 
-
-  final type Raw = Map[String, AttributeValue]
 
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 
   type Source <:  AnyDynamoVertex
                   with AnyVertex { type Tpe <: Singleton with AnySealedVertexType with dynamoEdge.Tpe#SourceType }
-  
   val source: Source
 
   type Target <:  AnyDynamoVertex 
                   with AnyVertex { type Tpe <: Singleton with AnySealedVertexType with dynamoEdge.Tpe#TargetType }
-
   val target: Target
 
-
-  implicit def unsafeGetProperty[P <: AnyProperty: Property.Of[this.Tpe]#is](p: P) =
-    new PropertyGetter[P](p) {
-      def apply(rep: Rep) : p.Raw = getValue(rep, p).asInstanceOf[p.Raw]
-    }
 
   object sourceGetter extends GetSource {
 
     def apply(rep: dynamoEdge.Rep): Out = source ->> {
 
-      val srcId = getValue(rep, sourceId)
-
+      val srcId = rep.get(sourceId)
       val couldBeRecordEntry = dao.get[source.tpe.type]( srcId, source.tpe )
-
       val recordEntry = couldBeRecordEntry.right.get
-
       source.raw ( recordEntry, "" )
     }
   }
@@ -48,12 +36,9 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
     def apply(rep: dynamoEdge.Rep): target.Rep = target ->> {
 
-      val tgtId = getValue(rep, targetId)
-
+      val tgtId = rep.get(targetId)
       val couldBeRecordEntry = dao.get[target.tpe.type]( tgtId, target.tpe )
-      
       val recordEntry = couldBeRecordEntry.right.get
-
       target.raw ( recordEntry, "" )
     }
   }

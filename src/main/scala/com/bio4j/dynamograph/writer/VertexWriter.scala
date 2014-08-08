@@ -29,7 +29,6 @@ trait AnyVertexWriter { vertexWriter =>
 
   // write an item
   def write(vertexItemValue: TaggedWith[Item])(implicit transf: From.Item[Item, SDKRep]): List[AnyPutItemAction] = {
-
     // fails to compile, and it is ok because we need to extract the id from the sealed vertex type
     val action = InHashKeyTable (
       table,

@@ -18,38 +18,36 @@ object TableGoImplementation {
   // edges
   // TODO why explicit types needed?? I don't understand this
   case object IsATables 
-    extends EdgeTables[GoTermTable.type, IsA.type, GoTermTable.type, EU.type](
-      GoTermTable, IsA, GoTermTable, "GoIsA", EU
-    )
+    extends EdgeTables(GoTermTable, IsAType, GoTermTable, "GoIsA", EU)
 
   case object HasPartTables 
-    extends EdgeTables[GoTermTable.type, HasPart.type, GoTermTable.type, EU.type](
-      GoTermTable, HasPart, GoTermTable, "GoHasPart", EU
+    extends EdgeTables(
+      GoTermTable, HasPartType, GoTermTable, "GoHasPart", EU
     )
 
   case object PartOfTables              
-    extends EdgeTables[GoTermTable.type, PartOf.type, GoTermTable.type, EU.type](
-      GoTermTable, PartOf, GoTermTable, "GoPartOf", EU
+    extends EdgeTables(
+      GoTermTable, PartOfType, GoTermTable, "GoPartOf", EU
     )
 
   case object NegativelyRegulatesTables 
-    extends EdgeTables[GoTermTable.type, NegativelyRegulates.type, GoTermTable.type, EU.type](
-      GoTermTable, NegativelyRegulates, GoTermTable,"GoNegativelyRegulates", EU
+    extends EdgeTables(
+      GoTermTable, NegativelyRegulatesType, GoTermTable,"GoNegativelyRegulates", EU
     )
 
   case object PositivelyRegulatesTables 
-    extends EdgeTables[GoTermTable.type, PositivelyRegulates.type, GoTermTable.type, EU.type](
-      GoTermTable, PositivelyRegulates, GoTermTable, "GoPositivelyRegulates", EU
+    extends EdgeTables(
+      GoTermTable, PositivelyRegulatesType, GoTermTable, "GoPositivelyRegulates", EU
     )
 
   case object RegulatesTables           
-    extends EdgeTables[GoTermTable.type, Regulates.type, GoTermTable.type, EU.type](
-      GoTermTable, Regulates, GoTermTable, "GoRegulates", EU
+    extends EdgeTables(
+      GoTermTable, RegulatesType, GoTermTable, "GoRegulates", EU
     )
 
   case object NamespaceTables           
-    extends EdgeTables[GoTermTable.type, Namespace.type, GoNamespacesTable.type, EU.type](
-      GoTermTable, Namespace, GoNamespacesTable, "GoNamespaceEdges", EU
+    extends EdgeTables(
+      GoTermTable, NamespaceType, GoNamespacesTable, "GoNamespaceEdges", EU
     )
 
   val vertexTables = GoTermTable.table ::

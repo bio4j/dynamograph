@@ -10,7 +10,7 @@ import com.bio4j.dynamograph.model.GeneralSchema._
 trait AnyEdgeTables { edgeTables =>
 
   // TODO missing sealed edge type in scarph
-  type EdgeType <: Singleton with AnyEdgeType {
+  type EdgeType <: Singleton with AnySealedEdgeType {
       type SourceType <: Singleton with AnySealedVertexType
       type TargetType <: Singleton with AnySealedVertexType
     }
@@ -33,7 +33,7 @@ trait AnyEdgeTables { edgeTables =>
 
   val outTable: OutTable
 
-    type EdgeTable <: Singleton with AnyHashKeyTable with AnyTable.inRegion[edgeTables.Region] with
+  type EdgeTable <: Singleton with AnyHashKeyTable with AnyTable.inRegion[edgeTables.Region] with
                     AnyHashKeyTable.withKey[edgeTables.EdgeId]
 
   val edgeTable: EdgeTable
@@ -45,24 +45,30 @@ trait AnyEdgeTables { edgeTables =>
 
   val inTable: InTable
 
-  type OutRecord = OutRecord.type; val outRecord = OutRecord
-  case object OutRecord   extends Record(sourceVertexTable.vertexId :~: edgeId :~: ∅)
-
-  type EdgeRecord = EdgeRecord.type; val edgeRecord = EdgeRecord
-  case object EdgeRecord  extends Record(edgeId :~: sourceVertexTable.vertexId :~: targetVertexTable.vertexId :~: ∅)
-
   type InRecord = InRecord.type; val inRecord = InRecord
   case object InRecord    extends Record(targetVertexTable.vertexId :~: edgeId :~: ∅)
 
-  type OutItem = OutItem.type; val outItem = OutItem
-  case object OutItem   extends Item(outTable, outRecord)
+  type InItem <:  Singleton with AnyItem with
+                  AnyItem.ofTable[edgeTables.InTable] with
+                  AnyItem.withRecord[edgeTables.InRecord]
+  val inItem : InItem
 
-  type EdgeItem = EdgeItem.type; val edgeItem = EdgeItem
-  case object EdgeItem  extends Item(edgeTable, edgeRecord)
+  type OutRecord = OutRecord.type; val outRecord = OutRecord
+  case object OutRecord   extends Record(sourceVertexTable.vertexId :~: edgeId :~: ∅)
+  type OutItem <: Singleton with AnyItem with
+                  AnyItem.ofTable[edgeTables.OutTable] with
+                  AnyItem.withRecord[edgeTables.OutRecord]
+  val outItem : OutItem
 
-  type InItem = InItem.type; val inItem = InItem
-  case object InItem    extends Item(inTable, inRecord)
 
+  type EdgeRecord = edgeType.Record;
+  val edgeRecord : EdgeRecord = edgeType.record
+  type EdgeItem <:Singleton with AnyItem with
+                  AnyItem.ofTable[edgeTables.EdgeTable] with
+                  AnyItem.withRecord[edgeTables.EdgeRecord]
+  val edgeItem : EdgeItem
+
+  val recordValuesAreOK: everyElementOf[EdgeType#Record#Values]#isOneOf[ValidValues]
 
   type TargetVertexTable <: AnyVertexTable with AnyVertexTable.withVertexType[edgeTables.EdgeType#TargetType]
   val targetVertexTable: TargetVertexTable
@@ -72,7 +78,7 @@ trait AnyEdgeTables { edgeTables =>
 
 class EdgeTables[
   ST <: AnyVertexTable with AnyVertexTable.withVertexType[ET#SourceType],
-  ET <: Singleton with AnyEdgeType {
+  ET <: Singleton with AnySealedEdgeType {
     type SourceType <: Singleton with AnySealedVertexType
     type TargetType <: Singleton with AnySealedVertexType
   },
@@ -85,6 +91,9 @@ class EdgeTables[
   val tableName: String,
   val region: R
 )
+ (implicit
+  val recordValuesAreOK: everyElementOf[ET#Record#Values]#isOneOf[ValidValues]
+   )
 extends AnyEdgeTables {
   
   type EdgeType = ET
@@ -93,15 +102,29 @@ extends AnyEdgeTables {
   type TargetVertexTable = TT
 
   // TODO constructor params
-  type EdgeId = id.type
-  val edgeId = id
+  type EdgeId = relationId.type
+  val edgeId = relationId
 
   type OutTable = OutTable.type; val outTable = OutTable
   case object OutTable  extends CompositeKeyTable(s"${tableName}_OUT", sourceVertexTable.vertexId, edgeId, region)
 
+  type OutItem = OutItem.type; val outItem = OutItem
+  case object OutItem   extends Item(outTable, outRecord)
+
   type EdgeTable = EdgeTable.type; val edgeTable = EdgeTable
   case object EdgeTable extends HashKeyTable(tableName, relationId, region)
 
+  type EdgeRecord = EdgeType#Record;
+  val edgeRecord : EdgeRecord = edgeType.record
+
+  type EdgeItem = EdgeItem.type; val edgeItem = EdgeItem
+  case object EdgeItem  extends Item(edgeTable, edgeRecord)
+
   type InTable = InTable.type; val inTable = InTable
   case object InTable   extends CompositeKeyTable(s"{tableName}_IN", targetVertexTable.vertexId, edgeId, region)
+
+  type InItem = InItem.type; val inItem = InItem
+  case object InItem    extends Item(inTable, inRecord)
+
+
 }
