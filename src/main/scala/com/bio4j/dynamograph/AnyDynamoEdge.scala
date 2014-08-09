@@ -11,6 +11,8 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
 
 
   val dao: AnyDynamoDbDao = ServiceProvider.dao
+  
+  type Other = String
 
   type Source <:  AnyDynamoVertex
                   with AnyVertex { type Tpe <: Singleton with AnySealedVertexType with dynamoEdge.Tpe#SourceType }

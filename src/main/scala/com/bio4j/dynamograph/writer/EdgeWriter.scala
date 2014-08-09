@@ -23,8 +23,8 @@ trait AnyEdgeWriter { edgeWriter =>
 
   type EdgeTable = edgeTables.EdgeTable
   val edgeTable: EdgeTable = edgeTables.edgeTable
-  type EdgeRecord = edgeTables.edgeType.Record;
-  val edgeRecord : EdgeRecord = edgeTables.edgeType.record
+  type EdgeRecord = edgeTables.EdgeRecord;
+  val edgeRecord : EdgeRecord = edgeTables.edgeRecord
   type EdgeItem = edgeTables.EdgeItem
   val edgeItem: EdgeItem = edgeTables.edgeItem
 
@@ -54,9 +54,9 @@ trait AnyEdgeWriter { edgeWriter =>
     val inTableRequest  = InCompositeKeyTable(inTable,   Active(inTable,    ServiceProvider.service.account,
       ThroughputStatus(1,1))) putItem inItem  withValue inRep
     val outTableRequest = InCompositeKeyTable(outTable,  Active(outTable,   ServiceProvider.service.account,
-      ThroughputStatus(1,1))) putItem outItem withValue outRep
+      ThroughputStatus(1,1))) putItem outItem withValue  outItem ->> outRep.fields
     val tableRequest    = InHashKeyTable(edgeTable, Active(edgeTable,  ServiceProvider.service.account,
-      ThroughputStatus(1,1))) putItem edgeItem    withValue  edgeItemValue
+      ThroughputStatus(1,1))) putItem edgeItem    withValue (edgeItem ->> edgeItemValue)
 
     List(inTableRequest, outTableRequest, tableRequest)
   }

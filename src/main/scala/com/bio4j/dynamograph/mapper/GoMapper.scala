@@ -15,6 +15,7 @@ import com.bio4j.dynamograph.parser.SingleElement
 import scala.Some
 import shapeless._, poly._
 import com.bio4j.dynamograph.parser.SingleElement
+import ohnosequences.tabula._, impl._, ImplicitConversions._, impl.actions._, toSDKRep._, fromSDKRep._
 
 
 
@@ -22,8 +23,18 @@ import com.bio4j.dynamograph.parser.SingleElement
 class GoMapper extends AnyMapper {
 
   override def map(element: SingleElement): List[AnyPutItemAction] = {
-
-    val goTerm = mapGoTerm(element.vertexAttributes)
+	val values = element.vertexAttributes 
+	val goTerm = GoTerm ->> (
+	    GoTerm.raw(
+	      GoTerm fields (
+	          (id is values(id.label)) :~:
+	          (name is values(name.label)) :~: 
+	          (comment is values(comment.label)):~: 
+	          (definition is values(definition.label)) :~:
+	           ∅
+	      ),""
+	    )
+      )
     // 
     val vertexItem = GoWriters.goTermVertexWriter.item ->> goTerm.fields
 
@@ -41,22 +52,12 @@ class GoMapper extends AnyMapper {
     GoWriters.goTermVertexWriter.write(vertexItem) ::: element.edges.map(toAnyPutItemAction).flatten
   }
   
-  private def mapGoTerm(values : Map[String,String]) = {
-      val value = GoTerm ->> (
-	    GoTerm.raw(
-	      GoTerm fields (
-	          (id is values(id.label)) :~:
-	          (name is values(name.label)) :~: 
-	          (comment is values(comment.label)):~: 
-	          (definition is values(definition.label)) :~:
-	           ∅
-	      ),""
-	    )
-      )
-      value
-  }
+//  private def mapGoTerm(values : Map[String,String]) = {
+//
+//      value
+//  }
 
-  private def mapIsA(values : Map[String,String]) = {
+  private def mapIsA(values : Map[String,String]) : List[AnyPutItemAction] = {
     val isARep = IsA ->> (
       IsA.raw(
 
@@ -66,12 +67,11 @@ class GoMapper extends AnyMapper {
           (targetId is values(targetId.label)) :~:
           ∅
           ),""
-
       )
     )
     GoWriters.isAEdgeWriter.write(isARep.fields)
   }
-  private def mapHasPart(values : Map[String,String])  = {
+  private def mapHasPart(values : Map[String,String]) : List[AnyPutItemAction]  = {
     val hasPartRep = HasPart ->> (
       HasPart.raw(
 
@@ -81,12 +81,11 @@ class GoMapper extends AnyMapper {
           (targetId is values(targetId.label)) :~:
            ∅
           ),""
-
       )
     )
     GoWriters.hasPartEdgeWriter.write(hasPartRep.fields)
   }
-  private def mapPartOf(values : Map[String,String]) = {
+  private def mapPartOf(values : Map[String,String]) : List[AnyPutItemAction] = {
     val partOfRep = PartOf ->> (
       PartOf.raw(
 
@@ -96,12 +95,11 @@ class GoMapper extends AnyMapper {
           (targetId is values(targetId.label)) :~:
           ∅
           ),""
-
       )
     )
     GoWriters.partOfEdgeWriter.write(partOfRep.fields)
   }
-  private def mapRegulates(values : Map[String,String]) = {
+  private def mapRegulates(values : Map[String,String]) : List[AnyPutItemAction] = {
     val regulatesRep = Regulates ->> (
       Regulates.raw(
 
@@ -111,12 +109,11 @@ class GoMapper extends AnyMapper {
           (targetId is values(targetId.label)) :~:
             ∅
           ),""
-
       )
     )
     GoWriters.regulatesEdgeWriter.write(regulatesRep.fields)
   }
-  private def mapNegativelyRegulates(values : Map[String,String]) = {
+  private def mapNegativelyRegulates(values : Map[String,String]) : List[AnyPutItemAction] = {
     val negativelyRegulatesRep = NegativelyRegulates ->> (
       NegativelyRegulates.raw(
 
@@ -126,12 +123,11 @@ class GoMapper extends AnyMapper {
           (targetId is values(targetId.label)) :~:
             ∅
           ),""
-
       )
     )
-    GoWriters.negativelyRegulatesEdgeWriter.write(negativelyRegualtesRep.fields)
+    GoWriters.negativelyRegulatesEdgeWriter.write(negativelyRegulatesRep.fields)
   }
-  private def mapPositivelyRegulates(values : Map[String,String]) = {
+  private def mapPositivelyRegulates(values : Map[String,String]) : List[AnyPutItemAction] = {
     val positivelyRegulatesRep = PositivelyRegulates ->> (
       PositivelyRegulates.raw(
 
@@ -141,13 +137,12 @@ class GoMapper extends AnyMapper {
           (targetId is values(targetId.label)) :~:
           ∅
           ),""
-
       )
     )
     GoWriters.positivelyRegulatesEdgeWriter.write(positivelyRegulatesRep.fields)
   }
 
-  private def mapNamespace(values : Map[String,String]) = {
+  private def mapNamespace(values : Map[String,String]) : List[AnyPutItemAction] = {
     val namespaceRep = Namespace ->> (
       Namespace.raw(
 
@@ -157,20 +152,19 @@ class GoMapper extends AnyMapper {
           (targetId is values(targetId.label)) :~:
            ∅
           ),""
-
       )
     )
     GoWriters.namespaceEdgeWriter.write(namespaceRep.fields)
   }
 
-  val writers : Map[String, Map[String,String] => List[AnyPutItemAction]] = Map(
-      IsAType.label			 		-> mapIsA,
-      HasPartType.label 			-> mapHasPart,
-      PartOfType.label 				-> mapPartOf,
-      RegulatesType 				-> mapRegulates,
-      NegativelyRegulatesType.label -> mapNegativelyRegulates,
-      PositivelyRegulatesType.label -> mapPositivelyRegulates,
-      NamespaceType.label 			-> mapNamespace
+  val writers : Map[String, (Map[String,String]) => List[AnyPutItemAction]] = Map(
+      IsAType.label			 		-> mapIsA _,
+      HasPartType.label 			-> mapHasPart _,
+      PartOfType.label 				-> mapPartOf _,
+      RegulatesType.label			-> mapRegulates _,
+      NegativelyRegulatesType.label -> mapNegativelyRegulates _,
+      PositivelyRegulatesType.label -> mapPositivelyRegulates _, 
+      NamespaceType.label 			-> mapNamespace _
    )
 
 }
