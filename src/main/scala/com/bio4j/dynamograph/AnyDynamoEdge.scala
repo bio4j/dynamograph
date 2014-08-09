@@ -44,12 +44,12 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
   }
 
   // NOTE: why was it private?
-  def getValue[P <: AnyProperty](rep: Rep, p : P) : String = rep.get(p.label).getOrElse(new AttributeValue().withS("")).getS
+  def getValue[P <: AnyProperty](rep: Rep, p : P) : String = rep.get(p)
 
 }
 
 class DynamoEdge[
-ET <: AnyEdgeType,
+ET <: Singleton with AnySealedEdgeType,
 S <: Singleton with AnyDynamoVertex.ofType[ET#SourceType] with AnyDynamoVertex,
 T <: Singleton with AnyDynamoVertex.ofType[ET#TargetType] with AnyDynamoVertex
 ](val source: S, val tpe: ET, val target: T) extends AnyDynamoEdge {
@@ -59,5 +59,5 @@ T <: Singleton with AnyDynamoVertex.ofType[ET#TargetType] with AnyDynamoVertex
 }
 
 object AnyDynamoEdge{
-  type ofType[ET <: AnyEdgeType] = AnyDynamoEdge { type Tpe = ET }
+  type ofType[ET <: Singleton with AnySealedEdgeType] = AnyDynamoEdge { type Tpe = ET }
 }

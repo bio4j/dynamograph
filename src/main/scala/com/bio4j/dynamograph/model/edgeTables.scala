@@ -4,6 +4,7 @@ import ohnosequences.scarph._
 import ohnosequences.typesets._
 import ohnosequences.tabula._, impl.ImplicitConversions._, toSDKRep._, fromSDKRep._
 import shapeless._
+import ohnosequences.tabula.AnyItem._
 import com.bio4j.dynamograph.{AnyDynamoVertex, AnyDynamoEdge}
 import com.bio4j.dynamograph.model.GeneralSchema._
 

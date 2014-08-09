@@ -23,52 +23,154 @@ class GoMapper extends AnyMapper {
 
   override def map(element: SingleElement): List[AnyPutItemAction] = {
 
-    val vertexAttrs = element.vertexAttributes
+    val goTerm = mapGoTerm(element.vertexAttributes)
+    // 
+    val vertexItem = GoWriters.goTermVertexWriter.item ->> goTerm.fields
 
-    // TODO you don't need all this tagging, I'll fix it later
-    case object valueMapper extends Poly1{
-      implicit def caseN[A <: Singleton with AnyProperty.ofValue[Integer]] =
-        at[A]{ a : A => (a ->> vertexAttrs(a.label).toInt.asInstanceOf[a.Raw]): A#Rep }
-      implicit def caseS[A <: Singleton with AnyProperty.ofValue[String]] =
-        at[A]{ a : A => (a ->> vertexAttrs(a.label).asInstanceOf[a.Raw]): A#Rep }
-    }
-    val value = GoTerm ->> (
-      GoTerm.raw(
-        GoTerm fields GoTerm.tpe.record.properties.map(valueMapper), "")
-      )
+    val vertexId : String = goTerm.get(id)
 
-    // WARNING I have no way to turn this into an item!
-    val valueFields = value.fields
-
-    val itemV = GoWriters.goTermVertexWriter.item ->> valueFields
-
-    val vertexId : String = value.get(id)
-
-    def toWriteOperation(attributes: Map[String,String]) : List[AnyPutItemAction]   = {
-      val targetIdentifier : String = attrValue(attributes, targetId.label)
+    def toAnyPutItemAction(attributes: Map[String,String]): List[AnyPutItemAction] = {
       val rawEdge = Map(
-        relationId.label -> (vertexId + targetIdentifier), 
+        relationId.label -> (vertexId + attributes(targetId.label)), 
         sourceId.label   -> vertexId, 
-        targetId.label   -> targetIdentifier
-      ).mapValues(mapValue)
-      createEdge(attrValue(attributes, ParsingContants.relationType), rawEdge)
+        targetId.label   -> attributes(targetId.label)
+      )
+      writers(attributes(ParsingContants.relationType))(rawEdge)
     }
-
-    GoWriters.goTermVertexWriter.write(itemV) ::: element.edges.map(toWriteOperation).flatten
+    
+    GoWriters.goTermVertexWriter.write(vertexItem) ::: element.edges.map(toAnyPutItemAction).flatten
+  }
+  
+  private def mapGoTerm(values : Map[String,String]) = {
+      val value = GoTerm ->> (
+	    GoTerm.raw(
+	      GoTerm fields (
+	          (id is values(id.label)) :~:
+	          (name is values(name.label)) :~: 
+	          (comment is values(comment.label)):~: 
+	          (definition is values(definition.label)) :~:
+	           ∅
+	      ),""
+	    )
+      )
+      value
   }
 
-  private def mapValue(x : String) : AttributeValue = new AttributeValue().withS(x)
+  private def mapIsA(values : Map[String,String]) = {
+    val isARep = IsA ->> (
+      IsA.raw(
 
-  // NOTE: I don't get smth here, but this `.get` doesn't look nice in general
-  private def attrValue(attributes : Map[String, String], name : String) : String = attributes.get(name).get
+        IsA fields (
+          (relationId is values(relationId.label)) :~:
+          (sourceId is values(sourceId.label)) :~:
+          (targetId is values(targetId.label)) :~:
+          ∅
+          ),""
 
-  // NOTE: the general problem that appears here is that we want to _map a value to a type_.
-  // i.e. you want to get a type depending on a value. and generally there is no good solution for this in Scala.
-  private def createEdge(relationType: String, rawEdge: Map[String, AttributeValue]): List[AnyPutItemAction] = {
-    GoWriters.edgeWritersMap.get(relationType) match {
-      case None => List() // no writer were found for this label
-      case Some(writer) => writer.write(writer.dynamoEdge ->> rawEdge)
-    }
+      )
+    )
+    GoWriters.isAEdgeWriter.write(isARep.fields)
   }
+  private def mapHasPart(values : Map[String,String])  = {
+    val hasPartRep = HasPart ->> (
+      HasPart.raw(
+
+        HasPart fields (
+          (relationId is values(relationId.label)) :~:
+          (sourceId is values(sourceId.label)) :~:
+          (targetId is values(targetId.label)) :~:
+           ∅
+          ),""
+
+      )
+    )
+    GoWriters.hasPartEdgeWriter.write(hasPartRep.fields)
+  }
+  private def mapPartOf(values : Map[String,String]) = {
+    val partOfRep = PartOf ->> (
+      PartOf.raw(
+
+        PartOf fields (
+          (relationId is values(relationId.label)) :~:
+          (sourceId is values(sourceId.label)) :~:
+          (targetId is values(targetId.label)) :~:
+          ∅
+          ),""
+
+      )
+    )
+    GoWriters.partOfEdgeWriter.write(partOfRep.fields)
+  }
+  private def mapRegulates(values : Map[String,String]) = {
+    val regulatesRep = Regulates ->> (
+      Regulates.raw(
+
+        Regulates fields (
+          (relationId is values(relationId.label)) :~:
+          (sourceId is values(sourceId.label)) :~:
+          (targetId is values(targetId.label)) :~:
+            ∅
+          ),""
+
+      )
+    )
+    GoWriters.regulatesEdgeWriter.write(regulatesRep.fields)
+  }
+  private def mapNegativelyRegulates(values : Map[String,String]) = {
+    val negativelyRegulatesRep = NegativelyRegulates ->> (
+      NegativelyRegulates.raw(
+
+        NegativelyRegulates fields (
+          (relationId is values(relationId.label)) :~:
+          (sourceId is values(sourceId.label)) :~:
+          (targetId is values(targetId.label)) :~:
+            ∅
+          ),""
+
+      )
+    )
+    GoWriters.negativelyRegulatesEdgeWriter.write(negativelyRegualtesRep.fields)
+  }
+  private def mapPositivelyRegulates(values : Map[String,String]) = {
+    val positivelyRegulatesRep = PositivelyRegulates ->> (
+      PositivelyRegulates.raw(
+
+        PositivelyRegulates fields (
+          (relationId is values(relationId.label)) :~:
+          (sourceId is values(sourceId.label)) :~:
+          (targetId is values(targetId.label)) :~:
+          ∅
+          ),""
+
+      )
+    )
+    GoWriters.positivelyRegulatesEdgeWriter.write(positivelyRegulatesRep.fields)
+  }
+
+  private def mapNamespace(values : Map[String,String]) = {
+    val namespaceRep = Namespace ->> (
+      Namespace.raw(
+
+        Namespace fields (
+          (relationId is values(relationId.label)) :~:
+          (sourceId is values(sourceId.label)) :~:
+          (targetId is values(targetId.label)) :~:
+           ∅
+          ),""
+
+      )
+    )
+    GoWriters.namespaceEdgeWriter.write(namespaceRep.fields)
+  }
+
+  val writers : Map[String, Map[String,String] => List[AnyPutItemAction]] = Map(
+      IsAType.label			 		-> mapIsA,
+      HasPartType.label 			-> mapHasPart,
+      PartOfType.label 				-> mapPartOf,
+      RegulatesType 				-> mapRegulates,
+      NegativelyRegulatesType.label -> mapNegativelyRegulates,
+      PositivelyRegulatesType.label -> mapPositivelyRegulates,
+      NamespaceType.label 			-> mapNamespace
+   )
 
 }

@@ -9,6 +9,7 @@ import ohnosequences.typesets.AnyTag._
 import ohnosequences.tabula.AnyItem._
 
 import ohnosequences.typesets._
+import ohnosequences.typesets.AnyRecord._
 
 import ohnosequences.tabula._, impl._, ImplicitConversions._, impl.actions._, toSDKRep._, fromSDKRep._
 
@@ -37,7 +38,7 @@ trait AnyEdgeWriter { edgeWriter =>
   type InItem = edgeTables.InItem
   val inItem: InItem = edgeTables.inItem
 
-  def write(edgeItemValue: TaggedWith[InItem])(implicit transf: From.Item[EdgeItem, SDKRep]): List[AnyPutItemAction] = {
+  def write(edgeItemValue: TaggedWith[EdgeRecord])(implicit transf: From.Item[EdgeItem, SDKRep]): List[AnyPutItemAction] = {
     val inRep = inItem fields (
         (inTable.hashKey  ->> edgeItemValue.get(sourceId)) :~:
         (inTable.rangeKey ->> edgeItemValue.get(edgeTables.edgeId)) :~:
