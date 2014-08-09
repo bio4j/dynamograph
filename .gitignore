@@ -19,6 +19,13 @@ project/plugins/project/
 *.sublime-project
 *.sublime-workspace
 
+# scala-ide
+.project
+.classpath
+.settings
+.settings/*
+
+
 # data folders
 data/in/
 data/out/
