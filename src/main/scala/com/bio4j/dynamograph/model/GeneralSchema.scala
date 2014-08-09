@@ -1,6 +1,7 @@
 package com.bio4j.dynamograph.model
 
 import ohnosequences.typesets._
+import ohnosequences.scarph._
 
 object GeneralSchema {
 
@@ -14,3 +15,7 @@ object GeneralSchema {
   case object comment     extends Property[String]
 
  }
+
+
+
+

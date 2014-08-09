@@ -20,7 +20,7 @@ object GoReaders {
   case object namespaceEdgeReader           extends EdgeReader(NamespaceTables, ServiceProvider.dynamoDbExecutor)
 
   def reader[VT <: Singleton with AnySealedVertexType](vertex : VT) : AnyVertexReader.withVertexType[VT] = vertexReaders(vertex).asInstanceOf[AnyVertexReader.withVertexType[VT]]
-
+  
   val vertexReaders = Map[AnySealedVertexType, AnyVertexReader] (
     GoTermType       -> goTermVertexReader,
     GoNamespacesType -> goNamespaceVertexReader

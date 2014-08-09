@@ -13,7 +13,7 @@ trait AnyDynamoVertex extends AnySealedVertex { dynamoVertex =>
 
   // TODO move this to have a VertexTable and use that
 
-  type Tpe <: Singleton with AnySealedVertexType
+  type Tpe <: Singleton with AnyVertexTypeWithId
 
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 

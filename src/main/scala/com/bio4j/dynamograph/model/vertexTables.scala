@@ -4,17 +4,16 @@ import ohnosequences.scarph._
 import ohnosequences.typesets._
 import ohnosequences.tabula._, impl.ImplicitConversions._, toSDKRep._, fromSDKRep._
 import shapeless._
-import com.bio4j.dynamograph.{AnyDynamoVertex, AnyDynamoEdge}
-import com.bio4j.dynamograph.model.GeneralSchema._
+import com.bio4j.dynamograph._
 
 /*
 This type creates a link between a sealed vertex type and a DynamoDB table
 */
 trait AnyVertexTable { vertexTable => 
 
-  type VertexType <: Singleton with AnySealedVertexType
+  type VertexType <: Singleton with AnyVertexTypeWithId
   val vertexType: VertexType
-
+  
   type Region <: AnyRegion
   val region: Region
 
@@ -26,11 +25,13 @@ trait AnyVertexTable { vertexTable =>
   type Record = vertexType.Record
   val record: Record = vertexType.record
 
-  type VertexId <: Singleton with AnyProperty.ofValue[String]
-  val vertexId: VertexId
+  type VertexId = vertexType.Id
+  val vertexId: VertexId = vertexType.id
 
   // provided implicitly at construction
   val recordValuesAreOK: everyElementOf[VertexType#Record#Values]#isOneOf[ValidValues]
+  type ContainId = VertexId ∈ Record#Properties 
+  val containId: ContainId   
 
   type VertexItem <:  Singleton with AnyItem with 
                       AnyItem.ofTable[vertexTable.Table] with 
@@ -41,10 +42,10 @@ trait AnyVertexTable { vertexTable =>
 
 object AnyVertexTable {
 
-  type withVertexType[V <: Singleton with AnySealedVertexType] = AnyVertexTable { type VertexType = V }
+  type withVertexType[V <: Singleton with AnyVertexTypeWithId] = AnyVertexTable { type VertexType = V }
 }
 
-class VertexTable[VT <: Singleton with AnySealedVertexType, R <: AnyRegion](
+class VertexTable[VT <: Singleton with AnyVertexTypeWithId, R <: AnyRegion](
   val vertexType : VT,
   val tableName : String,
   val region: R
@@ -57,8 +58,10 @@ extends AnyVertexTable {
   type VertexType = VT
   type Region = R
 
-  type VertexId = id.type
-  val vertexId = id
+  type VertexId = VertexType#Id
+  val vertexId = vertexType.id
+  
+  val containId = vertexType.containId
 
   type Record = VertexType#Record
   val record = vertexType.record

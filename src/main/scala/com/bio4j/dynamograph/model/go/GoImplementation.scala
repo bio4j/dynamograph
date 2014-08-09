@@ -1,6 +1,6 @@
 package com.bio4j.dynamograph.model.go
 
-import com.bio4j.dynamograph.{DynamoEdge, DynamoVertex}
+import com.bio4j.dynamograph._
 import com.bio4j.dynamograph.model.go.GoSchema._
 
 

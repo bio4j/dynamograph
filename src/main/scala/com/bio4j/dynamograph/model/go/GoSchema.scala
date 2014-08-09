@@ -2,19 +2,20 @@ package com.bio4j.dynamograph.model.go
 
 import ohnosequences.scarph._
 import com.bio4j.dynamograph.model.GeneralSchema._
+import com.bio4j.dynamograph.VertexTypeWithId
 import ohnosequences.typesets._
 import ohnosequences.typesets.Represented._
 
 object GoSchema {
 
-  val goTermAttributes = id :~: name :~: comment :~: definition :~: ∅
+  val goTermAttributes = id :~:  name :~: comment :~: definition :~: ∅
   case object GoTermRecord            extends Record(goTermAttributes)
-  object GoTermType                   extends SealedVertexType("GoTerm", GoTermRecord)
+  object GoTermType                   extends VertexTypeWithId(id, "GoTerm", GoTermRecord)
   implicit val GoTermType_properties = GoTermType has goTermAttributes
 
   val goNamespacesAttributes = id :~: ∅
   case object GoNamespacesRecord      extends Record(goNamespacesAttributes)
-  object GoNamespacesType             extends SealedVertexType("GoNamespace", GoNamespacesRecord)
+  object GoNamespacesType             extends VertexTypeWithId(id, "GoNamespace", GoNamespacesRecord)
   implicit val GoNamespacesType_properties = GoNamespacesType has goNamespacesAttributes
 
 

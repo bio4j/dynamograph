@@ -25,22 +25,6 @@ class EdgeWriterTest extends Specification {
 
       result.map(x => x.table.name) must containTheSameElementsAs(tableNames)
     }
-
-//    "throw exception if relationId is not provided" in new context {
-//      val incorrectRep = testEdge ->> Map(sourceId.label -> new AttributeValue().withS("sourceId"), targetId.label -> new AttributeValue().withS("targetId"))
-//      writer.write(incorrectRep) must throwA[NoSuchElementException]
-//    }
-//
-//    "throw exception if source is not provided" in new context {
-//      val incorrectRep = testEdge ->> Map(relationId.label -> new AttributeValue().withS("relationId"), targetId.label -> new AttributeValue().withS("targetId"))
-//      writer.write(incorrectRep) must throwA[ NoSuchElementException]
-//    }
-//
-//    "throw exception if target is not provided" in new context {
-//      val incorrectRep = testEdge ->> Map(relationId.label -> new AttributeValue().withS("relationId"), sourceId.label -> new AttributeValue().withS("sourceId"))
-//      writer.write(incorrectRep) must throwA[NoSuchElementException]
-//    }
-
   }
 
   trait context extends Scope {

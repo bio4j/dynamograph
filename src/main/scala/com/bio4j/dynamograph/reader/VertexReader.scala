@@ -26,7 +26,7 @@ trait AnyVertexReader { vertexReader =>
   val record : Record = vertexTable.record
 
   import ServiceProvider.executors._
-  def read(identifier : vertexTable.VertexId#Value) : Either[String,record.Rep] = {
+  def read(identifier : vertexTable.VertexId#Value)(implicit from : ToItem[SDKRep, Item]) : Either[String,record.Rep] = {
     val getResult = ServiceProvider.service please (FromHashKeyTable(table, Active (
       table,
       ServiceProvider.service.account,
