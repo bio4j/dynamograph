@@ -2,24 +2,23 @@ package com.bio4j.dynamograph.writer
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.bio4j.dynamograph.model._
-
 import com.bio4j.dynamograph.model.GeneralSchema._
 import com.bio4j.dynamograph.{ServiceProvider, AnyDynamoEdge}
 import ohnosequences.typesets.AnyTag._
 import ohnosequences.tabula.AnyItem._
-
 import ohnosequences.typesets._
 import ohnosequences.typesets.AnyRecord._
-
 import ohnosequences.tabula._, impl._, ImplicitConversions._, impl.actions._, toSDKRep._, fromSDKRep._
-
 import ohnosequences.scarph._, ops.default._
+import com.bio4j.dynamograph.AnyVertexTypeWithId
 
 
 trait AnyEdgeWriter { edgeWriter =>
 
   type EdgeTables <: Singleton with AnyEdgeTables
   val edgeTables: EdgeTables
+  type EdgeType = edgeTables.EdgeType
+  val edgeType : EdgeType = edgeTables.edgeType
 
   type EdgeTable = edgeTables.EdgeTable
   val edgeTable: EdgeTable = edgeTables.edgeTable
@@ -37,17 +36,41 @@ trait AnyEdgeWriter { edgeWriter =>
   val inTable: InTable = edgeTables.inTable
   type InItem = edgeTables.InItem
   val inItem: InItem = edgeTables.inItem
-
+  type InRecord = edgeTables.InRecord
+  val inRecord: InRecord = edgeTables.inRecord 
+  
+  type EdgeId = edgeTables.EdgeId
+  val edgeId : EdgeId = edgeTables.edgeId
+  type SourceId = edgeTables.SourceId
+  val srcId : SourceId = edgeTables.srcId
+  type TargetId = edgeTables.TargetId
+  val tgtId : TargetId = edgeTables.tgtId
+  
+  type InVertexId = edgeType.targetType.Id
+  val inVertexId : InVertexId = edgeType.targetType.id
+  
+  implicit val containId : EdgeId ∈ EdgeRecord#Properties = edgeTables.containEdgeId
+  implicit val edgeIdLookup : Lookup[EdgeRecord#Raw, edgeId.Rep] = edgeTables.edgeIdLookup
+  
+  implicit val containTargetId : TargetId ∈ EdgeRecord#Properties = edgeTables.containTargetId
+  implicit val targetIdLookup : Lookup[EdgeRecord#Raw, tgtId.Rep] = edgeTables.targetIdLookup
+  
+  implicit val containSourceId : SourceId ∈ EdgeRecord#Properties  = edgeTables.containSourceId
+  implicit val sourceIdLookup : Lookup[EdgeRecord#Raw, srcId.Rep] = edgeTables.sourceIdLookup
+  
+  
+  
   def write(edgeItemValue: TaggedWith[EdgeRecord])(implicit transf: From.Item[EdgeItem, SDKRep]): List[AnyPutItemAction] = {
-    val inRep = inItem fields (
-        (inTable.hashKey  ->> edgeItemValue.get(sourceId)) :~:
-        (inTable.rangeKey ->> edgeItemValue.get(edgeTables.edgeId)) :~:
-        ∅
+    val inRep = inItem ->> ( 
+        inRecord ->> (
+        (inVertexId ->> edgeItemValue.get(srcId)) :~:
+        (edgeId ->> edgeItemValue.get(edgeId)) :~:
+        ∅)
       )
 
     val outRep = outItem  fields (
-        (outTable.hashKey  ->> edgeItemValue.get(targetId)) :~:
-        (outTable.rangeKey ->> edgeItemValue.get(edgeTables.edgeId)) :~:
+        (outTable.hashKey  is edgeItemValue.get(tgtId)) :~:
+        (outTable.rangeKey is edgeItemValue.get(edgeTables.edgeId)) :~:
         ∅
     )
 

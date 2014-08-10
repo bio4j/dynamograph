@@ -30,10 +30,10 @@ trait AnyVertexWriter { vertexWriter =>
   type VertexId = vertexTable.VertexId
   val vertexId = vertexTable.vertexId
   
-  implicit val containId : VertexId ∈ Record#Properties 
+  implicit val containId : VertexId ∈ Record#Properties = vertexTable.containId 
 
   // write an item
-  def write(vertexItemValue: TaggedWith[Item])(implicit transf: From.Item[Item, SDKRep], containId : VertexId ∈ Record#Properties): List[AnyPutItemAction] = {
+  def write(vertexItemValue: TaggedWith[Item])(implicit transf: From.Item[Item, SDKRep]): List[AnyPutItemAction] = {
     // fails to compile, and it is ok because we need to extract the id from the sealed vertex type
     val action = InHashKeyTable (
       table,

@@ -4,23 +4,29 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import ohnosequences.scarph._
 import com.bio4j.dynamograph.dao.go.{AnyDynamoDbDao}
 import com.bio4j.dynamograph.model.GeneralSchema._
-import ohnosequences.typesets.{Property, AnyProperty}
+import ohnosequences.typesets._
 
 
 trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
 
-
+  type Tpe <: Singleton with AnyEdgeTypeWithId
+  
   val dao: AnyDynamoDbDao = ServiceProvider.dao
   
   type Other = String
 
   type Source <:  AnyDynamoVertex
-                  with AnyVertex { type Tpe <: Singleton with AnySealedVertexType with dynamoEdge.Tpe#SourceType }
+                  with AnyVertex { type Tpe <: Singleton with AnyVertexTypeWithId with dynamoEdge.Tpe#SourceType }
   val source: Source
 
   type Target <:  AnyDynamoVertex 
-                  with AnyVertex { type Tpe <: Singleton with AnySealedVertexType with dynamoEdge.Tpe#TargetType }
+                  with AnyVertex { type Tpe <: Singleton with AnyVertexTypeWithId with dynamoEdge.Tpe#TargetType }
   val target: Target
+  
+  implicit val containSourceId : sourceId.type ∈ tpe.record.Properties = tpe.containSourceId
+  implicit val containTargetId : targetId.type ∈ tpe.record.Properties = tpe.containTargetId
+  implicit val sourceLookup : Lookup[tpe.record.Raw,sourceId.Rep]
+  implicit val targetLookup : Lookup[tpe.record.Raw,targetId.Rep]
 
 
   object sourceGetter extends GetSource {
@@ -44,14 +50,10 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
       target.raw ( recordEntry, "" )
     }
   }
-
-  // NOTE: why was it private?
-  def getValue[P <: AnyProperty](rep: Rep, p : P) : String = rep.get(p)
-
 }
 
 class DynamoEdge[
-ET <: Singleton with AnySealedEdgeType,
+ET <: Singleton with AnyEdgeTypeWithId,
 S <: Singleton with AnyDynamoVertex.ofType[ET#SourceType] with AnyDynamoVertex,
 T <: Singleton with AnyDynamoVertex.ofType[ET#TargetType] with AnyDynamoVertex
 ](val source: S, val tpe: ET, val target: T) extends AnyDynamoEdge {
@@ -61,5 +63,5 @@ T <: Singleton with AnyDynamoVertex.ofType[ET#TargetType] with AnyDynamoVertex
 }
 
 object AnyDynamoEdge{
-  type ofType[ET <: Singleton with AnySealedEdgeType] = AnyDynamoEdge { type Tpe = ET }
+  type ofType[ET <: Singleton with AnyEdgeTypeWithId] = AnyDynamoEdge { type Tpe = ET }
 }

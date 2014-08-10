@@ -17,9 +17,6 @@ import shapeless._, poly._
 import com.bio4j.dynamograph.parser.SingleElement
 import ohnosequences.tabula._, impl._, ImplicitConversions._, impl.actions._, toSDKRep._, fromSDKRep._
 
-
-
-
 class GoMapper extends AnyMapper {
 
   override def map(element: SingleElement): List[AnyPutItemAction] = {
@@ -52,11 +49,6 @@ class GoMapper extends AnyMapper {
     GoWriters.goTermVertexWriter.write(vertexItem) ::: element.edges.map(toAnyPutItemAction).flatten
   }
   
-//  private def mapGoTerm(values : Map[String,String]) = {
-//
-//      value
-//  }
-
   private def mapIsA(values : Map[String,String]) : List[AnyPutItemAction] = {
     val isARep = IsA ->> (
       IsA.raw(

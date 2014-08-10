@@ -5,6 +5,7 @@ import com.bio4j.dynamograph.model.GeneralSchema._
 import com.bio4j.dynamograph.VertexTypeWithId
 import ohnosequences.typesets._
 import ohnosequences.typesets.Represented._
+import com.bio4j.dynamograph.EdgeTypeWithId
 
 object GoSchema {
 
@@ -22,25 +23,25 @@ object GoSchema {
   val edgeAttributes = relationId :~: sourceId :~: targetId :~: ∅
   case object GoEdgeRecord            extends Record(edgeAttributes)
 
-  case object HasPartType             extends SealedEdgeType (
+  case object HasPartType             extends EdgeTypeWithId (
     GoTermType,  "HasPartType",          GoEdgeRecord, GoTermType
   ) with ManyIn with ManyOut
-  case object IsAType                 extends SealedEdgeType (
+  case object IsAType                 extends EdgeTypeWithId (
     GoTermType, "isA",                  GoEdgeRecord, GoTermType
   ) with ManyIn with ManyOut
-  case object PartOfType              extends SealedEdgeType (
+  case object PartOfType              extends EdgeTypeWithId (
     GoTermType, "partOf",               GoEdgeRecord, GoTermType
   ) with ManyIn with ManyOut
-  case object NegativelyRegulatesType extends SealedEdgeType (
+  case object NegativelyRegulatesType extends EdgeTypeWithId (
     GoTermType, "negativelyRegulates",  GoEdgeRecord, GoTermType
   ) with ManyIn with ManyOut
-  case object PositivelyRegulatesType extends SealedEdgeType (
+  case object PositivelyRegulatesType extends EdgeTypeWithId (
     GoTermType, "positivelyRegulates",  GoEdgeRecord, GoTermType
   ) with ManyIn with ManyOut
-  case object RegulatesType           extends SealedEdgeType (
+  case object RegulatesType           extends EdgeTypeWithId (
     GoTermType, "regulates",            GoEdgeRecord, GoTermType
   ) with ManyIn with ManyOut
-  case object NamespaceType           extends SealedEdgeType (
+  case object NamespaceType           extends EdgeTypeWithId (
     GoTermType, "namespace",            GoEdgeRecord, GoNamespacesType
   ) with ManyIn with OneOut
 

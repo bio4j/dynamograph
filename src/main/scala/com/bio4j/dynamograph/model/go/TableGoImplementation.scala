@@ -17,38 +17,33 @@ object TableGoImplementation {
 
   // edges
   // TODO why explicit types needed?? I don't understand this
-  case object IsATables 
-    extends EdgeTables(GoTermTable, IsAType, GoTermTable, "GoIsA", EU)
+  case object IsATables extends EdgeTables(
+    IsAType, "GoIsA", EU
+  )
 
-  case object HasPartTables 
-    extends EdgeTables(
-      GoTermTable, HasPartType, GoTermTable, "GoHasPart", EU
-    )
+  case object HasPartTables extends EdgeTables(
+    HasPartType, "GoHasPart", EU
+  )
 
-  case object PartOfTables              
-    extends EdgeTables(
-      GoTermTable, PartOfType, GoTermTable, "GoPartOf", EU
-    )
+  case object PartOfTables extends EdgeTables(
+   PartOfType, "GoPartOf", EU
+  )
 
-  case object NegativelyRegulatesTables 
-    extends EdgeTables(
-      GoTermTable, NegativelyRegulatesType, GoTermTable,"GoNegativelyRegulates", EU
-    )
+  case object NegativelyRegulatesTables extends EdgeTables(
+    NegativelyRegulatesType, "GoNegativelyRegulates", EU
+  )
 
-  case object PositivelyRegulatesTables 
-    extends EdgeTables(
-      GoTermTable, PositivelyRegulatesType, GoTermTable, "GoPositivelyRegulates", EU
-    )
+  case object PositivelyRegulatesTables extends EdgeTables(
+    PositivelyRegulatesType, "GoPositivelyRegulates", EU
+  )
 
-  case object RegulatesTables           
-    extends EdgeTables(
-      GoTermTable, RegulatesType, GoTermTable, "GoRegulates", EU
-    )
+  case object RegulatesTables extends EdgeTables(
+    RegulatesType, "GoRegulates", EU
+  )
 
-  case object NamespaceTables           
-    extends EdgeTables(
-      GoTermTable, NamespaceType, GoNamespacesTable, "GoNamespaceEdges", EU
-    )
+  case object NamespaceTables extends EdgeTables(
+    NamespaceType, "GoNamespaceEdges", EU
+  )
 
   val vertexTables = GoTermTable.table ::
                    GoNamespacesTable.table ::
