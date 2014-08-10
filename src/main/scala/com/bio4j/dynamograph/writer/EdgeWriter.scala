@@ -15,15 +15,15 @@ import com.bio4j.dynamograph.AnyVertexTypeWithId
 
 trait AnyEdgeWriter { edgeWriter =>
 
-  type EdgeTables <: Singleton with AnyEdgeTables
+  type EdgeTables <: AnyEdgeTables
   val edgeTables: EdgeTables
   
   
-  type EdgeType = edgeTables.EdgeType
+  type EdgeType = EdgeTables#EdgeType
   val edgeType : EdgeType = edgeTables.edgeType
   //
-  type InVertexId = edgeTables.InVertexId
-  val inVertexId: InVertexId = edgeTables.inVertexId
+  type InVertexId = EdgeType#TargetType#Id
+  val inVertexId: InVertexId = edgeType.targetType.id
   type OutVertexId = edgeTables.OutVertexId
   val outVertexId: OutVertexId= edgeTables.outVertexId
 
@@ -43,13 +43,16 @@ trait AnyEdgeWriter { edgeWriter =>
   val inTable: InTable = edgeTables.inTable
   type InItem = edgeTables.InItem
   val inItem: InItem = edgeTables.inItem
-  type InRecord = edgeTables.InRecord
-  val inRecord : InRecord= edgeTables.inRecord 
+
+  type InRecord = EdgeTables#InRecord
+  val inRecord : InRecord = edgeTables.inRecord 
   
   type EdgeId = edgeTables.EdgeId
   val edgeId : EdgeId = edgeTables.edgeId
-  type SourceId = edgeTables.SourceId
+
+  type SourceId = EdgeType#SourceType#Id
   val srcId : SourceId = edgeTables.srcId
+
   type TargetId = edgeTables.TargetId
   val tgtId : TargetId = edgeTables.tgtId
   
@@ -66,7 +69,9 @@ trait AnyEdgeWriter { edgeWriter =>
   
   
   def write(edgeItemValue: TaggedWith[EdgeRecord])(implicit transf: From.Item[EdgeItem, SDKRep]): List[AnyPutItemAction] = {
-    val inRep = edgeTables.inItem ->> ( 
+
+    val inRep = edgeTables.inItem fields ( 
+
          inRecord ->> ( 
         (inVertexId ->> edgeItemValue.get(srcId)) :~:
         (edgeId ->> edgeItemValue.get(edgeId)) :~:
@@ -74,6 +79,7 @@ trait AnyEdgeWriter { edgeWriter =>
       )
 
     val outRep = edgeTables.outItem  fields (
+
         edgeTables.outRecord ->> (
         (outVertexId is edgeItemValue.get(tgtId)) :~:
         (edgeId is edgeItemValue.get(edgeTables.edgeId)) :~:

@@ -22,20 +22,21 @@ trait AnyVertexTable { vertexTable =>
 
   val table: Table
 
-  type Record = vertexType.Record
+  type Record = VertexType#Record
   val record: Record = vertexType.record
 
-  type VertexId = vertexType.Id
+  type VertexId = VertexType#Id
   val vertexId: VertexId = vertexType.id
 
   // provided implicitly at construction
   val recordValuesAreOK: everyElementOf[VertexType#Record#Values]#isOneOf[ValidValues]
-  type ContainId = VertexId ∈ Record#Properties 
-  val containId: ContainId   
+  
+  // type ContainId = VertexId ∈ Record#Properties 
+  // val containId: ContainId   
 
   type VertexItem <:  Singleton with AnyItem with 
-                      AnyItem.ofTable[vertexTable.Table] with 
-                      AnyItem.withRecord[vertexTable.Record]
+                      AnyItem.ofTable[Table] with 
+                      AnyItem.withRecord[Record]
 
   val vertexItem: VertexItem
 }
@@ -61,7 +62,7 @@ extends AnyVertexTable {
   type VertexId = VertexType#Id
   val vertexId = vertexType.id
   
-  val containId = vertexType.containId
+  // val containId = vertexType.containId
 
   type Record = VertexType#Record
   val record = vertexType.record

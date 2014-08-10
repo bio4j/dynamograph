@@ -12,6 +12,14 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
   type Tpe <: Singleton with AnyEdgeTypeWithId
   
   val dao: AnyDynamoDbDao = ServiceProvider.dao
+
+  /*
+    you need the tables here!! same for DynamoVertex, but there is less obvious. If you would have them, what you need to do is:
+
+    1. use sourceId, targetId from there to get the id from the in/out table
+    2. get the vertex from the corresponding vertex table
+
+  */
   
   type Other = String
 
@@ -22,20 +30,15 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
   type Target <:  AnyDynamoVertex 
                   with AnyVertex { type Tpe <: Singleton with AnyVertexTypeWithId with dynamoEdge.Tpe#TargetType }
   val target: Target
-  
-  implicit val containSourceId : sourceId.type ∈ tpe.record.Properties = tpe.containSourceId
-  implicit val containTargetId : targetId.type ∈ tpe.record.Properties = tpe.containTargetId
-  implicit val sourceLookup : Lookup[tpe.record.Raw,sourceId.Rep]
-  implicit val targetLookup : Lookup[tpe.record.Raw,targetId.Rep]
-
 
   object sourceGetter extends GetSource {
 
     def apply(rep: dynamoEdge.Rep): Out = source ->> {
 
-      val srcId = rep.get(sourceId)
+      val srcId = rep.get(source.tpe.id: Tpe#SourceType#Id)
       val couldBeRecordEntry = dao.get[source.tpe.type]( srcId, source.tpe )
       val recordEntry = couldBeRecordEntry.right.get
+
       source.raw ( recordEntry, "" )
     }
   }

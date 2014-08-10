@@ -12,75 +12,71 @@ import com.bio4j.dynamograph.AnyVertexTypeWithId
 
 trait AnyEdgeTables { edgeTables =>
 
-  type EdgeType <: Singleton with AnyEdgeTypeWithId {
-      type SourceType <: Singleton with AnyVertexTypeWithId
-      type TargetType <: Singleton with AnyVertexTypeWithId
-    }
+  type EdgeType <: Singleton with AnyEdgeTypeWithId //{
+  //     // shouldn't be needed
+  //     type SourceType <: Singleton with AnyVertexTypeWithId
+  //     type TargetType <: Singleton with AnyVertexTypeWithId
+  //   
+
   val edgeType: EdgeType
 
-  type InVertexId = edgeTables.edgeType.targetType.Id
-  val inVertexId: InVertexId = edgeTables.edgeType.targetType.id
-  type OutVertexId = edgeTables.edgeType.sourceType.Id
-  val outVertexId: OutVertexId = edgeTables.edgeType.sourceType.id
-  
-    
-  type EdgeId = edgeType.Id
+  // all these types are accessible through EdgeType; they are not actually needed (unless a type inference bug forces us to do so)
+  type EdgeId = EdgeType#Id
   val edgeId: EdgeId = edgeType.id
-  type ContaintEdgeId = EdgeId ∈ EdgeRecord#Properties 
-  val containEdgeId : ContaintEdgeId
-  type EdgeIdLookup = Lookup[EdgeRecord#Raw, edgeId.Rep]
-  val edgeIdLookup : EdgeIdLookup
-  
-  type SourceId = edgeType.SourceId
-  val srcId : SourceId = edgeType.srcId 
-  type ContaintSourceId = SourceId ∈ EdgeRecord#Properties 
-  val containSourceId : ContaintSourceId
-  type SourceIdLookup = Lookup[EdgeRecord#Raw, srcId.Rep]
-  val sourceIdLookup : SourceIdLookup
-  
-  type TargetId = edgeType.TargetId
-  val tgtId : TargetId = edgeType.tgtId 
-  type ContaintTargetId = TargetId ∈ EdgeRecord#Properties 
-  val containTargetId : ContaintTargetId
-  type TargetIdLookup = Lookup[EdgeRecord#Raw, tgtId.Rep]
-  val targetIdLookup : TargetIdLookup
 
+  type InVertexId <: Singleton with AnyProperty with AnyProperty.ofValue[EdgeType#TargetType#Id#Value] 
+  val inVertexId = edgeType.targetId
+
+  type OutVertexId = Singleton with AnyProperty with AnyProperty.ofValue[EdgeType#SourceType#Id#Value]
+  val outVertexId = edgeType.sourceId
+  
   type Region <: AnyRegion
   val region: Region 
 
-  type OutTable <:  Singleton with AnyTable.inRegion[edgeTables.Region] with
+  // tables
+  type OutTable <:  Singleton with AnyTable.inRegion[Region] with
                     AnyCompositeKeyTable.withHashKey[OutVertexId] with
-                    AnyCompositeKeyTable.withRangeKey[edgeTables.EdgeId]
+                    AnyCompositeKeyTable.withRangeKey[EdgeId]
+
   val outTable: OutTable
   
   type OutRecord = OutRecord.type; val outRecord = OutRecord
-  case object OutRecord   extends Record(outVertexId :~: edgeId :~: ∅)
-  type OutItem <: Singleton with AnyItem with
-                  AnyItem.ofTable[edgeTables.OutTable] with
-                  AnyItem.withRecord[edgeTables.OutRecord]
+  case object OutRecord extends Record(outVertexId :~: edgeId :~: ∅)
+
+  type OutItem <: Singleton with AnyItem 
+                  with AnyItem.ofTable[OutTable]
+                  with AnyItem.withRecord[OutRecord]
+
   val outItem : OutItem
 
-  type EdgeTable <: Singleton with AnyHashKeyTable with AnyTable.inRegion[edgeTables.Region] with
-                    AnyHashKeyTable.withKey[edgeTables.EdgeId]
+  type EdgeTable <: Singleton with AnyHashKeyTable 
+                    with AnyTable.inRegion[Region] 
+                    with AnyHashKeyTable.withKey[EdgeId]
+
   val edgeTable: EdgeTable
   
-  type EdgeRecord = edgeType.Record;
+  type EdgeRecord = EdgeType#Record;
   val edgeRecord : EdgeRecord = edgeType.record
-  type EdgeItem <:Singleton with AnyItem with
-                  AnyItem.ofTable[edgeTables.EdgeTable] with
-                  AnyItem.withRecord[edgeTables.EdgeRecord]
+
+  type EdgeItem <:  Singleton with AnyItem 
+                    with AnyItem.ofTable[EdgeTable]
+                    with AnyItem.withRecord[EdgeRecord]
+
   val edgeItem : EdgeItem  
 
-  type InTable <: Singleton with AnyTable.inRegion[edgeTables.Region] with
-                  AnyCompositeKeyTable.withHashKey[edgeTables.InVertexId] with
-                  AnyCompositeKeyTable.withRangeKey[edgeTables.EdgeId]
+  type InTable <: Singleton with AnyTable.inRegion[Region]
+                  with AnyCompositeKeyTable.withHashKey[InVertexId]
+                  with AnyCompositeKeyTable.withRangeKey[EdgeId]
+
   val inTable: InTable
 
   type InRecord = InRecord.type; val inRecord = InRecord
-  case object InRecord    extends Record(inVertexId :~: edgeId :~: ∅)
-  type InItem <:  Singleton with AnyItem with
-                  AnyItem.ofTable[edgeTables.InTable] with
-                  AnyItem.withRecord[edgeTables.InRecord]
+  case object InRecord extends Record(inVertexId :~: edgeId :~: ∅)
+
+  type InItem <:  Singleton with AnyItem 
+                  with AnyItem.ofTable[edgeTables.InTable]
+                  with AnyItem.withRecord[edgeTables.InRecord]
+
   val inItem : InItem
 
   val recordValuesAreOK: everyElementOf[EdgeType#Record#Values]#isOneOf[ValidValues]
@@ -89,10 +85,7 @@ trait AnyEdgeTables { edgeTables =>
 }
 
 class EdgeTables[
-  ET <: Singleton with AnyEdgeTypeWithId {
-    type SourceType <: Singleton with AnyVertexTypeWithId
-    type TargetType <: Singleton with AnyVertexTypeWithId
-  },
+  ET <: Singleton with AnyEdgeTypeWithId,
   R <: AnyRegion
 ](
   val edgeType: ET,
@@ -107,15 +100,6 @@ extends AnyEdgeTables {
   type EdgeType = ET
   type Region = R
   
-  val containEdgeId = edgeType.containId
-  val edgeIdLookup = edgeType.idLookup
-  
-  val containSourceId = edgeType.containSourceId
-  val sourceIdLookup = edgeType.sourceLookup
-  
-  val containTargetId = edgeType.containTargetId
-  val targetIdLookup = edgeType.targetLookup
-
   type OutTable = OutTable.type; val outTable = OutTable
   case object OutTable  extends CompositeKeyTable(s"${tableName}_OUT", outVertexId, edgeId, region)
   type OutItem = OutItem.type; val outItem = OutItem
@@ -132,6 +116,4 @@ extends AnyEdgeTables {
   case object InTable   extends CompositeKeyTable(s"{tableName}_IN", inVertexId, edgeId, region)
   type InItem = InItem.type; val inItem = InItem
   case object InItem    extends Item(inTable, inRecord)
-
-
 }

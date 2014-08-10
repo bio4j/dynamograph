@@ -13,30 +13,44 @@ trait AnyDynamoVertex extends AnySealedVertex { dynamoVertex =>
 
   // TODO move this to have a VertexTable and use that
 
-  type Tpe <: Singleton with AnyVertexTypeWithId
+  type Tpe <: AnySealedVertexType with AnyVertexTypeWithId
 
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 
   type Other = String
 
-  implicit def unsafeGetOneOutEdge[E <: Singleton with AnyDynamoEdge {
-    
-    type Tpe <: From[dynamoVertex.Tpe] with OneOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
+  implicit def unsafeGetOneOutEdge [
+    E <: AnyDynamoEdge { type Tpe <: From[dynamoVertex.Tpe] with OneOut }
+  ]
+  (e: E)(implicit 
+    isThere: tpe.Id ∈ tpe.record.Properties, 
+    lookup: Lookup[tpe.record.Values, tpe.id.Rep]
+  )
+  : GetOutEdge[E] = new GetOutEdge[E](e) {
 
-    def apply(rep: dynamoVertex.Rep)(implicit isThere: id.type ∈ dynamoVertex.tpe.record.Properties, lookup: Lookup[dynamoVertex.tpe.record.Values, id.Entry]): e.tpe.Out[e.Rep] = {
-      val it = dao.getOutRelationships(rep.get(id), e).asInstanceOf[List[e.Rep]]
-      it.headOption: Option[e.Rep]
+    def apply(rep: dynamoVertex.Rep): e.tpe.Out[E#Rep] = {
+
+
+      val idV = rep get tpe.id
+      val it = dao.getOutRelationships( idV, e ).asInstanceOf[List[E#Rep]]
+      it.headOption: Option[E#Rep]
     }
   }
 
   implicit def unsafeGetManyOutEdge [
-    E <: Singleton with AnyDynamoEdge {type Tpe <: From[dynamoVertex.Tpe] with ManyOut }
+    E <: AnyDynamoEdge {type Tpe <: From[dynamoVertex.Tpe] with ManyOut }
   ]
-  (e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
+  (e: E)(implicit 
+    isThere: tpe.Id ∈ tpe.record.Properties, 
+    lookup: Lookup[tpe.record.Values, tpe.id.Rep]
+  )
+  : GetOutEdge[E] = new GetOutEdge[E](e) {
 
-    def apply(rep: dynamoVertex.Rep)(implicit isThere: id.type ∈ dynamoVertex.tpe.record.Properties, lookup: Lookup[dynamoVertex.tpe.record.Values, id.Entry]): e.tpe.Out[e.Rep] = {
-      val it = dao.getOutRelationships(rep.get(id),e).asInstanceOf[List[e.Rep]]
-      it: List[e.Rep]
+    def apply(rep: dynamoVertex.Rep): e.tpe.Out[E#Rep] = {
+
+      val it = dao.getOutRelationships( rep get tpe.id, e).asInstanceOf[List[E#Rep]]
+
+      it: List[E#Rep]
     }
   }
 

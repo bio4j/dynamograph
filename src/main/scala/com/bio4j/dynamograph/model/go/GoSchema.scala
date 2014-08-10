@@ -12,6 +12,7 @@ object GoSchema {
   val goTermAttributes = id :~:  name :~: comment :~: definition :~: ∅
   case object GoTermRecord            extends Record(goTermAttributes)
   object GoTermType                   extends VertexTypeWithId(id, "GoTerm", GoTermRecord)
+  // TODO this shouldn't be needed
   implicit val GoTermType_properties = GoTermType has goTermAttributes
 
   val goNamespacesAttributes = id :~: ∅
@@ -21,29 +22,57 @@ object GoSchema {
 
 
   val edgeAttributes = relationId :~: sourceId :~: targetId :~: ∅
-  case object GoEdgeRecord            extends Record(edgeAttributes)
+  case object GoEdgeRecord extends Record(edgeAttributes)
 
-  case object HasPartType             extends EdgeTypeWithId (
-    GoTermType,  "HasPartType",          GoEdgeRecord, GoTermType
-  ) with ManyIn with ManyOut
-  case object IsAType                 extends EdgeTypeWithId (
-    GoTermType, "isA",                  GoEdgeRecord, GoTermType
-  ) with ManyIn with ManyOut
-  case object PartOfType              extends EdgeTypeWithId (
-    GoTermType, "partOf",               GoEdgeRecord, GoTermType
-  ) with ManyIn with ManyOut
+  case object HasPartType extends EdgeTypeWithId (
+    GoTermType, sourceId, 
+    relationId, "HasPartType", GoEdgeRecord, 
+    GoTermType, targetId
+  ) 
+  with ManyIn with ManyOut
+
+  case object IsAType extends EdgeTypeWithId (
+    GoTermType, sourceId,
+    relationId, "isA", GoEdgeRecord,
+    GoTermType, targetId
+  ) 
+  with ManyIn with ManyOut
+
+  case object PartOfType extends EdgeTypeWithId (
+    GoTermType, sourceId,
+    relationId, "partOf", GoEdgeRecord, 
+    GoTermType, targetId
+  ) 
+  with ManyIn with ManyOut
+
   case object NegativelyRegulatesType extends EdgeTypeWithId (
-    GoTermType, "negativelyRegulates",  GoEdgeRecord, GoTermType
-  ) with ManyIn with ManyOut
+    GoTermType,sourceId,
+    relationId, "negativelyRegulates", GoEdgeRecord, 
+    GoTermType, targetId
+  )
+  with ManyIn with ManyOut
+
   case object PositivelyRegulatesType extends EdgeTypeWithId (
-    GoTermType, "positivelyRegulates",  GoEdgeRecord, GoTermType
-  ) with ManyIn with ManyOut
-  case object RegulatesType           extends EdgeTypeWithId (
-    GoTermType, "regulates",            GoEdgeRecord, GoTermType
-  ) with ManyIn with ManyOut
-  case object NamespaceType           extends EdgeTypeWithId (
-    GoTermType, "namespace",            GoEdgeRecord, GoNamespacesType
-  ) with ManyIn with OneOut
+    GoTermType, sourceId,
+    relationId, "positivelyRegulates", GoEdgeRecord,
+    GoTermType, targetId
+  ) 
+  with ManyIn with ManyOut
+
+  case object RegulatesType extends EdgeTypeWithId (
+    GoTermType, sourceId,
+    relationId, "regulates", GoEdgeRecord,
+    GoTermType, targetId
+  ) 
+  with ManyIn with ManyOut
+
+  case object NamespaceType extends EdgeTypeWithId (
+    GoTermType, sourceId,
+    relationId, "namespace", GoEdgeRecord,
+    GoNamespacesType, targetId
+  ) 
+  with ManyIn with OneOut
+
 
 }
 
