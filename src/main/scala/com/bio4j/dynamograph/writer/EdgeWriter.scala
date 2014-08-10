@@ -17,8 +17,15 @@ trait AnyEdgeWriter { edgeWriter =>
 
   type EdgeTables <: Singleton with AnyEdgeTables
   val edgeTables: EdgeTables
+  
+  
   type EdgeType = edgeTables.EdgeType
   val edgeType : EdgeType = edgeTables.edgeType
+  //
+  type InVertexId = edgeTables.InVertexId
+  val inVertexId: InVertexId = edgeTables.inVertexId
+  type OutVertexId = edgeTables.OutVertexId
+  val outVertexId: OutVertexId= edgeTables.outVertexId
 
   type EdgeTable = edgeTables.EdgeTable
   val edgeTable: EdgeTable = edgeTables.edgeTable
@@ -37,7 +44,7 @@ trait AnyEdgeWriter { edgeWriter =>
   type InItem = edgeTables.InItem
   val inItem: InItem = edgeTables.inItem
   type InRecord = edgeTables.InRecord
-  val inRecord: InRecord = edgeTables.inRecord 
+  val inRecord : InRecord= edgeTables.inRecord 
   
   type EdgeId = edgeTables.EdgeId
   val edgeId : EdgeId = edgeTables.edgeId
@@ -46,9 +53,7 @@ trait AnyEdgeWriter { edgeWriter =>
   type TargetId = edgeTables.TargetId
   val tgtId : TargetId = edgeTables.tgtId
   
-  type InVertexId = edgeType.targetType.Id
-  val inVertexId : InVertexId = edgeType.targetType.id
-  
+ 
   implicit val containId : EdgeId ∈ EdgeRecord#Properties = edgeTables.containEdgeId
   implicit val edgeIdLookup : Lookup[EdgeRecord#Raw, edgeId.Rep] = edgeTables.edgeIdLookup
   
@@ -61,23 +66,24 @@ trait AnyEdgeWriter { edgeWriter =>
   
   
   def write(edgeItemValue: TaggedWith[EdgeRecord])(implicit transf: From.Item[EdgeItem, SDKRep]): List[AnyPutItemAction] = {
-    val inRep = inItem ->> ( 
-        inRecord ->> (
+    val inRep = edgeTables.inItem ->> ( 
+         inRecord ->> ( 
         (inVertexId ->> edgeItemValue.get(srcId)) :~:
         (edgeId ->> edgeItemValue.get(edgeId)) :~:
         ∅)
       )
 
-    val outRep = outItem  fields (
-        (outTable.hashKey  is edgeItemValue.get(tgtId)) :~:
-        (outTable.rangeKey is edgeItemValue.get(edgeTables.edgeId)) :~:
-        ∅
+    val outRep = edgeTables.outItem  fields (
+        edgeTables.outRecord ->> (
+        (outVertexId is edgeItemValue.get(tgtId)) :~:
+        (edgeId is edgeItemValue.get(edgeTables.edgeId)) :~:
+        ∅)
     )
 
     val inTableRequest  = InCompositeKeyTable(inTable,   Active(inTable,    ServiceProvider.service.account,
       ThroughputStatus(1,1))) putItem inItem  withValue inRep
     val outTableRequest = InCompositeKeyTable(outTable,  Active(outTable,   ServiceProvider.service.account,
-      ThroughputStatus(1,1))) putItem outItem withValue  outItem ->> outRep.fields
+      ThroughputStatus(1,1))) putItem outItem withValue outRep
     val tableRequest    = InHashKeyTable(edgeTable, Active(edgeTable,  ServiceProvider.service.account,
       ThroughputStatus(1,1))) putItem edgeItem    withValue (edgeItem ->> edgeItemValue)
 
@@ -85,7 +91,7 @@ trait AnyEdgeWriter { edgeWriter =>
   }
 }
 
-class EdgeWriter[ET <: AnyEdgeTables](val edgeTables: ET) extends AnyEdgeWriter {
+class EdgeWriter[ET <: Singleton with AnyEdgeTables](val edgeTables: ET) extends AnyEdgeWriter {
 
   type EdgeTables = ET
 

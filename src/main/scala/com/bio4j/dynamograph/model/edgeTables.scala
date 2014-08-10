@@ -18,6 +18,12 @@ trait AnyEdgeTables { edgeTables =>
     }
   val edgeType: EdgeType
 
+  type InVertexId = edgeTables.edgeType.targetType.Id
+  val inVertexId: InVertexId = edgeTables.edgeType.targetType.id
+  type OutVertexId = edgeTables.edgeType.sourceType.Id
+  val outVertexId: OutVertexId = edgeTables.edgeType.sourceType.id
+  
+    
   type EdgeId = edgeType.Id
   val edgeId: EdgeId = edgeType.id
   type ContaintEdgeId = EdgeId ∈ EdgeRecord#Properties 
@@ -43,12 +49,12 @@ trait AnyEdgeTables { edgeTables =>
   val region: Region 
 
   type OutTable <:  Singleton with AnyTable.inRegion[edgeTables.Region] with
-                    AnyCompositeKeyTable.withHashKey[edgeTables.EdgeType#SourceType#Id] with
+                    AnyCompositeKeyTable.withHashKey[OutVertexId] with
                     AnyCompositeKeyTable.withRangeKey[edgeTables.EdgeId]
   val outTable: OutTable
   
   type OutRecord = OutRecord.type; val outRecord = OutRecord
-  case object OutRecord   extends Record(edgeType.sourceType.id :~: edgeId :~: ∅)
+  case object OutRecord   extends Record(outVertexId :~: edgeId :~: ∅)
   type OutItem <: Singleton with AnyItem with
                   AnyItem.ofTable[edgeTables.OutTable] with
                   AnyItem.withRecord[edgeTables.OutRecord]
@@ -66,12 +72,12 @@ trait AnyEdgeTables { edgeTables =>
   val edgeItem : EdgeItem  
 
   type InTable <: Singleton with AnyTable.inRegion[edgeTables.Region] with
-                  AnyCompositeKeyTable.withHashKey[edgeType.targetType.Id] with
+                  AnyCompositeKeyTable.withHashKey[edgeTables.InVertexId] with
                   AnyCompositeKeyTable.withRangeKey[edgeTables.EdgeId]
   val inTable: InTable
 
   type InRecord = InRecord.type; val inRecord = InRecord
-  case object InRecord    extends Record(edgeType.targetType.id :~: edgeId :~: ∅)
+  case object InRecord    extends Record(inVertexId :~: edgeId :~: ∅)
   type InItem <:  Singleton with AnyItem with
                   AnyItem.ofTable[edgeTables.InTable] with
                   AnyItem.withRecord[edgeTables.InRecord]
@@ -111,7 +117,7 @@ extends AnyEdgeTables {
   val targetIdLookup = edgeType.targetLookup
 
   type OutTable = OutTable.type; val outTable = OutTable
-  case object OutTable  extends CompositeKeyTable(s"${tableName}_OUT", edgeType.sourceType.id, edgeId, region)
+  case object OutTable  extends CompositeKeyTable(s"${tableName}_OUT", outVertexId, edgeId, region)
   type OutItem = OutItem.type; val outItem = OutItem
   case object OutItem   extends Item(outTable, outRecord)
 
@@ -123,7 +129,7 @@ extends AnyEdgeTables {
   case object EdgeItem  extends Item(edgeTable, edgeRecord)
 
   type InTable = InTable.type; val inTable = InTable
-  case object InTable   extends CompositeKeyTable(s"{tableName}_IN", edgeType.targetType.id, edgeId, region)
+  case object InTable   extends CompositeKeyTable(s"{tableName}_IN", inVertexId, edgeId, region)
   type InItem = InItem.type; val inItem = InItem
   case object InItem    extends Item(inTable, inRecord)
 

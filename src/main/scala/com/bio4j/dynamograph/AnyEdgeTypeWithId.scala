@@ -20,6 +20,8 @@ trait AnyEdgeTypeWithId extends AnySealedEdgeType {
   val idLookup: Lookup[record.Raw, relationId.Rep]
   val sourceLookup: Lookup[record.Raw, SourceId#Rep]
   val targetLookup: Lookup[record.Raw, TargetId#Rep]
+  type SourceType <: AnyVertexTypeWithId
+  type TargetType <: AnyVertexTypeWithId
 }
 
 abstract class EdgeTypeWithId[
@@ -40,4 +42,6 @@ abstract class EdgeTypeWithId[
   val targetLookup: Lookup[R#Raw, targetId.Rep]
 )extends AnyEdgeTypeWithId with From[S] with To[T] {
   type Record = R
+  type SourceType = S
+  type TargetType = T
 }
