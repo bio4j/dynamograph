@@ -12,14 +12,19 @@ import com.bio4j.dynamograph.ServiceProvider
 trait AnyEdgeReader { edgeReader =>
   type EdgeTables <: Singleton with AnyEdgeTables
   val edgeTables : EdgeTables
+  
+  type EdgeType = EdgeTables#EdgeType
+  val edgeType : EdgeType = edgeTables.edgeType
+  
+  type EdgeRecord= EdgeTables#EdgeRecord
 
   val dbExecutor : AnyDynamoDbExecutor
 
-  def readOut(vId : id.Raw) : List[Map[String,AttributeValue]] = read(vId, edgeTables.outTable.name)
+  def readOut(vId : id.Raw) : List[EdgeRecord#Rep] = read(vId, edgeTables.outTable.name)
 
-  def readIn(vId : id.Raw) : List[Map[String,AttributeValue]] = read(vId, edgeTables.inTable.name)
+  def readIn(vId : id.Raw) : List[EdgeRecord#Rep] = read(vId, edgeTables.inTable.name)
 
-  private def read(vId : id.Raw, linkingTableName : String) : List[Map[String,AttributeValue]] = {
+  private def read(vId : id.Raw, linkingTableName : String) : List[EdgeRecord#Rep] = {
 
     val hashKeyCondition = new Condition()
       .withComparisonOperator(ComparisonOperator.EQ)
