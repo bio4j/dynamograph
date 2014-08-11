@@ -36,29 +36,18 @@ trait AnyVertexWriter { vertexWriter =>
   implicit val containsId = vertexType.containsId 
 
   // write an item
-  def write(vertexItemValue: TaggedWith[Item])(implicit transf: From.Item[Item, SDKRep])
+  def write(vertexItemValue: vertexTable.VertexItem#Rep)(implicit transf: From.Item[vertexTable.VertexItem, SDKRep])
   : List[AnyPutItemAction] = {
+
     // fails to compile, and it is ok because we need to extract the id from the sealed vertex type
-    val tbl: InHashKeyTable[Table] = InHashKeyTable (
-      table,
-      Active (
-        table,
-        ServiceProvider.service.account,
-        ThroughputStatus(1, 1)
-      )
-    )
-    val pItm: tbl.putItem[Item] = tbl putItem item
-
-    val oaction = pItm withValue vertexItemValue
-
     val action = InHashKeyTable (
-      table,
+      vertexTable.table,
       Active (
-        table,
+        vertexTable.table,
         ServiceProvider.service.account,
         ThroughputStatus(1, 1)
       )
-    ) putItem item withValue vertexItemValue
+    ) putItem vertexTable.vertexItem withValue vertexItemValue
 
     List(action) 
   }

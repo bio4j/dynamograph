@@ -24,4 +24,6 @@ extends AnyVertexTypeWithId {
 
   type Record = R
   type Id = P
+
+  implicit val containsId: Id ∈ record.Properties
 }

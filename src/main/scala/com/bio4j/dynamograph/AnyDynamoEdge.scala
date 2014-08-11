@@ -51,9 +51,25 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
 
     def apply(rep: dynamoEdge.Rep): Out = source ->> {
                 	  
-      val srcId = rep get sourceId
-      val couldBeRecordEntry = sourceReader.read(srcId.asInstanceOf[tpe.sourceId.Rep])
-      val recordEntry = couldBeRecordEntry.right.get
+      val srcId: sourceId.Rep = rep get sourceId
+
+      // try to get it
+      import ServiceProvider.executors._
+      
+      val getResult = ServiceProvider.service please (
+
+        FromHashKeyTable (
+
+          source.vertexTable.table, 
+          Active (
+            source.vertexTable.table,
+            ServiceProvider.service.account,
+            ThroughputStatus(1, 1)
+          )
+        ) getItem source.vertexTable.vertexItem withKey (srcId)
+      )
+
+      val recordEntry = getResult.right.get
 
       source.raw ( recordEntry, "" )
     }
