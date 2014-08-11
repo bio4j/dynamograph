@@ -58,6 +58,7 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
 
       // try to get it
       import ServiceProvider.executors._
+      
       val getResult = ServiceProvider.service please (
 
         FromHashKeyTable (
