@@ -50,7 +50,9 @@ class GoMapper extends AnyMapper {
   }
   
   private def mapIsA(values : Map[String,String]) : List[AnyPutItemAction] = {
+    
     val isARep = IsA ->> (
+      
       IsA.raw(
 
         IsA fields (

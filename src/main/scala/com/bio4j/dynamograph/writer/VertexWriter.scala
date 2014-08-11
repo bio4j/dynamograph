@@ -19,25 +19,38 @@ trait AnyVertexWriter { vertexWriter =>
   type VertexTable <: Singleton with AnyVertexTable
   val vertexTable: VertexTable
 
-  type VertexType = VertexTable#VertexType
+  type VertexType = vertexTable.VertexType
   val vertexType: VertexType = vertexTable.vertexType
-  type Table = VertexTable#Table
+  type Table = vertexTable.Table
   val table: Table = vertexTable.table
-  type Item = VertexTable#VertexItem
+  type Item = vertexTable.VertexItem
   val item: Item = vertexTable.vertexItem
 
-  type Record = VertexTable#Record
+  type Record = vertexTable.Record
   val record : Record = vertexTable.record
   
-  type VertexId = VertexTable#VertexId
+  type VertexId = vertexTable.VertexId
   val vertexId: VertexId = vertexTable.vertexId
   
-  type ContainsId = VertexId ∈ Record#Properties
-  implicit val containsId : ContainsId = vertexType.containsId.asInstanceOf[ContainsId]  
+  type ContainsId = VertexId ∈ record.Properties
+  implicit val containsId = vertexType.containsId 
 
   // write an item
-  def write(vertexItemValue: TaggedWith[Item])(implicit transf: From.Item[Item, SDKRep]): List[AnyPutItemAction] = {
+  def write(vertexItemValue: TaggedWith[Item])(implicit transf: From.Item[Item, SDKRep])
+  : List[AnyPutItemAction] = {
     // fails to compile, and it is ok because we need to extract the id from the sealed vertex type
+    val tbl: InHashKeyTable[Table] = InHashKeyTable (
+      table,
+      Active (
+        table,
+        ServiceProvider.service.account,
+        ThroughputStatus(1, 1)
+      )
+    )
+    val pItm: tbl.putItem[Item] = tbl putItem item
+
+    val oaction = pItm withValue vertexItemValue
+
     val action = InHashKeyTable (
       table,
       Active (
@@ -47,8 +60,7 @@ trait AnyVertexWriter { vertexWriter =>
       )
     ) putItem item withValue vertexItemValue
 
-    List(action)
-      
+    List(action) 
   }
 }
 

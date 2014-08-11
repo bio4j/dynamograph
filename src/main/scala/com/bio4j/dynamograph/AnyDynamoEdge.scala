@@ -40,19 +40,21 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
    
   type Other = String
 
-  type Source <:  AnyDynamoVertex
-                  with AnyVertex { type Tpe <: Singleton with AnyVertexTypeWithId with dynamoEdge.Tpe#SourceType }
+  type Source <:  AnyDynamoVertex { type Tpe <: Singleton with AnyVertexTypeWithId with dynamoEdge.tpe.SourceType }
+
   val source: Source
 
-  type Target <:  AnyDynamoVertex 
-                  with AnyVertex { type Tpe <: Singleton with AnyVertexTypeWithId with dynamoEdge.Tpe#TargetType }
+  type Target <:  AnyDynamoVertex { type Tpe <: Singleton with AnyVertexTypeWithId with dynamoEdge.tpe.TargetType }
+
   val target: Target
 
-  object sourceGetter extends GetSource {
+  implicit object sourceGetter extends GetSource {
+
+    import tpe._
 
     def apply(rep: dynamoEdge.Rep): Out = source ->> {
                 	  
-      val srcId = rep.get(tpe.sourceId)
+      val srcId = rep get sourceId
       val couldBeRecordEntry = sourceReader.read(srcId.asInstanceOf[tpe.sourceId.Rep])
       val recordEntry = couldBeRecordEntry.right.get
 
@@ -62,9 +64,11 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
 
   implicit object targetGetter extends GetTarget {
 
+    import tpe._
+
     def apply(rep: dynamoEdge.Rep): target.Rep = target ->> {
 
-      val tgtId = rep.get(edgeTables.inVertexId)
+      val tgtId = rep get targetId
       val couldBeRecordEntry = targetReader.read(tgtId)
       val recordEntry = couldBeRecordEntry.right.get
       target.raw ( recordEntry, "" )
