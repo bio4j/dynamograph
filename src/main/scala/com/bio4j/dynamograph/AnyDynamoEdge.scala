@@ -4,7 +4,11 @@ import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import ohnosequences.scarph._
 import com.bio4j.dynamograph.dao.go.{AnyDynamoDbDao}
 import com.bio4j.dynamograph.model.GeneralSchema._
+import com.bio4j.dynamograph.model._
 import ohnosequences.typesets._
+import com.bio4j.dynamograph.writer.AnyVertexWriter
+import com.bio4j.dynamograph.reader.AnyVertexReader
+import ohnosequences.tabula._, impl.ImplicitConversions._, toSDKRep._, fromSDKRep._, impl._, impl.actions._
 
 
 trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
@@ -13,6 +17,19 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
   
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 
+  type EdgeTables <: Singleton with AnyEdgeTables
+  val edgeTables : EdgeTables
+  
+  type SourceTable <: Singleton with AnyVertexTable.withVertexType[Tpe#SourceType]
+  val sourceTable : SourceTable
+  type SourceReader <: Singleton with AnyVertexReader.withVertexTableType[SourceTable]
+  val sourceReader : SourceReader
+  
+  type TargetTable <: Singleton with AnyVertexTable.withVertexType[Tpe#TargetType]
+  val targetTable : TargetTable
+  type TargetReader <: Singleton with AnyVertexReader.withVertexTableType[TargetTable]
+  val targetReader : TargetReader
+  
   /*
     you need the tables here!! same for DynamoVertex, but there is less obvious. If you would have them, what you need to do is:
 
@@ -34,9 +51,9 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
   object sourceGetter extends GetSource {
 
     def apply(rep: dynamoEdge.Rep): Out = source ->> {
-
-      val srcId = rep.get(source.tpe.id: Tpe#SourceType#Id)
-      val couldBeRecordEntry = dao.get[source.tpe.type]( srcId, source.tpe )
+                	  
+      val srcId = rep.get(edgeTables.outVertexId)
+      val couldBeRecordEntry = sourceReader.read(srcId)
       val recordEntry = couldBeRecordEntry.right.get
 
       source.raw ( recordEntry, "" )
@@ -47,8 +64,8 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
 
     def apply(rep: dynamoEdge.Rep): target.Rep = target ->> {
 
-      val tgtId = rep.get(targetId)
-      val couldBeRecordEntry = dao.get[target.tpe.type]( tgtId, target.tpe )
+      val tgtId = rep.get(edgeTables.inVertexId)
+      val couldBeRecordEntry = targetReader.read(tgtId)
       val recordEntry = couldBeRecordEntry.right.get
       target.raw ( recordEntry, "" )
     }
@@ -56,13 +73,32 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
 }
 
 class DynamoEdge[
-ET <: Singleton with AnyEdgeTypeWithId,
-S <: Singleton with AnyDynamoVertex.ofType[ET#SourceType] with AnyDynamoVertex,
-T <: Singleton with AnyDynamoVertex.ofType[ET#TargetType] with AnyDynamoVertex
-](val source: S, val tpe: ET, val target: T) extends AnyDynamoEdge {
+  ET <: Singleton with AnyEdgeTypeWithId,
+  ETab <: Singleton with AnyEdgeTables.withEdgeType[ET],
+  S <: Singleton with AnyDynamoVertex.ofType[ET#SourceType] with AnyDynamoVertex,
+  STab <: Singleton with AnyVertexTable.withVertexType[ET#SourceType],
+  SR <: Singleton with AnyVertexReader.withVertexTableType[STab],
+  T <: Singleton with AnyDynamoVertex.ofType[ET#TargetType] with AnyDynamoVertex,
+  TTab <: Singleton with AnyVertexTable.withVertexType[ET#TargetType],
+  TR <: Singleton with AnyVertexReader.withVertexTableType[TTab]
+](
+  val source: S,
+  val sourceTable: STab,
+  val sourceReader: SR,
+  val tpe: ET, 
+  val edgeTables: ETab, 
+  val target: T, 
+  val targetTable : TTab,
+  val targetReader : TR
+) extends AnyDynamoEdge {
   type Source = S
   type Tpe = ET
   type Target = T
+  type EdgeTables = ETab
+  type SourceTable = STab
+  type TargetTable = TTab
+  type SourceReader = SR
+  type TargetReader = TR
 }
 
 object AnyDynamoEdge{

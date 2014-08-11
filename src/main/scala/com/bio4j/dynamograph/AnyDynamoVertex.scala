@@ -3,17 +3,19 @@ package com.bio4j.dynamograph
 import ohnosequences.scarph._
 import com.bio4j.dynamograph.dao.go.AnyDynamoDbDao
 import com.bio4j.dynamograph.model.GeneralSchema.id
+import com.bio4j.dynamograph.model._
 import scala.collection.JavaConverters._
 import ohnosequences.tabula.AnyItem
 import ohnosequences.tabula.AnyItem._
 import ohnosequences.typesets._
+import com.bio4j.dynamograph.reader.EdgeReader
 
 
 trait AnyDynamoVertex extends AnySealedVertex { dynamoVertex =>
 
-  // TODO move this to have a VertexTable and use that
-
   type Tpe <: AnySealedVertexType with AnyVertexTypeWithId
+  type VertexTable <: Singleton with AnyVertexTable
+  val vertexTable: VertexTable
 
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 
@@ -73,8 +75,13 @@ trait AnyDynamoVertex extends AnySealedVertex { dynamoVertex =>
   }
 }
 
-class DynamoVertex[VT <: Singleton with AnySealedVertexType](val tpe: VT) extends AnyDynamoVertex {
+class DynamoVertex[VT <: Singleton with AnySealedVertexType, VTab <: Singleton with AnyVertexTable]
+(
+  val tpe: VT,
+  val vertexTable: VTab
+) extends AnyDynamoVertex {
   type Tpe = VT
+  type VertexTable = VTab
 }
 
 object AnyDynamoVertex{

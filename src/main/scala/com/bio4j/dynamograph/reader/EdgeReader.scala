@@ -6,6 +6,7 @@ import com.bio4j.dynamograph.dynamodb.AnyDynamoDbExecutor
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import com.bio4j.dynamograph.model.AnyEdgeTables
+import com.bio4j.dynamograph.ServiceProvider
 
 
 trait AnyEdgeReader { edgeReader =>
@@ -19,6 +20,7 @@ trait AnyEdgeReader { edgeReader =>
   def readIn(vId : id.Raw) : List[Map[String,AttributeValue]] = read(vId, edgeTables.inTable.name)
 
   private def read(vId : id.Raw, linkingTableName : String) : List[Map[String,AttributeValue]] = {
+
     val hashKeyCondition = new Condition()
       .withComparisonOperator(ComparisonOperator.EQ)
       .withAttributeValueList(new AttributeValue().withS(vId));

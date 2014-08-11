@@ -9,7 +9,7 @@ trait AnyVertexTypeWithId extends AnySealedVertexType {
   type Id <: Singleton with AnyProperty with AnyProperty.ofValue[String]
   val id: Id
 
-  val containsId: Id ∈ Record#Properties
+  implicit val containsId: Id ∈ Record#Properties
 }
 
 abstract class VertexTypeWithId [

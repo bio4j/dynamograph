@@ -36,7 +36,7 @@ trait AnyVertexReader { vertexReader =>
       ThroughputStatus(1, 1)
     )) getItem item withKey (identifier))
     getResult.output match {
-      case success: GetItemSuccess[Item] => Right(success.item)
+      case success: GetItemSuccess[Item] => Right(success.item.asInstanceOf[Item#Record#Rep])
       case failure : GetItemFailure[Item] => Left(failure.msg)
     }
   }
@@ -45,9 +45,9 @@ trait AnyVertexReader { vertexReader =>
 
 class VertexReader[VT <: AnyVertexTable](val vertexTable: VT) extends AnyVertexReader {
   type VertexTable = VT
-
 }
 
 object AnyVertexReader{
   type withVertexType[VT <: Singleton with AnyVertexTypeWithId] = AnyVertexReader { type VertexTable = AnyVertexTable.withVertexType[VT] }
+  type withVertexTableType[VT <: Singleton with AnyVertexTable] = AnyVertexReader {type VertexTable = VT} 
 }

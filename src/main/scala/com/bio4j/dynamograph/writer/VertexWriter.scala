@@ -19,18 +19,21 @@ trait AnyVertexWriter { vertexWriter =>
   type VertexTable <: Singleton with AnyVertexTable
   val vertexTable: VertexTable
 
-  type Table = vertexTable.Table
+  type VertexType = VertexTable#VertexType
+  val vertexType: VertexType = vertexTable.vertexType
+  type Table = VertexTable#Table
   val table: Table = vertexTable.table
-  type Item = vertexTable.VertexItem
+  type Item = VertexTable#VertexItem
   val item: Item = vertexTable.vertexItem
 
-  type Record = vertexTable.Record
-  val record = vertexTable.record
+  type Record = VertexTable#Record
+  val record : Record = vertexTable.record
   
-  type VertexId = vertexTable.VertexId
-  val vertexId = vertexTable.vertexId
+  type VertexId = VertexTable#VertexId
+  val vertexId: VertexId = vertexTable.vertexId
   
-  implicit val containId : VertexId ∈ Record#Properties = vertexTable.containId 
+  type ContainsId = VertexId ∈ Record#Properties
+  implicit val containsId : ContainsId = vertexType.containsId.asInstanceOf[ContainsId]  
 
   // write an item
   def write(vertexItemValue: TaggedWith[Item])(implicit transf: From.Item[Item, SDKRep]): List[AnyPutItemAction] = {
@@ -47,6 +50,10 @@ trait AnyVertexWriter { vertexWriter =>
     List(action)
       
   }
+}
+
+object AnyVertexWriter{
+  type withVertexTableType[VT <: Singleton with AnyVertexTable] =  AnyVertexWriter {type VertexTable = VT}
 }
 
 class VertexWriter[VT <: Singleton with AnyVertexTable](val vertexTable: VT) extends AnyVertexWriter {

@@ -31,9 +31,6 @@ trait AnyVertexTable { vertexTable =>
   // provided implicitly at construction
   val recordValuesAreOK: everyElementOf[VertexType#Record#Values]#isOneOf[ValidValues]
   
-  // type ContainId = VertexId ∈ Record#Properties 
-  // val containId: ContainId   
-
   type VertexItem <:  Singleton with AnyItem with 
                       AnyItem.ofTable[Table] with 
                       AnyItem.withRecord[Record]
@@ -62,8 +59,6 @@ extends AnyVertexTable {
   type VertexId = VertexType#Id
   val vertexId = vertexType.id
   
-  // val containId = vertexType.containId
-
   type Record = VertexType#Record
   val record = vertexType.record
 

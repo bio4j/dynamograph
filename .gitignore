@@ -31,3 +31,4 @@ data/in/
 data/out/
 
 credentials.sbt
+/bin/

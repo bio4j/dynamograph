@@ -24,11 +24,10 @@ trait AnyEdgeTables { edgeTables =>
   type EdgeId = EdgeType#Id
   val edgeId: EdgeId = edgeType.id
 
-  type InVertexId <: Singleton with AnyProperty with AnyProperty.ofValue[EdgeType#TargetType#Id#Value] 
-  val inVertexId = edgeType.targetId
-
-  type OutVertexId = Singleton with AnyProperty with AnyProperty.ofValue[EdgeType#SourceType#Id#Value]
-  val outVertexId = edgeType.sourceId
+  type InVertexId = EdgeType#TargetId 
+  val inVertexId : InVertexId= edgeType.targetId
+  type OutVertexId = edgeType.SourceId
+  val outVertexId: OutVertexId= edgeType.sourceId
   
   type Region <: AnyRegion
   val region: Region 
@@ -82,6 +81,11 @@ trait AnyEdgeTables { edgeTables =>
   val recordValuesAreOK: everyElementOf[EdgeType#Record#Values]#isOneOf[ValidValues]
 
   val tables = inTable :: outTable :: edgeTable :: HNil
+}
+
+object AnyEdgeTables{
+  
+  type withEdgeType[ET <: Singleton with AnyEdgeTypeWithId] = AnyEdgeTables {type EdgeType = ET}
 }
 
 class EdgeTables[
