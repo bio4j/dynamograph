@@ -2,7 +2,6 @@ package com.bio4j.dynamograph
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import ohnosequences.scarph._
-import com.bio4j.dynamograph.dao.go.{AnyDynamoDbDao}
 import com.bio4j.dynamograph.model.GeneralSchema._
 import com.bio4j.dynamograph.model._
 import ohnosequences.typesets._
@@ -15,8 +14,6 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
 
   type Tpe <: Singleton with AnyEdgeTypeWithId
   
-  val dao: AnyDynamoDbDao = ServiceProvider.dao
-
   type EdgeTables <: Singleton with AnyEdgeTables
   val edgeTables : EdgeTables
   

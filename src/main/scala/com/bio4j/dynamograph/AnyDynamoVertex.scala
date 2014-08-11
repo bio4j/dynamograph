@@ -1,7 +1,6 @@
 package com.bio4j.dynamograph
 
 import ohnosequences.scarph._
-import com.bio4j.dynamograph.dao.go.AnyDynamoDbDao
 import com.bio4j.dynamograph.model.GeneralSchema.id
 import com.bio4j.dynamograph.model._
 import scala.collection.JavaConverters._
@@ -18,8 +17,6 @@ trait AnyDynamoVertex extends AnySealedVertex { dynamoVertex =>
   type Tpe <: AnyVertexTypeWithId 
   type VertexTable <: Singleton with AnyVertexTable
   val vertexTable: VertexTable
-
-  val dao: AnyDynamoDbDao = ServiceProvider.dao
 
   type Other = String
 
