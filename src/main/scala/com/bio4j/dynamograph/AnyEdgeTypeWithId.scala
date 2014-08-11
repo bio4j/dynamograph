@@ -13,7 +13,7 @@ trait AnyEdgeTypeWithId extends AnySealedEdgeType {
   val id : Id
 
   val containsId : Id ∈ Record#Properties
-  val idLookup: Lookup[record.Raw, Id#Rep]
+  val idLookup: Lookup[Record#Raw, Id#Rep]
   
   type SourceType <: AnyVertexTypeWithId
 
@@ -27,9 +27,9 @@ trait AnyEdgeTypeWithId extends AnySealedEdgeType {
   val targetId: TargetId
 
   val containsSourceId: SourceId ∈ Record#Properties
-  val sourceLookup: Lookup[record.Raw, SourceId#Rep]
+  val sourceLookup: Lookup[Record#Raw, SourceId#Rep]
   val containsTargetId: TargetId ∈ Record#Properties
-  val targetLookup: Lookup[record.Raw, TargetId#Rep]
+  val targetLookup: Lookup[Record#Raw, TargetId#Rep]
 }
 
 class EdgeTypeWithId[

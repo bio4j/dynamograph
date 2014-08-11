@@ -22,10 +22,10 @@ trait AnyEdgeWriter { edgeWriter =>
   type EdgeType = EdgeTables#EdgeType
   val edgeType : EdgeType = edgeTables.edgeType
   //
-  type InVertexId = EdgeType#TargetType#Id
-  val inVertexId: InVertexId = edgeType.targetType.id
-  type OutVertexId = edgeTables.OutVertexId
-  val outVertexId: OutVertexId= edgeTables.outVertexId
+  type TargetId = EdgeTables#TargetId
+  val targetId: TargetId = edgeTables.targetId
+  type SourceId = EdgeTables#SourceId
+  val sourceId: SourceId= edgeTables.sourceId
 
   type EdgeTable = EdgeTables#EdgeTable
   val edgeTable: EdgeTable = edgeTables.edgeTable
@@ -44,41 +44,35 @@ trait AnyEdgeWriter { edgeWriter =>
 //  type InItem = EdgeTables#InItem
 //  val inItem: InItem = edgeTables.inItem
 
-  type InRecord = EdgeTables#InRecord
+  type InRecord = edgeTables.InRecord
   val inRecord : InRecord = edgeTables.inRecord 
   
-  type EdgeId = EdgeTables#EdgeId
+  type EdgeId = edgeTables.EdgeId
   val edgeId : EdgeId = edgeTables.edgeId
 
  
+  implicit val containEdgeId : EdgeId ∈ EdgeRecord#Properties = edgeType.containsId.asInstanceOf[EdgeId ∈ EdgeRecord#Properties]
+  implicit val edgeIdLookup : Lookup[EdgeRecord#Raw, EdgeId#Rep] = edgeType.idLookup.asInstanceOf[Lookup[EdgeRecord#Raw, EdgeId#Rep]]
   
- 
-//  implicit val containId : EdgeId ∈ EdgeRecord#Properties = edgeTables.edgeType.containsId
-//  implicit val edgeIdLookup : Lookup[EdgeRecord#Raw, edgeId.Rep] = edgeTables.edgeIdLookup
-//  
-//  implicit val containTargetId : TargetId ∈ EdgeRecord#Properties = edgeTables.containTargetId
-//  implicit val targetIdLookup : Lookup[EdgeRecord#Raw, tgtId.Rep] = edgeTables.targetIdLookup
-//  
-//  implicit val containSourceId : SourceId ∈ EdgeRecord#Properties  = edgeTables.containSourceId
-//  implicit val sourceIdLookup : Lookup[EdgeRecord#Raw, srcId.Rep] = edgeTables.sourceIdLookup
+  implicit val containTargetId : TargetId ∈ EdgeRecord#Properties = edgeType.containsTargetId.asInstanceOf[TargetId ∈ EdgeRecord#Properties]
+  implicit val targetIdLookup : Lookup[EdgeRecord#Raw, TargetId#Rep] = edgeType.targetLookup.asInstanceOf[Lookup[EdgeRecord#Raw, TargetId#Rep]]
+  
+  implicit val containSourceId : SourceId ∈ EdgeRecord#Properties  = edgeType.containsSourceId.asInstanceOf[SourceId ∈ EdgeRecord#Properties]
+  implicit val sourceIdLookup : Lookup[EdgeRecord#Raw, SourceId#Rep] = edgeType.sourceLookup.asInstanceOf[Lookup[EdgeRecord#Raw, SourceId#Rep]]
   
   
   
-  def write(edgeItemValue: TaggedWith[EdgeRecord])(implicit transf: From.Item[EdgeItem, SDKRep]): List[AnyPutItemAction] = {
+  def write(edgeItemValue: TaggedWith[EdgeRecord])(implicit transf: From.Item[EdgeItem, SDKRep]): List[AnyPutItemAction] =  {
 
     val inRep = edgeTables.inItem fields ( 
-
-         inRecord ->> ( 
-        (inVertexId ->> edgeItemValue.get(edgeTables.inVertexId )) :~:
-        (edgeId ->> edgeItemValue.get(edgeId)) :~:
-        ∅)
-      )
+      edgeTables.getInRecordRep(edgeItemValue.get((targetId : edgeTables.TargetId)), edgeItemValue.get(edgeId))
+    )
 
     val outRep = edgeTables.outItem  fields (
 
         edgeTables.outRecord ->> (
-        (outVertexId is edgeItemValue.get(edgeTables.outVertexId)) :~:
-        (edgeId is edgeItemValue.get(edgeTables.edgeId)) :~:
+        (sourceId is edgeItemValue.get(sourceId)) :~:
+        (edgeId is edgeItemValue.get(edgeId)) :~:
         ∅)
     )
 

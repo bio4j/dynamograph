@@ -37,7 +37,7 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
     2. get the vertex from the corresponding vertex table
 
   */
-  
+   
   type Other = String
 
   type Source <:  AnyDynamoVertex
@@ -52,8 +52,8 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
 
     def apply(rep: dynamoEdge.Rep): Out = source ->> {
                 	  
-      val srcId = rep.get(edgeTables.outVertexId)
-      val couldBeRecordEntry = sourceReader.read(srcId)
+      val srcId = rep.get(tpe.sourceId)
+      val couldBeRecordEntry = sourceReader.read(srcId.asInstanceOf[tpe.sourceId.Rep])
       val recordEntry = couldBeRecordEntry.right.get
 
       source.raw ( recordEntry, "" )
