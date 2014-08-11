@@ -62,7 +62,7 @@ trait AnyEdgeWriter { edgeWriter =>
   
   
   
-  def write(edgeItemValue: TaggedWith[EdgeRecord])(implicit transf: From.Item[EdgeItem, SDKRep]): List[AnyPutItemAction] =  {
+  def write(edgeItemValue: TaggedWith[EdgeRecord])(implicit transf: From.Item[EdgeItem, SDKRep]): List[AnyPutItemAction] =  ???/*{
 
     val inRep = edgeTables.inItem fields ( 
       edgeTables.getInRecordRep(edgeItemValue.get((targetId : edgeTables.TargetId)), edgeItemValue.get(edgeId))
@@ -84,7 +84,7 @@ trait AnyEdgeWriter { edgeWriter =>
       ThroughputStatus(1,1))) putItem edgeItem    withValue (edgeItem ->> edgeItemValue)
 
     List(inTableRequest, outTableRequest, tableRequest)
-  }
+  }*/
 }
 
 class EdgeWriter[ET <: Singleton with AnyEdgeTables](val edgeTables: ET) extends AnyEdgeWriter {

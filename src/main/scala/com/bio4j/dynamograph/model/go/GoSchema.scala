@@ -13,12 +13,10 @@ object GoSchema {
   case object GoTermRecord            extends Record(goTermAttributes)
   object GoTermType                   extends VertexTypeWithId(id, "GoTerm", GoTermRecord)
   // TODO this shouldn't be needed
-  implicit val GoTermType_properties = GoTermType has goTermAttributes
 
   val goNamespacesAttributes = id :~: ∅
   case object GoNamespacesRecord      extends Record(goNamespacesAttributes)
   object GoNamespacesType             extends VertexTypeWithId(id, "GoNamespace", GoNamespacesRecord)
-  implicit val GoNamespacesType_properties = GoNamespacesType has goNamespacesAttributes
 
 
   val edgeAttributes = relationId :~: sourceId :~: targetId :~: ∅

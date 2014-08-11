@@ -83,21 +83,6 @@ trait AnyEdgeTables { edgeTables =>
 
   val tables = inTable :: outTable :: edgeTable :: HNil
   
-  def getInRecordRep(targetValue : TargetId#Raw, edgeValue : EdgeId#Raw): inRecord.Rep = {
-    inRecord ->> (
-      (targetId is targetValue) :~:
-      (edgeId is edgeValue) :~:
-       ∅
-     )
-  }
-  
-  def getOutRecordRep(sourceValue : SourceId#Rep, edgeValue : EdgeId#Rep) = {
-    outRecord ->> (
-      ((sourceId : EdgeType#SourceId) ->> sourceValue ) :~:
-      ((edgeId: EdgeType#Id) 	->> edgeValue) :~:
-       ∅
-     )
-  }
 }
 
 object AnyEdgeTables{

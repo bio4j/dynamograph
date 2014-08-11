@@ -49,13 +49,13 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
 
     import tpe._
 
-    def apply(rep: dynamoEdge.Rep): Out = source ->> {
+    def apply(rep: dynamoEdge.Rep)(implicit toItem: ToItem[SDKRep,source.vertexTable.VertexItem]): Out = source ->> {
                 	  
       val srcId: sourceId.Rep = rep get sourceId
 
       // try to get it
       import ServiceProvider.executors._
-      
+      import source.vertexTable.vertexType._    
       val getResult = ServiceProvider.service please (
 
         FromHashKeyTable (
@@ -68,10 +68,13 @@ trait AnyDynamoEdge extends AnySealedEdge { dynamoEdge =>
           )
         ) getItem source.vertexTable.vertexItem withKey (srcId)
       )
+	  val res = getResult.output match {
+	      case success: GetItemSuccess[source.vertexTable.VertexItem] => Right(success.item)
+	      case failure : GetItemFailure[source.vertexTable.VertexItem] => Left(failure.msg)
+	  }
+      val recordEntry = res.right.get
 
-      val recordEntry = getResult.right.get
-
-      source.raw ( recordEntry, "" )
+      source.raw ( recordEntry.asInstanceOf[source.tpe.record.Rep], "" )
     }
   }
 

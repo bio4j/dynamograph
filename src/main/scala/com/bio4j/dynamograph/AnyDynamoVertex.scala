@@ -7,7 +7,6 @@ import scala.collection.JavaConverters._
 import ohnosequences.tabula.AnyItem
 import ohnosequences.tabula.AnyItem._
 import ohnosequences.typesets._
-import com.bio4j.dynamograph.reader.EdgeReader
 import ohnosequences.tabula._, impl.ImplicitConversions._, toSDKRep._, fromSDKRep._, impl._, impl.actions._
 
 
@@ -78,18 +77,21 @@ trait AnyDynamoVertex extends AnySealedVertex { dynamoVertex =>
     }
   }
   
-  	def readIn[ET <: AnyEdgeTables](vId : ET#TargetId#Raw, edgeTables : ET)(implicit toItem: ToItem[SDKRep,edgeTables.InItem]) : Either[String,List[ET#EdgeRecord#Rep]] = {
+  	def readIn[E <: Singleton with AnyDynamoEdge {
+    type Tpe <: To[dynamoVertex.Tpe] with ManyIn }](vId : E#EdgeTables#TargetId#Raw, e : E)(implicit toItem: ToItem[SDKRep,e.edgeTables.InItem]) : Either[String,List[E#EdgeTables#EdgeRecord#Rep]] = {
     import ServiceProvider.executors._
-    val queryResult = ServiceProvider.service please (QueryTable(edgeTables.inTable, Active (
-      edgeTables.inTable,
+    import e.tpe._
+    import e.edgeTables._
+    val queryResult = ServiceProvider.service please (QueryTable(e.edgeTables.inTable, Active (
+      e.edgeTables.inTable,
       ServiceProvider.service.account,
       ThroughputStatus(1, 1)
-    )) forItem edgeTables.inItem withHashKey vId)
+    )) forItem e.edgeTables.inItem withHashKey vId)
     val result = queryResult.output match {
-      case success: QuerySuccess[ET#InItem] => Right(success.item)
-      case failure : QueryFailure[ET#InItem] => Left(failure.msg)
+      case success: QuerySuccess[E#EdgeTables#InItem] => Right(success.item)
+      case failure : QueryFailure[E#EdgeTables#InItem] => Left(failure.msg)
     }
-    result.fold[Either[String,ET#EdgeRecord#Rep]](Left(_),_.map(single => {
+    result.fold[Either[String,E#EdgeTables#EdgeRecord#Rep]](Left(_),_.map(single => {
       val getResult = ServiceProvider.service please (FromHashKeyTable(edgeTable, Active (
       edgeTable,
       ServiceProvider.service.account,

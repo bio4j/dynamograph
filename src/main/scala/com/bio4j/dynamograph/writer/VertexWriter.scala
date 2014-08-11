@@ -38,7 +38,7 @@ trait AnyVertexWriter { vertexWriter =>
   // write an item
   def write(vertexItemValue: vertexTable.VertexItem#Rep)(implicit transf: From.Item[vertexTable.VertexItem, SDKRep])
   : List[AnyPutItemAction] = {
-
+	import vertexType._
     // fails to compile, and it is ok because we need to extract the id from the sealed vertex type
     val action = InHashKeyTable (
       vertexTable.table,
