@@ -21,14 +21,14 @@ trait AnyEdgeTables { edgeTables =>
   val edgeType: EdgeType
 
   // all these types are accessible through EdgeType; they are not actually needed (unless a type inference bug forces us to do so)
-  type EdgeId = EdgeType#Id
+  type EdgeId = edgeType.Id
   val edgeId: EdgeId = edgeType.id
 
-  type TargetId = EdgeType#TargetId 
-  val targetId : TargetId= edgeType.targetId
-  type ContainsTargetID = TargetId
-  type SourceId = EdgeType#SourceId
-  val sourceId: SourceId= edgeType.sourceId
+  type TargetId = edgeType.TargetId 
+  val targetId : TargetId = edgeType.targetId
+
+  type SourceId = edgeType.SourceId
+  val sourceId: SourceId = edgeType.sourceId
   
   type Region <: AnyRegion
   val region: Region 
@@ -55,7 +55,7 @@ trait AnyEdgeTables { edgeTables =>
 
   val edgeTable: EdgeTable
   
-  type EdgeRecord = EdgeType#Record;
+  type EdgeRecord = edgeType.Record;
   val edgeRecord : EdgeRecord = edgeType.record
 
   type EdgeItem <:  Singleton with AnyItem 
@@ -79,14 +79,14 @@ trait AnyEdgeTables { edgeTables =>
 
   val inItem : InItem
 
-  val recordValuesAreOK: everyElementOf[EdgeType#Record#Values]#isOneOf[ValidValues]
+  implicit val recordValuesAreOK: everyElementOf[EdgeRecord#Raw]#isOneOf[ValidValues]
 
   val tables = inTable :: outTable :: edgeTable :: HNil
   
-  def getInRecordRep(targetValue : TargetId#Rep, edgeValue : EdgeId#Rep) = {
+  def getInRecordRep(targetValue : TargetId#Raw, edgeValue : EdgeId#Raw): inRecord.Rep = {
     inRecord ->> (
-      ((targetId : EdgeType#TargetId) ->> targetValue ) :~:
-      ((edgeId: EdgeType#Id) 	->> edgeValue) :~:
+      (targetId is targetValue) :~:
+      (edgeId is edgeValue) :~:
        ∅
      )
   }
