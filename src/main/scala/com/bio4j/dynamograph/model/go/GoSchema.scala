@@ -1,16 +1,11 @@
 package com.bio4j.dynamograph.model.go
 
 import ohnosequences.scarph._
-import com.bio4j.dynamograph.model.GeneralSchema.id
+import com.bio4j.dynamograph.model.Properties._
 import ohnosequences.typesets._
 import com.bio4j.dynamograph.model.go.TableGoImplementation.IsATables
 
 object GoSchema {
-
-  // Properties
-  case object name        extends Property[String]
-  case object definition  extends Property[String]
-  case object comment     extends Property[String]
 
   // Vertex Type
   object GoTermType       extends VertexType("GoTerm")

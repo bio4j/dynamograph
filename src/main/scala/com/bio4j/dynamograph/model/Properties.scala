@@ -2,7 +2,7 @@ package com.bio4j.dynamograph.model
 
 import ohnosequences.typesets.Property
 
-object GeneralSchema {
+object Properties {
 
   case object id          extends Property[String]
   case object name        extends Property[String]

@@ -1,17 +1,16 @@
 package com.bio4j.dynamograph.writer
 
 import com.bio4j.dynamograph.model.go.TableGoSchema.EdgeTables
-
 import com.bio4j.dynamograph.model.GeneralSchema._
 import com.bio4j.dynamograph.{ServiceProvider, AnyDynamoEdge}
 import ohnosequences.typesets._
 import ohnosequences.tabula._
-import ohnosequences.scarph._, ops.default._
-import ohnosequences.tabula.impl._, ImplicitConversions._
+import ohnosequences.scarph._
+import ohnosequences.tabula.impl._
 import ohnosequences.tabula.impl.actions._
 import ohnosequences.tabula.ThroughputStatus
-import toSDKRep._
-import fromSDKRep._
+import com.amazonaws.services.dynamodbv2.model.AttributeValue
+import com.amazonaws.services.dynamodbv2.model.PutItemRequest
 
 
 
@@ -25,23 +24,21 @@ class EdgeWriter[E <: AnyDynamoEdge, R <: AnyRegion]
   type Element = E
 
 
-  def write(rep: element.Rep): List[WriteType] = {
-    val edgeRep = edgeTables.item ->> (
-        (relationId     ->> element.getValue(rep, relationId)) :~:
-        (sourceId       ->> element.getValue(rep, sourceId)) :~:
-        (targetId       ->> element.getValue(rep, targetId)) :~:
-        ∅
-      )
+  def write(edge: Element#Rep): List[PutItemRequest] = {
+    val inTableAttrs = Map(
+     edgeTables.inTable.hashKey.label -> new AttributeValue().withS(getValue(edge, targetId.label)),
+     edgeTables.inTable.rangeKey.label -> new AttributeValue().withS(getValue(edge, relationId.label))
+    )
+    val outTableAttrs = Map(
+      edgeTables.outTable.hashKey.label -> new AttributeValue().withS(getValue(edge, sourceId.label)),
+      edgeTables.outTable.rangeKey.label -> new AttributeValue().withS(getValue(edge, relationId.label))
+    )
 
-    val inTableRequest  = InCompositeKeyTable(edgeTables.inTable,   Active(edgeTables.inTable,    ServiceProvider.service.account,
-      ThroughputStatus(1,1))) putItem edgeTables.inItem  withValue (edgeRep as edgeTables.inItem)
-    val outTableRequest = InCompositeKeyTable(edgeTables.outTable,  Active(edgeTables.outTable,   ServiceProvider.service.account,
-      ThroughputStatus(1,1))) putItem edgeTables.outItem withValue (edgeRep as edgeTables.outItem)
-    val tableRequest    = InHashKeyTable(edgeTables.edgeTable, Active(edgeTables.edgeTable,  ServiceProvider.service.account,
-      ThroughputStatus(1,1))) putItem edgeTables.item    withValue  edgeRep
-
-
-    List(inTableRequest, outTableRequest, tableRequest)
+    val inTableRequest = new PutItemRequest().withTableName(edgeTables.inTable.name).withItem(inTableAttrs)
+    val outTableRequest = new PutItemRequest().withTableName(edgeTables.outTable.name).withItem(outTableAttrs)
+    val tableRequest = new PutItemRequest().withTableName(edgeTables.edgeTable.name).withItem(edge)
+    
+    return List(inTableRequest,outTableRequest, tableRequest)
   }
 
 }

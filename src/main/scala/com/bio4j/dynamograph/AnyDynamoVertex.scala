@@ -3,7 +3,7 @@ package com.bio4j.dynamograph
 import ohnosequences.scarph._
 import ohnosequences.typesets._
 import com.bio4j.dynamograph.dao.go.AnyDynamoDbDao
-import com.bio4j.dynamograph.model.GeneralSchema.id
+import com.bio4j.dynamograph.model.Properties._
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import scala.collection.JavaConverters._
 
@@ -58,7 +58,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
   private def getValue[T](rep: Rep, attributeName : String) : T = rep.get(attributeName).getOrElse(new AttributeValue().withS("")).getS.asInstanceOf[T]
 
-  private def getId(rep: Rep) : String = getValue(rep, id.label)
+  private def getId(rep: Rep) : String = getValue(rep, id)
 
 }
 

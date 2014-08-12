@@ -10,6 +10,7 @@ import fromSDKRep._
 import ohnosequences.tabula.impl.actions.InHashKeyTable
 import ohnosequences.tabula.Active
 import ohnosequences.tabula.ThroughputStatus
+import com.amazonaws.services.dynamodbv2.model.PutItemRequest
 
 trait AnyVertexWriter extends AnyWriter{
   type Element <: AnyDynamoVertex
@@ -20,9 +21,7 @@ class VertexWriter[V <: AnyDynamoVertex, R <: AnyRegion, As <:TypeSet, Rw <: Typ
 
   type Element = V
 
-  def write(rep: element.Rep): List[WriteType] = {
-
-    List(InHashKeyTable(vertexTable.table, Active(vertexTable.table,  ServiceProvider.service.account,
-      ThroughputStatus(1,1))) putItem vertexTable.vertexItem withValue rep)
+  def write(vertex: Element#Rep): List[PutItemRequest] = {
+    return List(new PutItemRequest().withTableName(vertexTable.tableName).withItem(vertex))
   }
 }
