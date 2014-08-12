@@ -16,7 +16,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
   implicit def unsafeGetProperty[P <: AnyProperty: Property.Of[this.Tpe]#is](p: P) =
     new PropertyGetter[P](p) {
-      def apply(rep: Rep): p.Raw = getValue(rep, p.label)
+      def apply(rep: Rep): p.Raw = getValue(rep, p)
     }
 
 
@@ -56,7 +56,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     }
   }
 
-  private def getValue[T](rep: Rep, attributeName : String) : T = rep.get(attributeName).getOrElse(new AttributeValue().withS("")).getS.asInstanceOf[T]
+  private def getValue[P <: AnyProperty](rep: Rep, p : P ) : P#Value = rep.get(p.label).getOrElse(new AttributeValue().withS("")).getS.asInstanceOf[P#Value]
 
   private def getId(rep: Rep) : String = getValue(rep, id)
 

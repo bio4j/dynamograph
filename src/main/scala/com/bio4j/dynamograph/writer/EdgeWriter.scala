@@ -1,7 +1,5 @@
 package com.bio4j.dynamograph.writer
 
-import com.bio4j.dynamograph.model.go.TableGoSchema.EdgeTables
-import com.bio4j.dynamograph.model.GeneralSchema._
 import com.bio4j.dynamograph.{ServiceProvider, AnyDynamoEdge}
 import ohnosequences.typesets._
 import ohnosequences.tabula._
@@ -11,20 +9,21 @@ import ohnosequences.tabula.impl.actions._
 import ohnosequences.tabula.ThroughputStatus
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest
+import com.bio4j.dynamograph.model.AnyEdgeTables
 
 
 
 trait AnyEdgeWriter extends AnyWriter{
-  type Element <: AnyDynamoEdge
+  type EdgeTables <: Singleton with AnyEdgeTables
+  val AnyWriter : EdgeTables
 }
 
-class EdgeWriter[E <: AnyDynamoEdge, R <: AnyRegion]
-  (val element: E, val edgeTables: EdgeTables[E, R]) extends AnyEdgeWriter{
+class EdgeWriter[ET <: AnyEdgeTables](val edgeTables: ET) extends AnyEdgeWriter{
 
-  type Element = E
+  type EdgeTables = ET
 
-
-  def write(edge: Element#Rep): List[PutItemRequest] = {
+//TODO: replace hardcoded type of the arg 
+  def write(edge: Map[String,AttributeValue]): List[PutItemRequest] = {
     val inTableAttrs = Map(
      edgeTables.inTable.hashKey.label -> new AttributeValue().withS(getValue(edge, targetId.label)),
      edgeTables.inTable.rangeKey.label -> new AttributeValue().withS(getValue(edge, relationId.label))

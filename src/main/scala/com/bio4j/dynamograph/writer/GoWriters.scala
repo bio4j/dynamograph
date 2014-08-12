@@ -6,22 +6,17 @@ import com.bio4j.dynamograph.model.go.GoSchema._
 
 object GoWriters {
 
-  case object goTermVertexWriter            extends VertexWriter(GoTerm, GoTermTable)
-  case object goNamespaceVertexWriter       extends VertexWriter(GoNamespaces, GoNamespacesTable)
+  case object goTermVertexWriter            extends VertexWriter(GoTermTable)
+  case object goNamespaceVertexWriter       extends VertexWriter(GoNamespacesTable)
 
-  case object isAEdgeWriter                 extends EdgeWriter(IsA, IsATables)
-  case object partOfEdgeWriter              extends EdgeWriter(PartOf, PartOfTables)
-  case object hasPartEdgeWriter             extends EdgeWriter(HasPart, HasPartTables)
-  case object positivelyRegulatesEdgeWriter extends EdgeWriter(PositivelyRegulates, PositivelyRegulatesTables)
-  case object negativelyRegulatesEdgeWriter extends EdgeWriter(NegativelyRegulates, NegativelyRegulatesTables)
-  case object regulatesEdgeWriter           extends EdgeWriter(Regulates, RegulatesTables)
-  case object namespaceEdgeWriter           extends EdgeWriter(Namespace, NamespaceTables)
+  case object isAEdgeWriter                 extends EdgeWriter(IsATables)
+  case object partOfEdgeWriter              extends EdgeWriter(PartOfTables)
+  case object hasPartEdgeWriter             extends EdgeWriter(HasPartTables)
+  case object positivelyRegulatesEdgeWriter extends EdgeWriter(PositivelyRegulatesTables)
+  case object negativelyRegulatesEdgeWriter extends EdgeWriter(NegativelyRegulatesTables)
+  case object regulatesEdgeWriter           extends EdgeWriter(RegulatesTables)
+  case object namespaceEdgeWriter           extends EdgeWriter(NamespaceTables)
 
-  // NOTE: see the related note in GoMapper.
-  // So to convert a string to a typed writer, 
-  // at some point we have to make an explicit mapping between them
-  // Also you actually don't need here anything from a specific wirter type (no type information),
-  // because you will use just it's `write` method (which is now in the common `AnyWriter` trait)
   val vertexWritersMap = Map[String, AnyVertexWriter] (
     GoTermType.label              -> goTermVertexWriter,
     GoNamespacesType.label        -> goNamespaceVertexWriter

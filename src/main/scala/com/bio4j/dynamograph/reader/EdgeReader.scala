@@ -1,28 +1,31 @@
 package com.bio4j.dynamograph.reader
 
-import com.bio4j.dynamograph.model.go.TableGoSchema.EdgeTables
+import com.bio4j.dynamograph.model._
 import ohnosequences.tabula.AnyRegion
 import com.bio4j.dynamograph.AnyDynamoEdge
 import com.amazonaws.services.dynamodbv2.model._
-import com.bio4j.dynamograph.model.GeneralSchema.{nodeId, id, relationId}
+import com.bio4j.dynamograph.model.Properties._
 import com.bio4j.dynamograph.dynamodb.AnyDynamoDbExecutor
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import ohnosequences.typesets.TypeSet
+import com.bio4j.dynamograph.ServiceProvider
 
+trait AnyEdgeReader{
+  type EdgeTables <: Singleton with AnyEdgeTables
+  val edgeTables : EdgeTables
+  
+  val dbExecutor : AnyDynamoDbExecutor = ServiceProvider.dynamoDbExecutor 
+  
+  def readOut(vId : id.Value) : List[Map[String,AttributeValue]] = read(vId, edgeTables.outTable.name)
 
-class EdgeReader[ET <: AnyDynamoEdge](val edgeType : ET,  val edgeTables: EdgeTables[ET, _],  val dbExecutor : AnyDynamoDbExecutor) extends AnyEdgeReader {
-  type EdgeType = ET
+  def readIn(vId : id.Value) : List[Map[String,AttributeValue]] = read(vId, edgeTables.inTable.name)
 
-  def readOut(vId : id.Raw) : ReturnType = read(vId, edgeTables.outTable.name)
-
-  def readIn(vId : id.Raw) : ReturnType = read(vId, edgeTables.inTable.name)
-
-  private def read(vId : id.Raw, linkingTableName : String) : ReturnType = {
+  private def read(vId : id.Raw, linkingTableName : String) : List[Map[String,AttributeValue]] = {
     val hashKeyCondition = new Condition()
       .withComparisonOperator(ComparisonOperator.EQ)
       .withAttributeValueList(new AttributeValue().withS(vId));
-    val request = new QueryRequest().withTableName(linkingTableName).withKeyConditions(Map(nodeId.label -> hashKeyCondition))
+    val request = new QueryRequest().withTableName(linkingTableName).withKeyConditions(Map(relationId.label -> hashKeyCondition))
     val linkingTableResults = dbExecutor.execute(request)
 
     val keys = for {
@@ -35,5 +38,10 @@ class EdgeReader[ET <: AnyDynamoEdge](val edgeType : ET,  val edgeTables: EdgeTa
       Map(edgeTables.edgeTable.name -> new KeysAndAttributes().withKeys(tableKeys)))
     dbExecutor.execute(batchRequest)
   }
+}
+
+
+abstract class EdgeReader[ET <: Singleton with AnyEdgeTables](val edgeTables : ET) extends AnyEdgeReader {
+  type EdgeType = ET
 
 }

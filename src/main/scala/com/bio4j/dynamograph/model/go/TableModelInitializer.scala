@@ -4,7 +4,6 @@ import ohnosequences.tabula._
 import com.bio4j.dynamograph.ServiceProvider
 import shapeless._
 import com.bio4j.dynamograph.model.go.TableGoImplementation.{GoTermTable, GoNamespacesTable}
-import com.bio4j.dynamograph.model.go.TableGoSchema.EdgeTables
 
 
 object TableModelInitializer {

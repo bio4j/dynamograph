@@ -8,7 +8,12 @@ import com.bio4j.dynamograph.model.GeneralSchema.id
 import scala.collection.JavaConversions._
 import com.bio4j.dynamograph.dynamodb.AnyDynamoDbExecutor
 import ohnosequences.typesets.TypeSet
+import com.bio4j.dynamograph.model.AnyVertexTable
 
+trait AnyVertexReader{
+  type VertexTable <: Singleton with AnyVertexTable
+  val vertexTable : VertexTable
+}
 
 class VertexReader[VT <: AnyDynamoVertex](val vertexType : VT ,val vertexTable : VertexTable[VT, _, _, _], val dbExecutor : AnyDynamoDbExecutor) extends AnyVertexReader{
   type VertexType = VT

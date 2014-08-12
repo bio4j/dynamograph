@@ -8,6 +8,7 @@ import com.bio4j.dynamograph.model.Properties._
 import ohnosequences.tabula.AnyHashKeyTable
 import ohnosequences.tabula.CompositeKeyTable
 import ohnosequences.tabula.HashKeyTable
+import shapeless._
 
 trait AnyEdgeTables {
   type EdgeType <: Singleton with AnyEdgeType
@@ -29,7 +30,7 @@ trait AnyEdgeTables {
   type EdgeTable <: Singleton with AnyTable.inRegion[Region] with
                     AnyHashKeyTable.withKey[relationId.type]
   val edgeTable : EdgeTable                   
-                   
+
 }
 
 abstract class EdgeTables[
@@ -39,7 +40,7 @@ abstract class EdgeTables[
   val edgeType : ET,
   val tableName: String, 
   val region: R
-) {
+) extends AnyEdgeTables{
     type Region = R
     type EdgeType = ET
     
@@ -51,4 +52,6 @@ abstract class EdgeTables[
     
     type EdgeTable = EdgeTable.type; val edgeTable : EdgeTable = EdgeTable  
     case object EdgeTable extends HashKeyTable(tableName, relationId, region)
+    
+    val tables = edgeTable :: inTable :: outTable :: HNil
   }
