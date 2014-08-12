@@ -1,10 +1,8 @@
 package com.bio4j.dynamograph.reader
 
-import com.bio4j.dynamograph.model.go.GoImplementation._
 import com.bio4j.dynamograph.model.go.TableGoImplementation._
 import com.bio4j.dynamograph.model.go.GoSchema._
-import com.bio4j.dynamograph.{AnyDynamoVertex, AnyDynamoEdge, ServiceProvider}
-import ohnosequences.scarph.AnyEdgeType
+import ohnosequences.scarph.{AnyVertexType, AnyEdgeType}
 
 object GoReaders {
 
@@ -19,9 +17,9 @@ object GoReaders {
   case object positivelyRegulatesEdgeReader extends EdgeReader(PositivelyRegulatesTables)
   case object namespaceEdgeReader           extends EdgeReader(NamespaceTables)
 
-  val vertexReaders = Map[AnyDynamoVertex, AnyVertexReader] (
-    GoTerm      -> goTermVertexReader,
-    GoNamespaces -> goNamespaceVertexReader
+  val vertexReaders = Map[AnyVertexType, AnyVertexReader] (
+    GoTermType      -> goTermVertexReader,
+    GoNamespacesType -> goNamespaceVertexReader
   )
 
   val edgeReaders = Map[AnyEdgeType, AnyEdgeReader](

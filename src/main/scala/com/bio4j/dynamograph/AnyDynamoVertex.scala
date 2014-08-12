@@ -24,7 +24,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: From[dynamoVertex.Tpe] with OneOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[E#Rep] = {
-      val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[List[E#Rep]]
+      val it = dao.getOutRelationships(getId(rep), e.tpe).asInstanceOf[List[E#Rep]]
       it.headOption: Option[E#Rep]
     }
   }
@@ -33,7 +33,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: From[dynamoVertex.Tpe] with ManyOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[E#Rep] = {
-      val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[List[E#Rep]]
+      val it = dao.getOutRelationships(getId(rep),e.tpe).asInstanceOf[List[E#Rep]]
       it: List[E#Rep]
     }
   }
@@ -42,7 +42,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: To[dynamoVertex.Tpe] with OneIn }](e: E): GetInEdge[E] = new GetInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[E#Rep] = {
-      val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[List[E#Rep]]
+      val it = dao.getOutRelationships(getId(rep),e.tpe).asInstanceOf[List[E#Rep]]
       it.headOption: Option[E#Rep]
     }
   }
@@ -51,7 +51,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: To[dynamoVertex.Tpe] with ManyIn }](e: E): GetInEdge[E] = new GetInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[E#Rep] = {
-      val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[List[E#Rep]]
+      val it = dao.getOutRelationships(getId(rep), e.tpe).asInstanceOf[List[E#Rep]]
       it.toList: List[E#Rep]
     }
   }

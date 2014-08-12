@@ -14,10 +14,10 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 
-  type Source <: AnyVertex.ofType[Tpe#SourceType] with AnyDynamoVertex
+  type Source <: AnyDynamoVertex.ofType[Tpe#SourceType] with AnyDynamoVertex
   val source: Source
 
-  type Target <: AnyVertex.ofType[Tpe#TargetType] with AnyDynamoVertex
+  type Target <: AnyDynamoVertex.ofType[Tpe#TargetType] with AnyDynamoVertex
   val target: Target
 
 
@@ -28,12 +28,12 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   implicit object sourceGetter extends GetSource {
     def apply(rep: dynamoEdge.Rep): Out =
-      source ->> dao.get(getValue(rep,sourceId), source)
+      source ->> dao.get(getValue(rep,sourceId), tpe.et.sourceType)
   }
 
   implicit object targetGetter extends GetTarget {
     def apply(rep: dynamoEdge.Rep): target.Rep =
-      target ->> dao.get(getValue(rep,targetId), target)
+      target ->> dao.get(getValue(rep,targetId), tpe.et.targetType)
   }
 
   // NOTE: why was it private?
@@ -43,8 +43,8 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
 class DynamoEdge[
 ET <: AnyEdgeType,
-S <: Singleton with AnyVertex.ofType[ET#SourceType] with AnyDynamoVertex,
-T <: Singleton with AnyVertex.ofType[ET#TargetType] with AnyDynamoVertex
+S <: Singleton with AnyDynamoVertex.ofType[ET#SourceType] with AnyDynamoVertex,
+T <: Singleton with AnyDynamoVertex.ofType[ET#TargetType] with AnyDynamoVertex
 ](val source: S, val tpe: ET, val target: T) extends AnyDynamoEdge {
   type Source = S
   type Tpe = ET
