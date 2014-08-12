@@ -16,7 +16,7 @@ class GoMapper extends AnyMapper{
     val vertex = GoTerm ->> element.vertexAttributes.mapValues(mapValue)
     val vertexId : String = vertex.get(id)
 
-    def toWriteOperation(attributes: Map[String,String]) : List[AnyPutItemAction]   = {
+    def toWriteOperation(attributes: Map[String,String]) : List[PutItemRequest]   = {
       val targetIdentifier : String = attrValue(attributes, targetId.label)
       val rawEdge = Map(
         relationId.label -> (vertexId + targetIdentifier), 
@@ -30,16 +30,8 @@ class GoMapper extends AnyMapper{
 
   private def mapValue(x : String) : AttributeValue = new AttributeValue().withS(x)
 
-  // NOTE: I don't get smth here, but this `.get` doesn't look nice in general
   private def attrValue(attributes : Map[String, String], name : String) : String = attributes.get(name).get
 
-  // NOTE: the general problem that appears here is that we want to _map a value to a type_.
-  // i.e. you want to get a type depending on a value. and generally there is no good solution for this in Scala.
-  private def createEdge(relationType: String, rawEdge: Map[String, AttributeValue]): List[AnyPutItemAction] = {
-    GoWriters.edgeWritersMap.get(relationType) match {
-      case None => List() // no writer were found for this label
-      case Some(writer) => writer.write(writer.element ->> rawEdge)
-    }
-  }
-
+  private def createEdge(relationType: String, rawEdge: Map[String, AttributeValue]): List[PutItemRequest] =
+    GoWriters.edgeWritersMap.get(relationType).fold[List[PutItemRequest]](Nil)(x => x.write(rawEdge))
 }

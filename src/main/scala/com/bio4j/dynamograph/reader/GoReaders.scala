@@ -8,8 +8,8 @@ import ohnosequences.scarph.AnyEdgeType
 
 object GoReaders {
 
-  case object goTermVertexReader            extends VertexReader(GoTerm, GoTermTable, ServiceProvider.dynamoDbExecutor)
-  case object goNamespaceVertexReader       extends VertexReader(GoNamespaces, GoNamespacesTable, ServiceProvider.dynamoDbExecutor)
+  case object goTermVertexReader            extends VertexReader(GoTermTable)
+  case object goNamespaceVertexReader       extends VertexReader(GoNamespacesTable)
 
   case object isAEdgeReader                 extends EdgeReader(IsATables)
   case object hasPartEdgeReader             extends EdgeReader(HasPartTables)

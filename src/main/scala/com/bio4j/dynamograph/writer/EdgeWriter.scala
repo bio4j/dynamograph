@@ -2,28 +2,23 @@ package com.bio4j.dynamograph.writer
 
 import com.bio4j.dynamograph.{ServiceProvider, AnyDynamoEdge}
 import ohnosequences.typesets._
-import ohnosequences.tabula._
 import ohnosequences.scarph._
-import ohnosequences.tabula.impl._
-import ohnosequences.tabula.impl.actions._
 import ohnosequences.tabula.ThroughputStatus
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest
+import com.bio4j.dynamograph.model.Properties._
 import com.bio4j.dynamograph.model.AnyEdgeTables
+import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 
 
 trait AnyEdgeWriter extends AnyWriter{
   type EdgeTables <: Singleton with AnyEdgeTables
-  val AnyWriter : EdgeTables
-}
-
-class EdgeWriter[ET <: AnyEdgeTables](val edgeTables: ET) extends AnyEdgeWriter{
-
-  type EdgeTables = ET
-
-//TODO: replace hardcoded type of the arg 
-  def write(edge: Map[String,AttributeValue]): List[PutItemRequest] = {
+  val edgeTables : EdgeTables
+  
+  //TODO: replace hardcoded type of the arg 
+    def write(edge: Map[String,AttributeValue]): List[PutItemRequest] = {
     val inTableAttrs = Map(
      edgeTables.inTable.hashKey.label -> new AttributeValue().withS(getValue(edge, targetId.label)),
      edgeTables.inTable.rangeKey.label -> new AttributeValue().withS(getValue(edge, relationId.label))
@@ -39,6 +34,13 @@ class EdgeWriter[ET <: AnyEdgeTables](val edgeTables: ET) extends AnyEdgeWriter{
     
     return List(inTableRequest,outTableRequest, tableRequest)
   }
+  
+  private def getValue(attributes : Map[String, AttributeValue], name : String) : String = attributes(name).getS
+}
+
+class EdgeWriter[ET <: Singleton with AnyEdgeTables](val edgeTables: ET) extends AnyEdgeWriter{
+
+  type EdgeTables = ET
 
 }
 

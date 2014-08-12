@@ -23,36 +23,36 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
   implicit def unsafeGetOneOutEdge[E <: Singleton with AnyDynamoEdge {
     type Tpe <: From[dynamoVertex.Tpe] with OneOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
-    def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[List[e.Rep]]
-      it.headOption: Option[e.Rep]
+    def apply(rep: dynamoVertex.Rep): e.tpe.Out[E#Rep] = {
+      val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[List[E#Rep]]
+      it.headOption: Option[E#Rep]
     }
   }
 
   implicit def unsafeGetManyOutEdge[E <: Singleton with AnyDynamoEdge {
     type Tpe <: From[dynamoVertex.Tpe] with ManyOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
-    def apply(rep: dynamoVertex.Rep): e.tpe.Out[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[List[e.Rep]]
-      it: List[e.Rep]
+    def apply(rep: dynamoVertex.Rep): e.tpe.Out[E#Rep] = {
+      val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[List[E#Rep]]
+      it: List[E#Rep]
     }
   }
 
   implicit def unsafeGetOneInEdge[E <: Singleton with AnyDynamoEdge {
     type Tpe <: To[dynamoVertex.Tpe] with OneIn }](e: E): GetInEdge[E] = new GetInEdge[E](e) {
 
-    def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[List[e.Rep]]
-      it.headOption: Option[e.Rep]
+    def apply(rep: dynamoVertex.Rep): e.tpe.In[E#Rep] = {
+      val it = dao.getOutRelationships(getId(rep),e).asInstanceOf[List[E#Rep]]
+      it.headOption: Option[E#Rep]
     }
   }
 
   implicit def unsafeGetManyInEdge[E <: Singleton with AnyDynamoEdge {
     type Tpe <: To[dynamoVertex.Tpe] with ManyIn }](e: E): GetInEdge[E] = new GetInEdge[E](e) {
 
-    def apply(rep: dynamoVertex.Rep): e.tpe.In[e.Rep] = {
-      val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[List[e.Rep]]
-      it.toList: List[e.Rep]
+    def apply(rep: dynamoVertex.Rep): e.tpe.In[E#Rep] = {
+      val it = dao.getOutRelationships(getId(rep), e).asInstanceOf[List[E#Rep]]
+      it.toList: List[E#Rep]
     }
   }
 

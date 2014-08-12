@@ -9,8 +9,8 @@ class DynamoDbDao extends AnyDynamoDbDao{
 
   def get(id : String, vt : AnyDynamoVertex) : Map[String,AttributeValue] = GoReaders.vertexReaders.get(vt).get.read(id)
 
-  def getInRelationships(id : String, et : AnyDynamoEdge) : List[Map[String,AttributeValue]] = GoReaders.edgeReaders.get(et).get.readIn(id)
+  def getInRelationships(id : String, et : AnyDynamoEdge) : List[Map[String,AttributeValue]] = GoReaders.edgeReaders.get(et.tpe).get.readIn(id)
 
-  def getOutRelationships(id : String, et : AnyDynamoEdge) : List[Map[String,AttributeValue]] = GoReaders.edgeReaders.get(et).get.readOut(id)
+  def getOutRelationships(id : String, et : AnyDynamoEdge) : List[Map[String,AttributeValue]] = GoReaders.edgeReaders.get(et.tpe).get.readOut(id)
 
 }

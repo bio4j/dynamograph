@@ -34,7 +34,7 @@ trait AnyEdgeTables {
 }
 
 abstract class EdgeTables[
-  ET <: AnyEdgeType,
+  ET <: Singleton with AnyEdgeType,
   R <: AnyRegion
 ](
   val edgeType : ET,
@@ -45,10 +45,10 @@ abstract class EdgeTables[
     type EdgeType = ET
     
     type InTable = InTable.type; val inTable : InTable = InTable 
-    case object InTable extends CompositeKeyTable(s"${tableName}_IN", id, relationId, region)
+    case object InTable extends CompositeKeyTable(s"${tableName}_IN", targetId, relationId, region)
     
     type OutTable = OutTable.type; val outTable : OutTable = OutTable
-    case object OutTable extends CompositeKeyTable(s"${tableName}_OUT", id, relationId, region)
+    case object OutTable extends CompositeKeyTable(s"${tableName}_OUT", sourceId, relationId, region)
     
     type EdgeTable = EdgeTable.type; val edgeTable : EdgeTable = EdgeTable  
     case object EdgeTable extends HashKeyTable(tableName, relationId, region)

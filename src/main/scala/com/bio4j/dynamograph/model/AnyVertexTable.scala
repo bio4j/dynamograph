@@ -20,7 +20,7 @@ trait AnyVertexTable {
 }
 
  abstract class VertexTable[
-   VT <: AnyVertexType,
+   VT <: Singleton with AnyVertexType,
    R <: AnyRegion
  ](
    val vertexType : VT,

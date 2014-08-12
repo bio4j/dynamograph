@@ -10,7 +10,7 @@ import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 
 trait AnyVertexWriter extends AnyWriter{
-  type VertexTable <: AnyVertexTable
+  type VertexTable <: Singleton with AnyVertexTable
   val vertexTable : VertexTable
 }
 

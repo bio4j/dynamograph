@@ -42,6 +42,6 @@ trait AnyEdgeReader{
 
 
 abstract class EdgeReader[ET <: Singleton with AnyEdgeTables](val edgeTables : ET) extends AnyEdgeReader {
-  type EdgeType = ET
+  type EdgeTables = ET
 
 }
