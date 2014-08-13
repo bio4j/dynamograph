@@ -11,6 +11,9 @@ import scala.collection.JavaConverters._
 trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
   final type Raw = Map[String, AttributeValue]
+  
+  type Tpe <: AnyVertexTypeWithId
+  val tpe : Tpe
 
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 
@@ -58,7 +61,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
   private def getValue[P <: AnyProperty](rep: Rep, p : P ) : P#Value = rep.get(p.label).getOrElse(new AttributeValue().withS("")).getS.asInstanceOf[P#Value]
 
-  private def getId(rep: Rep) : String = getValue(rep, id)
+  private def getId(rep: Rep) : String = getValue(rep, tpe.id)
 
 }
 

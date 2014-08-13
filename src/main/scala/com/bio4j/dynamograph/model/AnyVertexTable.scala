@@ -6,25 +6,26 @@ import ohnosequences.tabula.AnyHashKeyTable
 import ohnosequences.tabula.AnyTable
 import com.bio4j.dynamograph.model.Properties._
 import ohnosequences.tabula.HashKeyTable
+import com.bio4j.dynamograph.AnyVertexTypeWithId
 
 trait AnyVertexTable {
-  type VertexType <: Singleton with AnyVertexType
+  type VertexType <: Singleton with AnyVertexTypeWithId
   val vertexType : VertexType
   
   type Region <: AnyRegion
   val region : Region
   
   type Table <: Singleton with AnyTable.inRegion[Region] with
-                    AnyHashKeyTable.withKey[id.type]
+                    AnyHashKeyTable.withKey[VertexType#Id]
   val table : Table   
 }
 
 object AnyVertexTable{
-  type ofType[VT <: Singleton with AnyVertexType] = AnyVertexTable{type VertexType = VT}
+  type ofType[VT <: Singleton with AnyVertexTypeWithId] = AnyVertexTable{type VertexType = VT}
 }
 
  abstract class VertexTable[
-   VT <: Singleton with AnyVertexType,
+   VT <: Singleton with AnyVertexTypeWithId,
    R <: AnyRegion
  ](
    val vertexType : VT,
@@ -35,5 +36,5 @@ object AnyVertexTable{
     type Region = R
     
     type Table = Table.type; val table : Table = Table  
-    case object Table extends HashKeyTable(tableName, id, region)
+    case object Table extends HashKeyTable(tableName, vertexType.id, region)
   }
