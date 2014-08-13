@@ -8,7 +8,14 @@ trait AnyVertexTypeWithId  extends AnyVertexType{
   val id : Id
 }
 
-abstract class VertexTypeWithId[
+object VertexTypeWithId {
+  /* Additional methods */
+  implicit def vertexTypeOps[VT <: AnyVertexTypeWithId](vt: VT) = VertexTypeOps(vt)
+  case class   VertexTypeOps[VT <: AnyVertexTypeWithId](val vt: VT) 
+    extends HasPropertiesOps(vt) {}
+}
+
+class VertexTypeWithId[
   P <: Singleton with AnyProperty.ofValue[String]
 ](
   val id: P,

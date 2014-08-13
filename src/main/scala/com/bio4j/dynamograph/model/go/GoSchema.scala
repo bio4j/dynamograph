@@ -20,12 +20,19 @@ object GoSchema {
   implicit val GoNamespacesType_id         = GoNamespacesType has id
 
   // Edge Types
-  case object HasPartType             extends EdgeTypeWithId (GoTermType, sourceId, relationId, "hasPart", GoTermType, targetId) with ManyIn with ManyOut
-  case object IsAType                 extends EdgeTypeWithId (GoTermType, sourceId, relationId, "isA", GoTermType, targetId)
-  case object PartOfType              extends EdgeTypeWithId (GoTermType, sourceId, relationId, "partOf", GoTermType, targetId)
-  case object NegativelyRegulatesType extends EdgeTypeWithId (GoTermType, sourceId, relationId, "negativelyRegulates", GoTermType, targetId)
-  case object PositivelyRegulatesType extends EdgeTypeWithId (GoTermType, sourceId, relationId, "positivelyRegulates", GoTermType, targetId)
-  case object RegulatesType           extends EdgeTypeWithId (GoTermType, sourceId, relationId, "regulates", GoTermType, targetId)
-  case object NamespaceType           extends EdgeTypeWithId (GoTermType, sourceId, relationId, "namespace", GoNamespacesType, targetId)
+  case object HasPartType             extends EdgeTypeWithId (GoTermType, sourceId, relationId, "hasPart", GoTermType, targetId) 
+  	with ManyIn with ManyOut
+  case object IsAType                 extends EdgeTypeWithId (GoTermType, sourceId, relationId, "isA", GoTermType, targetId) 
+  	with ManyIn with ManyOut
+  case object PartOfType              extends EdgeTypeWithId (GoTermType, sourceId, relationId, "partOf", GoTermType, targetId) 
+  	with ManyIn with ManyOut
+  case object NegativelyRegulatesType extends EdgeTypeWithId (GoTermType, sourceId, relationId, "negativelyRegulates", GoTermType, targetId) 
+  	with ManyIn with ManyOut
+  case object PositivelyRegulatesType extends EdgeTypeWithId (GoTermType, sourceId, relationId, "positivelyRegulates", GoTermType, targetId) 
+  	with ManyIn with ManyOut
+  case object RegulatesType           extends EdgeTypeWithId (GoTermType, sourceId, relationId, "regulates", GoTermType, targetId) 
+  	with ManyIn with ManyOut
+  case object NamespaceType           extends EdgeTypeWithId (GoTermType, sourceId, relationId, "namespace", GoNamespacesType, targetId) 
+  	with ManyIn with ManyOut
 
 }

@@ -16,7 +16,7 @@ trait AnyVertexTable {
   val region : Region
   
   type Table <: Singleton with AnyTable.inRegion[Region] with
-                    AnyHashKeyTable.withKey[VertexType#Id]
+                    AnyHashKeyTable.withKey[vertexType.Id]
   val table : Table   
 }
 

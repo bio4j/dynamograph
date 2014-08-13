@@ -7,9 +7,11 @@ trait AnyEdgeTypeWithId extends AnyEdgeType {
   type Id <: Singleton with AnyProperty with AnyProperty.ofValue[String]
   val id : Id
   
-   type SourceType <: AnyVertexTypeWithId
+  type SourceType <: Singleton with AnyVertexTypeWithId
+  val sourceType : SourceType
 
-  type TargetType <: AnyVertexTypeWithId
+  type TargetType <: Singleton with AnyVertexTypeWithId
+  val targetType : TargetType
   
   type SourceId <: Singleton with AnyProperty with AnyProperty.ofValue[sourceType.id.Value]
   val sourceId: SourceId
@@ -31,7 +33,7 @@ abstract class EdgeTypeWithId[
   val label: String,
   val targetType: T,
   val targetId: PT
-) extends AnyEdgeTypeWithId with From[S] with To[T] {
+) extends AnyEdgeTypeWithId {
   type Id = P
   type SourceType = S
   type SourceId = PS

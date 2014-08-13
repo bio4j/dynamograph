@@ -12,6 +12,9 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
 
   final type Raw = Map[String, AttributeValue]
+  
+  type Tpe <: Singleton with AnyEdgeTypeWithId
+  val tpe : Tpe
 
   val dao: AnyDynamoDbDao = ServiceProvider.dao
 
@@ -35,21 +38,21 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   implicit object sourceGetter extends GetSource {
     def apply(rep: dynamoEdge.Rep): Out =
-      source ->> dao.get(getValue(rep,sourceId), tpe.et.sourceType)
+      source ->> dao.get(getValue(rep,tpe.sourceId), tpe.et.sourceType)
   }
 
   implicit object targetGetter extends GetTarget {
     def apply(rep: dynamoEdge.Rep): Out =
-      target ->> dao.get(getValue(rep,targetId), tpe.et.targetType)
+      target ->> dao.get(getValue(rep,tpe.targetId), tpe.et.targetType)
   }
-
+  
   // NOTE: why was it private?
   def getValue[P <: AnyProperty](rep: Rep, p : P) : String = rep.get(p.label).getOrElse(new AttributeValue().withS("")).getS
 
 }
 
 class DynamoEdge[
-  ET <: AnyEdgeType,
+  ET <: Singleton with AnyEdgeTypeWithId,
   S <: Singleton with AnyDynamoVertex.ofType[ET#SourceType] with AnyDynamoVertex,
   T <: Singleton with AnyDynamoVertex.ofType[ET#TargetType] with AnyDynamoVertex,
   STab <: Singleton with AnyVertexTable.ofType[ET#SourceType],
@@ -63,5 +66,5 @@ class DynamoEdge[
 }
 
 object AnyDynamoEdge{
-  type ofType[ET <: AnyEdgeType] = AnyDynamoEdge { type Tpe = ET }
+  type ofType[ET <: Singleton with AnyEdgeTypeWithId] = AnyDynamoEdge { type Tpe = ET }
 }

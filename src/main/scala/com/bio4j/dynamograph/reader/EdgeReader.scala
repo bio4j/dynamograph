@@ -17,11 +17,11 @@ trait AnyEdgeReader{
   
   val dbExecutor : AnyDynamoDbExecutor = ServiceProvider.dynamoDbExecutor 
   
-  def readOut(vId : id.Value) : List[Map[String,AttributeValue]] = read(vId, edgeTables.outTable.name)
+  def readOut(vId : EdgeTables#EdgeType#Id#Value) : List[Map[String,AttributeValue]] = read(vId, edgeTables.outTable.name)
 
-  def readIn(vId : id.Value) : List[Map[String,AttributeValue]] = read(vId, edgeTables.inTable.name)
+  def readIn(vId : EdgeTables#EdgeType#Id#Value) : List[Map[String,AttributeValue]] = read(vId, edgeTables.inTable.name)
 
-  private def read(vId : id.Raw, linkingTableName : String) : List[Map[String,AttributeValue]] = {
+  private def read(vId : EdgeTables#EdgeType#Id#Value, linkingTableName : String) : List[Map[String,AttributeValue]] = {
     val hashKeyCondition = new Condition()
       .withComparisonOperator(ComparisonOperator.EQ)
       .withAttributeValueList(new AttributeValue().withS(vId));

@@ -19,17 +19,17 @@ trait AnyEdgeTables {
   val region : Region
   
    type OutTable <:  Singleton with AnyTable.inRegion[Region] with
-                    AnyCompositeKeyTable.withHashKey[EdgeType#SourceId] with
-                    AnyCompositeKeyTable.withRangeKey[EdgeType#Id]
+                    AnyCompositeKeyTable.withHashKey[edgeType.SourceId] with
+                    AnyCompositeKeyTable.withRangeKey[edgeType.Id]
   val outTable : OutTable
   
    type InTable <:  Singleton with AnyTable.inRegion[Region] with
-                    AnyCompositeKeyTable.withHashKey[EdgeType#TargetId] with
-                    AnyCompositeKeyTable.withRangeKey[EdgeType#Id]
+                    AnyCompositeKeyTable.withHashKey[edgeType.TargetId] with
+                    AnyCompositeKeyTable.withRangeKey[edgeType.Id]
   val inTable : InTable
   
   type EdgeTable <: Singleton with AnyTable.inRegion[Region] with
-                    AnyHashKeyTable.withKey[EdgeType#Id]
+                    AnyHashKeyTable.withKey[edgeType.Id]
   val edgeTable : EdgeTable                   
 
 }

@@ -12,7 +12,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
   final type Raw = Map[String, AttributeValue]
   
-  type Tpe <: AnyVertexTypeWithId
+  type Tpe <: Singleton with AnyVertexTypeWithId
   val tpe : Tpe
 
   val dao: AnyDynamoDbDao = ServiceProvider.dao
@@ -65,11 +65,11 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
 }
 
-class DynamoVertex[VT <: Singleton with AnyVertexType](val tpe: VT) extends AnyDynamoVertex {
+class DynamoVertex[VT <: Singleton with AnyVertexTypeWithId](val tpe: VT) extends AnyDynamoVertex {
   type Tpe = VT
 }
 
 object AnyDynamoVertex{
-  type ofType[VT <: AnyVertexType] = AnyDynamoVertex { type Tpe = VT }
+  type ofType[VT <: Singleton with AnyVertexTypeWithId] = AnyDynamoVertex { type Tpe = VT }
 }
 
