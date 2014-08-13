@@ -20,12 +20,12 @@ trait AnyEdgeWriter extends AnyWriter{
   //TODO: replace hardcoded type of the arg 
     def write(edge: Map[String,AttributeValue]): List[PutItemRequest] = {
     val inTableAttrs = Map(
-     edgeTables.inTable.hashKey.label -> new AttributeValue().withS(getValue(edge, targetId.label)),
-     edgeTables.inTable.rangeKey.label -> new AttributeValue().withS(getValue(edge, relationId.label))
+     edgeTables.inTable.hashKey.label -> edge(edgeTables.edgeType.targetId.label),
+     edgeTables.inTable.rangeKey.label -> edge(edgeTables.edgeType.id.label)
     )
     val outTableAttrs = Map(
-      edgeTables.outTable.hashKey.label -> new AttributeValue().withS(getValue(edge, sourceId.label)),
-      edgeTables.outTable.rangeKey.label -> new AttributeValue().withS(getValue(edge, relationId.label))
+      edgeTables.outTable.hashKey.label -> edge(edgeTables.edgeType.sourceId.label),
+      edgeTables.outTable.rangeKey.label -> edge(edgeTables.edgeType.id.label)
     )
 
     val inTableRequest = new PutItemRequest().withTableName(edgeTables.inTable.name).withItem(inTableAttrs)
@@ -34,8 +34,6 @@ trait AnyEdgeWriter extends AnyWriter{
     
     return List(inTableRequest,outTableRequest, tableRequest)
   }
-  
-  private def getValue(attributes : Map[String, AttributeValue], name : String) : String = attributes(name).getS
 }
 
 class EdgeWriter[ET <: Singleton with AnyEdgeTables](val edgeTables: ET) extends AnyEdgeWriter{

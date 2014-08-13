@@ -13,6 +13,7 @@ import scala.math._
 import ohnosequences.tabula.Account
 import ohnosequences.tabula.impl.DynamoDBExecutors
 import com.bio4j.dynamograph.mapper.{GoMapper, AnyMapper}
+import com.bio4j.dynamograph.writer.GoWriters
 
 object ServiceProvider extends AnyServiceProvider {
 
@@ -22,7 +23,7 @@ object ServiceProvider extends AnyServiceProvider {
 
   val dynamoDbExecutor : AnyDynamoDbExecutor = new DynamoDbExecutor(ddb)
 
-  val mapper : AnyMapper = new GoMapper()
+  val mapper : AnyMapper = new GoMapper(GoWriters.goTermVertexWriter, GoWriters.edgeWritersMap)
 
   val executors = new DynamoDBExecutors(
     new DynamoDBClient(EU, ddb) {

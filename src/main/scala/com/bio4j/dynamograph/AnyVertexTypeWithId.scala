@@ -15,7 +15,7 @@ object VertexTypeWithId {
     extends HasPropertiesOps(vt) {}
 }
 
-class VertexTypeWithId[
+abstract class VertexTypeWithId[
   P <: Singleton with AnyProperty.ofValue[String]
 ](
   val id: P,
