@@ -19,6 +19,10 @@ trait AnyVertexTable {
   val table : Table   
 }
 
+object AnyVertexTable{
+  type ofType[VT <: Singleton with AnyVertexType] = AnyVertexTable{type VertexType = VT}
+}
+
  abstract class VertexTable[
    VT <: Singleton with AnyVertexType,
    R <: AnyRegion
