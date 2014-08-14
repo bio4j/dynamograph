@@ -8,6 +8,7 @@ This part of documentation cover next topics:
 ### Code organization
 
 Code is organized in packages that divide code into different responsibilities:
+
 - base package - utils methods, general common code
 - reader - store code for translating high level read request to the DynamoDB requests
 - writer - contains code responsible for interpreting save request and passing them to database

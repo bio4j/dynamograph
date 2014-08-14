@@ -5,7 +5,7 @@ Below you can find description of currently supported datasets.
 ### Gene onthology
 
 What is gene ontology? "Gene ontology describes how gene produces behave in cellular context ..." (from [1][1])
-It was first type of dataset supported by dynamograph.
+It is the first dataset supported by dynamograph, and serves as as proof-of-principle / test dataset.
 
 #### Model
 
@@ -60,6 +60,7 @@ Description of the model presents types of the nodes as well as types of edges
 
 
 ### Sources
+
 - [Gene ontology documentation][1]
 - [Gene ontology relationship description][2]
 - [NCBI Taxonomy home page][3]

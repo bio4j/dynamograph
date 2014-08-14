@@ -1,35 +1,39 @@
 ## General architecture
 
-All operations offered by Dynamograph are strongly related to the data manipulation. As a result application architecture is concentrated mainly around data.
-General plan of system could be described with next layers:
-- user interface layer - there are functions offered for the user of the system
-- scala model layer - there is definition of data model
-- database layer - this layer contains function responsible for data manipulation, communication with database
-- DynamoDB
+All operations offered by Dynamograph are strongly related to data manipulation. As a result application architecture is concentrated mainly around data.
 
-Diagram below present layered architecture of the system:
+General plan of system could be described with next layers:
+
+- user interface layer - functions offered for the user of the system
+- Scala model layer - definition of the data model
+- database layer - functions responsible for data manipulation, communication with database
+- DynamoDB <!-- TODO DynamoDB? -->
+
+The diagram below presents the layered architecture of the system:
 
 ![Layered architecture][architecture]
 
-###Writing
+### Writing
 
-Writing data to DynamoDb could be divide into 2 phases:
-- parsing/gathering data
-- uploading to data to db
-What is more writing data is organized into stream.
+Writing data to DynamoDb could be divided in 2 phases:
 
-Diagram below represent standard workflow of saving data to db.
+- parsing / gathering data
+- uploading the data to db
+- 
+What is more writing data is organized into stream. <!-- TODO what do you mean here? -->
+
+The diagram below represents the standard workflow of saving data to DynamoDB.
 
 ![Writing workflow][writing]
 
-##### Parsing/gathering data
+##### Parsing / gathering data
 
 This phase is responsible for parsing data located in source files and storing them in an intermediate format. At beginning files with data are parsed into singleElements which are further processed to the universal representation. This step is specific for type of dataset - in other words for each of dataset this phase should be different.
 
 
 ##### Uploading data to DynamoDB
 
-There happens real writes to database. Data stored in intermediate format is translated into DynamoDb requests which are further executed. This step is specific for database to which data will be saved.
+Here is where we are actually writing to the database. Data stored in intermediate format is translated into DynamoDb requests which are further executed. This step is specific for database to which data will be saved.
 
 Thanks to organizing writing into 2 phases and introducing intermediate format it is easy to extend collection of supported datasets or use another database. All things that developer must do is just implementing proper phase (parsing ow uploading) depending what he or she is trying to achieve.
 
