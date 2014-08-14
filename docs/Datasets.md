@@ -4,12 +4,12 @@ Below you can find description of currently supported datasets.
 
 ### Gene onthology
 
-What is gene ontology? "Gene ontology describes how gene produces behave in cellular context ..." (from [1][1])
-It is the first dataset supported by dynamograph, and serves as as proof-of-principle / test dataset.
+What is gene ontology? "Gene ontology describes how gene produces behave in cellular context ..." (from [\[1\]][1]).
+It is the first dataset supported by Dynamograph, and serves as a proof-of-concept / test dataset.
 
 #### Model
 
-The most important node is Description of the model presents types of the nodes as well as types of edges
+Description of the model presents types of the nodes as well as types of edges
 
 ##### Nodes
 
@@ -23,6 +23,7 @@ The most important node is Description of the model presents types of the nodes 
   * id
 
 ##### Edges
+
 - is a
 - has part
 - part of
@@ -34,7 +35,7 @@ The most important node is Description of the model presents types of the nodes 
 ### Ncbi Taxonomy
 
 The Taxonomy Database is a curated classification and nomenclature for all of the organisms in the public sequence databases.
-This currently represents about 10% of the described species of life on the planet.[2][3]
+This currently represents about 10% of the described species of life on the planet.[\[2\]][3]
 
 #### Model
 
@@ -61,9 +62,9 @@ Description of the model presents types of the nodes as well as types of edges
 
 ### Sources
 
-- [Gene ontology documentation][1]
-- [Gene ontology relationship description][2]
-- [NCBI Taxonomy home page][3]
+- \[1\]: [Gene ontology documentation][1]
+- \[2\]: [Gene ontology relationship description][2]
+- \[3\]: [NCBI Taxonomy home page][3]
 
 [1]: http://www.geneontology.org/page/documentation
 [2]: http://www.geneontology.org/page/ontology-relations

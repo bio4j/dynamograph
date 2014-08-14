@@ -1,6 +1,6 @@
 ## Project usage
 
-This section explain how you can use dynamograph with your own data and AWS infrastructure.
+This section explain how you can use Dynamograph with your own data and AWS infrastructure.
 
 ### Prerequisites
 
@@ -74,7 +74,7 @@ val attributeValue = vertex get identify // there you will get value of the id a
 ```
 
 As you can see usage of Dynamograh when you have vertices or edges are extremely easy, but what in case that you want to get some vertex but everything you know about vertex is just `id`.
-In such case dynamograph offer special service that you can use for it. Code below presents how to use it:
+In such case Dynamograph offer special service that you can use for it. Code below presents how to use it:
 
 <!-- Is this like explained here right now? -->
 
