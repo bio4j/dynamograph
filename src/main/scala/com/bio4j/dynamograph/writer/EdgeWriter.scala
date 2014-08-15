@@ -4,10 +4,8 @@ import com.bio4j.dynamograph.default._
 import com.typesafe.scalalogging.LazyLogging
 import treelog.LogTreeSyntaxWithoutAnnotations._
 import scalaz._
-import Scalaz._
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest
-import com.bio4j.dynamograph.model.Properties._
 import com.bio4j.dynamograph.model.AnyEdgeTables
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
