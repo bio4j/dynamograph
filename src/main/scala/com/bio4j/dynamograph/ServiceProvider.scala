@@ -6,7 +6,6 @@ import ohnosequences.tabula.impl.{CredentialProviderChains, DynamoDBClient, Dyna
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
 import com.amazonaws.regions.{Regions, Region}
 import ohnosequences.tabula.impl.DynamoDBExecutors
-import ohnosequences.tabula.Account
 import com.amazonaws.services.dynamodbv2.model.LimitExceededException
 import scala.math._
 import ohnosequences.tabula.Account
@@ -20,7 +19,7 @@ object ServiceProvider extends AnyServiceProvider {
 
   val dynamoDbExecutor : AnyDynamoDbExecutor = new DynamoDbExecutor(ddb)
 
-  val mapper : AnyMapper = new GoMapper(GoWriters.goTermVertexWriter, GoWriters.edgeWritersMap)
+  val mapper : AnyMapper = new GoMapper(GoWriters.vertexWritersMap, GoWriters.edgeWritersMap)
 
   val executors = new DynamoDBExecutors(
     new DynamoDBClient(EU, ddb) {

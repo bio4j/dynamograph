@@ -1,13 +1,13 @@
 package com.bio4j.dynamograph.parser.go
 
 import com.bio4j.dynamograph.model.Properties._
-import com.bio4j.dynamograph.model.go.GoSchema.{NamespaceType, IsAType}
+import com.bio4j.dynamograph.model.go.GoSchema.{GoTermType, NamespaceType, IsAType}
 import org.specs2.mutable.Specification
 import org.specs2.specification.Scope
 import scala.io.Source
-import com.bio4j.dynamograph.parser.go.PullGoParser
 import com.bio4j.dynamograph.parser.ParsingContants
 import com.bio4j.dynamograph.parser.SingleElement
+
 
 class PullGoParserTest extends Specification {
 
@@ -24,6 +24,7 @@ class PullGoParserTest extends Specification {
       val vertex = result.head.vertexAttributes
       vertex(id.label) must beEqualTo("GO:0000001")
       vertex(name.label) must beEqualTo("mitochondrion inheritance")
+      vertex(ParsingContants.vertexType) must beEqualTo(GoTermType.label)
       vertex(definition.label) must beEqualTo("The distribution of mitochondria, including the mitochondrial genome, into daughter cells after mitosis or meiosis, mediated by interactions between mitochondria and the cytoskeleton.")
     }
 

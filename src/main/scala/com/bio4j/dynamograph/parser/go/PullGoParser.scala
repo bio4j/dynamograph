@@ -36,6 +36,7 @@ class PullGoParser(val src: Source) extends AnyGoParser {
         case _ => ()
       }
     }
+    vertex += ((ParsingContants.vertexType, GoTermType.label))
     SingleElement(vertex, edges)
   }
 
