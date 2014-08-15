@@ -1,11 +1,10 @@
 package com.bio4j.dynamograph
 
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
+import com.bio4j.dynamograph.model.AnyEdgeTables
+import com.bio4j.dynamograph.reader.AnyEdgeReader
 import ohnosequences.scarph._
 import ohnosequences.typesets._
-import com.bio4j.dynamograph.dao.go.{AnyDynamoDbDao}
-import com.bio4j.dynamograph.model.Properties._
-import com.bio4j.dynamograph.model.AnyVertexTable
 
 
 trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
@@ -16,19 +15,18 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
   type Tpe <: Singleton with AnyEdgeTypeWithId
   val tpe : Tpe
 
-  val dao: AnyDynamoDbDao = ServiceProvider.dao
 
   type Source <: AnyDynamoVertex.ofType[Tpe#SourceType] with AnyDynamoVertex
   val source: Source
 
   type Target <: AnyDynamoVertex.ofType[Tpe#TargetType] with AnyDynamoVertex
   val target: Target
-  
-  type SourceTable <: Singleton with AnyVertexTable.ofType[Tpe#SourceType]
-  val sourceTable : SourceTable
-  
-  type TargetTable <: Singleton with AnyVertexTable.ofType[Tpe#TargetType]
-  val targetTable : TargetTable
+
+  type Tables <: Singleton with AnyEdgeTables.withEdgeType[Tpe]
+  val tables : Tables
+
+  type Reader <: Singleton with AnyEdgeReader.withTableType[Tables]
+  val reader: Reader
 
 
   implicit def unsafeGetProperty[P <: AnyProperty: Property.Of[this.Tpe]#is](p: P) =
@@ -38,12 +36,12 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
   implicit object sourceGetter extends GetSource {
     def apply(rep: dynamoEdge.Rep): Out =
-      source ->> dao.get(getValue(rep,tpe.sourceId), tpe.et.sourceType)
+      source ->> source.reader.read(getValue(rep,tpe.sourceId))
   }
 
   implicit object targetGetter extends GetTarget {
     def apply(rep: dynamoEdge.Rep): Out =
-      target ->> dao.get(getValue(rep,tpe.targetId), tpe.et.targetType)
+      target ->> target.reader.read(getValue(rep,tpe.targetId))
   }
   
   // NOTE: why was it private?
@@ -55,14 +53,20 @@ class DynamoEdge[
   ET <: Singleton with AnyEdgeTypeWithId,
   S <: Singleton with AnyDynamoVertex.ofType[ET#SourceType] with AnyDynamoVertex,
   T <: Singleton with AnyDynamoVertex.ofType[ET#TargetType] with AnyDynamoVertex,
-  STab <: Singleton with AnyVertexTable.ofType[ET#SourceType],
-  TTab <: Singleton with AnyVertexTable.ofType[ET#TargetType]
-](val source: S, val sourceTable: STab, val tpe: ET, val target: T,val targetTable: TTab) extends AnyDynamoEdge {
+  ETab <: Singleton with AnyEdgeTables.withEdgeType[ET],
+  R <: Singleton with AnyEdgeReader.withTableType[ETab]
+](
+  val source: S,
+  val tpe: ET,
+  val target: T,
+  val tables : ETab,
+  val reader : R
+) extends AnyDynamoEdge {
   type Source = S
   type Tpe = ET
   type Target = T
-  type SourceTable = STab
-  type TargetTable = TTab
+  type Tables = ETab
+  type Reader = R
 }
 
 object AnyDynamoEdge{

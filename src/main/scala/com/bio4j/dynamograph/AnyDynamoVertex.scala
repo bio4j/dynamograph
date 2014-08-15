@@ -1,11 +1,11 @@
 package com.bio4j.dynamograph
 
+import com.bio4j.dynamograph.reader.AnyVertexReader
 import ohnosequences.scarph._
 import ohnosequences.typesets._
-import com.bio4j.dynamograph.dao.go.AnyDynamoDbDao
-import com.bio4j.dynamograph.model.Properties._
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import scala.collection.JavaConverters._
+import com.bio4j.dynamograph.model.AnyVertexTable
 
 
 trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
@@ -14,8 +14,12 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
   
   type Tpe <: Singleton with AnyVertexTypeWithId
   val tpe : Tpe
+  
+  type Table <: Singleton with AnyVertexTable.withVertexType[Tpe]
+  val table : Table
 
-  val dao: AnyDynamoDbDao = ServiceProvider.dao
+  type Reader <: Singleton with AnyVertexReader.withTableType[Table]
+  val reader : Reader
 
   implicit def unsafeGetProperty[P <: AnyProperty: Property.Of[this.Tpe]#is](p: P) =
     new PropertyGetter[P](p) {
@@ -27,7 +31,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: From[dynamoVertex.Tpe] with OneOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[E#Rep] = {
-      val it = dao.getOutRelationships(getId(rep), e.tpe).asInstanceOf[List[E#Rep]]
+      val it = e.reader.readOut(getId(rep)).asInstanceOf[List[E#Rep]]
       it.headOption: Option[E#Rep]
     }
   }
@@ -36,7 +40,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: From[dynamoVertex.Tpe] with ManyOut }](e: E): GetOutEdge[E] = new GetOutEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.Out[E#Rep] = {
-      val it = dao.getOutRelationships(getId(rep),e.tpe).asInstanceOf[List[E#Rep]]
+      val it = e.reader.readOut(getId(rep)).asInstanceOf[List[E#Rep]]
       it: List[E#Rep]
     }
   }
@@ -45,7 +49,7 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: To[dynamoVertex.Tpe] with OneIn }](e: E): GetInEdge[E] = new GetInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[E#Rep] = {
-      val it = dao.getOutRelationships(getId(rep),e.tpe).asInstanceOf[List[E#Rep]]
+      val it = e.reader.readIn(getId(rep)).asInstanceOf[List[E#Rep]]
       it.headOption: Option[E#Rep]
     }
   }
@@ -54,19 +58,25 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
     type Tpe <: To[dynamoVertex.Tpe] with ManyIn }](e: E): GetInEdge[E] = new GetInEdge[E](e) {
 
     def apply(rep: dynamoVertex.Rep): e.tpe.In[E#Rep] = {
-      val it = dao.getOutRelationships(getId(rep), e.tpe).asInstanceOf[List[E#Rep]]
+      val it = e.reader.readIn(getId(rep)).asInstanceOf[List[E#Rep]]
       it.toList: List[E#Rep]
     }
   }
 
   private def getValue[P <: AnyProperty](rep: Rep, p : P ) : P#Value = rep.get(p.label).getOrElse(new AttributeValue().withS("")).getS.asInstanceOf[P#Value]
 
-  private def getId(rep: Rep) : String = getValue(rep, tpe.id)
+  private def getId(rep: Rep) : Tpe#Id#Value = getValue(rep, tpe.id)
 
 }
 
-class DynamoVertex[VT <: Singleton with AnyVertexTypeWithId](val tpe: VT) extends AnyDynamoVertex {
+class DynamoVertex[
+  VT <: Singleton with AnyVertexTypeWithId,
+  VTab <: Singleton with AnyVertexTable.withVertexType[VT],
+  R <: Singleton with AnyVertexReader.withTableType[VTab]
+](val tpe: VT, val table : VTab, val reader: R) extends AnyDynamoVertex {
   type Tpe = VT
+  type Table = VTab
+  type Reader = R
 }
 
 object AnyDynamoVertex{

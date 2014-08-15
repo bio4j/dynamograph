@@ -1,6 +1,5 @@
 package com.bio4j.dynamograph
 
-import com.bio4j.dynamograph.dao.go.{DynamoDbDao, AnyDynamoDbDao}
 import com.bio4j.dynamograph.dynamodb.{DynamoDbExecutor, AnyDynamoDbExecutor}
 import ohnosequences.tabula._
 import ohnosequences.tabula.impl.{CredentialProviderChains, DynamoDBClient, DynamoDBExecutors}
@@ -16,8 +15,6 @@ import com.bio4j.dynamograph.mapper.{GoMapper, AnyMapper}
 import com.bio4j.dynamograph.writer.GoWriters
 
 object ServiceProvider extends AnyServiceProvider {
-
-  val dao = new DynamoDbDao
 
   val ddb : AmazonDynamoDBClient = new AmazonDynamoDBClient(CredentialProviderChains.default)
 

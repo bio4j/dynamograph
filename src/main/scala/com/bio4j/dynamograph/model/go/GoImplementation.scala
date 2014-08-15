@@ -3,20 +3,28 @@ package com.bio4j.dynamograph.model.go
 import com.bio4j.dynamograph.{DynamoEdge, DynamoVertex}
 import com.bio4j.dynamograph.model.go.GoSchema._
 import com.bio4j.dynamograph.model.go.TableGoImplementation._
+import com.bio4j.dynamograph.reader.GoReaders._
 
 
 object GoImplementation {
 
   // vertices
-  case object GoTerm              extends DynamoVertex(GoTermType)
-  case object GoNamespaces        extends DynamoVertex(GoNamespacesType)
+  case object GoTerm              extends DynamoVertex(GoTermType, GoTermTable , goTermVertexReader)
+  case object GoNamespaces        extends DynamoVertex(GoNamespacesType, GoNamespacesTable, goNamespaceVertexReader)
 
   //edges
-  case object HasPart             extends DynamoEdge(GoTerm, GoTermTable, HasPartType, GoTerm, GoTermTable)
-  case object IsA                 extends DynamoEdge(GoTerm, GoTermTable, IsAType, GoTerm, GoTermTable)
-  case object PartOf              extends DynamoEdge(GoTerm, GoTermTable, PartOfType, GoTerm, GoTermTable)
-  case object NegativelyRegulates extends DynamoEdge(GoTerm, GoTermTable, NegativelyRegulatesType, GoTerm, GoTermTable)
-  case object PositivelyRegulates extends DynamoEdge(GoTerm, GoTermTable, PositivelyRegulatesType, GoTerm, GoTermTable)
-  case object Regulates           extends DynamoEdge(GoTerm, GoTermTable, RegulatesType, GoTerm, GoTermTable)
-  case object Namespace           extends DynamoEdge(GoTerm, GoTermTable, NamespaceType, GoNamespaces, GoNamespacesTable)
+  case object HasPart             extends DynamoEdge(
+    GoTerm, HasPartType, GoTerm, HasPartTables, hasPartEdgeReader)
+  case object IsA                 extends DynamoEdge(
+    GoTerm, IsAType, GoTerm, IsATables, isAEdgeReader)
+  case object PartOf              extends DynamoEdge(
+    GoTerm, PartOfType, GoTerm, PartOfTables, partOfEdgeReader)
+  case object NegativelyRegulates extends DynamoEdge(
+    GoTerm, NegativelyRegulatesType, GoTerm, NegativelyRegulatesTables, negativelyRegulatesEdgeReader)
+  case object PositivelyRegulates extends DynamoEdge(
+    GoTerm, PositivelyRegulatesType, GoTerm, PositivelyRegulatesTables, positivelyRegulatesEdgeReader)
+  case object Regulates           extends DynamoEdge(
+    GoTerm, RegulatesType, GoTerm, RegulatesTables, regulatesEdgeReader)
+  case object Namespace           extends DynamoEdge(
+    GoTerm, NamespaceType, GoNamespaces, NamespaceTables, namespaceEdgeReader)
 }

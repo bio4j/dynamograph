@@ -1,6 +1,7 @@
 package com.bio4j.dynamograph.reader
 
 import com.amazonaws.services.dynamodbv2.model.{AttributeValue, GetItemRequest}
+import com.bio4j.dynamograph.AnyVertexTypeWithId
 import com.bio4j.dynamograph.model.Properties.id
 import scala.collection.JavaConversions._
 import com.bio4j.dynamograph.dynamodb.AnyDynamoDbExecutor
@@ -18,6 +19,10 @@ trait AnyVertexReader{
 	    .withKey(Map(id.label -> new AttributeValue().withS(identifier)))
 	  dbExecutor.execute(request)
   }
+}
+
+object AnyVertexReader{
+  type withTableType[VT <: Singleton with AnyVertexTable] = AnyVertexReader {type VertexTable = VT}
 }
 
 class VertexReader[VT <: Singleton with AnyVertexTable](val vertexTable : VT, override val dbExecutor : AnyDynamoDbExecutor) extends AnyVertexReader{

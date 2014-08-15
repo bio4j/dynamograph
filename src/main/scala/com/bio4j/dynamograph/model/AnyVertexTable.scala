@@ -21,7 +21,7 @@ trait AnyVertexTable {
 }
 
 object AnyVertexTable{
-  type ofType[VT <: Singleton with AnyVertexTypeWithId] = AnyVertexTable{type VertexType = VT}
+  type withVertexType[VT <: Singleton with AnyVertexTypeWithId] = AnyVertexTable{type VertexType = VT}
 }
 
  abstract class VertexTable[

@@ -34,6 +34,10 @@ trait AnyEdgeTables {
 
 }
 
+object AnyEdgeTables{
+  type withEdgeType[E <: Singleton with AnyEdgeTypeWithId] = AnyEdgeTables {type EdgeType = E}
+}
+
 abstract class EdgeTables[
   ET <: Singleton with AnyEdgeTypeWithId,
   R <: AnyRegion

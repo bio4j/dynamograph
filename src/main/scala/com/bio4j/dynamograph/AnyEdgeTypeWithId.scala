@@ -33,11 +33,11 @@ abstract class EdgeTypeWithId[
   val label: String,
   val targetType: T,
   val targetId: PT
-) extends AnyEdgeTypeWithId {
+) extends AnyEdgeTypeWithId with From[S] with To[T] {
   type Id = P
-  type SourceType = S
+  override type SourceType = S
   type SourceId = PS
-  type TargetType = T
+  override type TargetType = T
   type TargetId = PT
 }
 

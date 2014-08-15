@@ -1,5 +1,6 @@
 package com.bio4j.dynamograph.reader
 
+import com.bio4j.dynamograph.AnyEdgeTypeWithId
 import com.bio4j.dynamograph.model._
 import ohnosequences.tabula.AnyCompositeKeyTable
 import com.amazonaws.services.dynamodbv2.model._
@@ -34,6 +35,10 @@ trait AnyEdgeReader{
       Map(edgeTables.edgeTable.name -> new KeysAndAttributes().withKeys(tableKeys)))
     dbExecutor.execute(batchRequest)
   }
+}
+
+object AnyEdgeReader{
+  type withTableType[ET <: Singleton with AnyEdgeTables] = AnyEdgeReader{ type EdgeTables = ET}
 }
 
 
