@@ -11,22 +11,19 @@ class VertexWriterTest extends Specification {
 
   "Vertex Writer" should {
     "return single Put Item Request" in new context {
-      object writer extends VertexWriter(TestVertexTable)
-      val result = writer.write(rep)
+      val result = underTest.write(rep)
 
       result should have size 1
     }
 
     "return Put Item Request for correct table" in new context {
-      object writer extends VertexWriter(TestVertexTable)
-      val result = writer.write(rep)
+      val result = underTest.write(rep)
 
       result.head.getTableName must be equalTo (TestVertexTable.tableName)
     }
 
     "return correct Put Item Request" in new context {
-      object writer extends VertexWriter(TestVertexTable)
-      val result = writer.write(rep)
+      val result = underTest.write(rep)
 
       result.head.getItem must be equalTo (item.asJava)
     }
@@ -36,5 +33,6 @@ class VertexWriterTest extends Specification {
   trait context extends Scope {
     val item = Map(testModel.testId.label -> new AttributeValue().withS("testId"), testModel.name.label -> new AttributeValue().withS("testName"))
     val rep = TestVertex ->> Map(testModel.testId.label -> new AttributeValue().withS("testId"), testModel.name.label -> new AttributeValue().withS("testName"))
+    object underTest extends VertexWriter(TestVertexTable)
   }
 }

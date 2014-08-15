@@ -4,7 +4,6 @@ import com.bio4j.dynamograph.model.go.GoImplementation._
 import com.bio4j.dynamograph.model.Properties.{relationId, targetId, sourceId, id}
 import com.bio4j.dynamograph.parser.{ParsingContants, SingleElement}
 import com.amazonaws.services.dynamodbv2.model.{PutItemRequest, AttributeValue}
-import com.bio4j.dynamograph.writer.GoWriters
 import ohnosequences.scarph.ops.default._
 import com.bio4j.dynamograph.writer.AnyEdgeWriter
 import com.bio4j.dynamograph.writer.AnyVertexWriter
@@ -13,7 +12,7 @@ class GoMapper(val vertexWriter : AnyVertexWriter,val edgeWriters : Map[String, 
 
   override def map(element: SingleElement): List[PutItemRequest] = {
     val vertex = GoTerm ->> element.vertexAttributes.mapValues(mapValue)
-    val vertexId : String = vertex.get(id)
+    val vertexId : String = element.vertexAttributes(id.label)
 
     def toWriteOperation(attributes: Map[String,String]) : List[PutItemRequest]   = {
       val targetIdentifier : String = attrValue(attributes, targetId.label)
@@ -33,5 +32,5 @@ class GoMapper(val vertexWriter : AnyVertexWriter,val edgeWriters : Map[String, 
   private def attrValue(attributes : Map[String, String], name : String) : String = attributes.get(name).get
 
   private def createEdge(relationType: String, rawEdge: Map[String, AttributeValue]): List[PutItemRequest] =
-    edgeWriters.get(relationType).fold[List[PutItemRequest]](Nil)(x => x.write(rawEdge))
+    edgeWriters(relationType).write(rawEdge)
 }

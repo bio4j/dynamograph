@@ -15,7 +15,6 @@ class DynamoDbExecutor(val ddb: AmazonDynamoDB) extends AnyDynamoDbExecutor {
     var result : QueryResult = ddb.query(request)
     val resultList = result.getItems
     while (result.getLastEvaluatedKey !=null){
-      //TODO: exponential backoff?
       request.withExclusiveStartKey(result.getLastEvaluatedKey)
       result = ddb.query(request)
       resultList ++= result.getItems
@@ -28,7 +27,6 @@ class DynamoDbExecutor(val ddb: AmazonDynamoDB) extends AnyDynamoDbExecutor {
     var result = ddb.batchGetItem(request)
     var resultList = flattenResult(result)
     while (result.getUnprocessedKeys.size() > 0){
-      //TODO: exponential backoff?
       request.withRequestItems(result.getUnprocessedKeys)
       result = ddb.batchGetItem(request)
       resultList ++= flattenResult(result)
