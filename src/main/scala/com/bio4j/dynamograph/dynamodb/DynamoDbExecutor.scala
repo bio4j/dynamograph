@@ -65,10 +65,10 @@ class DynamoDbExecutor(val ddb: AmazonDynamoDB) extends AnyDynamoDbExecutor with
   private def withinTry[A](tag : String)(f: => A): A = {
     try{
       val startTime = System.nanoTime()
-      logger.debug(s"start request $tag: ${startTime}")
+      logger.debug(s"start request $tag: $startTime")
       val result = f
       val endTime = System.nanoTime()
-      logger.debug(s"end request $tag: ${endTime}")
+      logger.debug(s"end request $tag: $endTime - execution time: ${endTime - startTime} result: $result")
       logger.info(s"Execution time of $tag: ${endTime-startTime}")
       result
     } catch {
