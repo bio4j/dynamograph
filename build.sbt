@@ -15,7 +15,7 @@ skip in update := true
 libraryDependencies ++= Seq(
   "ohnosequences" %% "scarph" % "0.2.0-SNAPSHOT",
   "ohnosequences" %% "tabula" % "0.1.0-SNAPSHOT",
-  //"com.typesafe.scala-logging" %% "scala-logging-slf4j" % "3.0.0", currentlu unavailable for 2.11
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
   "com.amazonaws" % "aws-java-sdk" % "1.8.0",
   "org.scala-lang.modules" %% "scala-xml" % "1.0.2",
   "org.scalatest" %% "scalatest" % "2.1.6" % "test",
@@ -27,6 +27,7 @@ dependencyOverrides ++= Set(
   "org.apache.httpcomponents" % "httpclient" % "4.2",
   "commons-codec" % "commons-codec" % "1.7",
   "com.amazonaws" % "aws-java-sdk" % "1.8.0",
+  "org.slf4j" % "slf4j-api" % "1.7.7",
   "com.fasterxml.jackson.core" % "jackson-core" % "2.1.2",
   "com.fasterxml.jackson.core" % "jackson-databind" % "2.1.2",
   "com.fasterxml.jackson.core" % "jackson-annotations" % "2.1.2",
