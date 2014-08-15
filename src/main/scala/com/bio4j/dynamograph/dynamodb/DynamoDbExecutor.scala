@@ -11,7 +11,7 @@ import java.util
 
 class DynamoDbExecutor(val ddb: AmazonDynamoDB) extends AnyDynamoDbExecutor with LazyLogging {
 
-  override def execute(request: QueryRequest): List[Map[String, AttributeValue]] = withinTry("execute(QueryRequest)") {
+  override def execute(request: QueryRequest): List[Map[String, AttributeValue]] = withinTry("execute(QueryRequest): " + request) {
     var result : QueryResult = ddb.query(request)
     val resultList = result.getItems
     while (result.getLastEvaluatedKey !=null){
@@ -23,7 +23,7 @@ class DynamoDbExecutor(val ddb: AmazonDynamoDB) extends AnyDynamoDbExecutor with
   }
 
 
-  override def execute(request: BatchGetItemRequest): List[Map[String, AttributeValue]] = withinTry("execute(BatchGetItemRequest)") {
+  override def execute(request: BatchGetItemRequest): List[Map[String, AttributeValue]] = withinTry("execute(BatchGetItemRequest): " + request) {
     var result = ddb.batchGetItem(request)
     var resultList = flattenResult(result)
     while (result.getUnprocessedKeys.size() > 0){
@@ -34,14 +34,14 @@ class DynamoDbExecutor(val ddb: AmazonDynamoDB) extends AnyDynamoDbExecutor with
     resultList.map(x => x.asScala.toMap).toList
   }
 
-  override def execute(request: GetItemRequest): Map[String, AttributeValue] = withinTry("execute(GetItemRequest)") {
+  override def execute(request: GetItemRequest): Map[String, AttributeValue] = withinTry("execute(GetItemRequest): " + request) {
     ddb.getItem(request).getItem match {
       case null => Map()
       case item: java.util.Map[String,AttributeValue] => item.asScala.toMap
     }
   }
 
-  override def execute(requests : List[PutItemRequest]) : Unit = withinTry("execute(List[PutItemRequest])") {
+  override def execute(requests : List[PutItemRequest]) : Unit = withinTry("execute(List[PutItemRequest]): " + requests) {
     val writeRequestItems : java.util.Map[String,java.util.List[WriteRequest]] = new util.HashMap[String,java.util.List[WriteRequest]]()
     for (request <- requests){
       if (!writeRequestItems.containsKey(request.getTableName)){
@@ -65,8 +65,10 @@ class DynamoDbExecutor(val ddb: AmazonDynamoDB) extends AnyDynamoDbExecutor with
   private def withinTry[A](tag : String)(f: => A): A = {
     try{
       val startTime = System.nanoTime()
+      logger.debug(s"start request $tag: ${startTime}")
       val result = f
       val endTime = System.nanoTime()
+      logger.debug(s"end request $tag: ${endTime}")
       logger.info(s"Execution time of $tag: ${endTime-startTime}")
       result
     } catch {
