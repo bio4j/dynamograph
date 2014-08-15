@@ -1,12 +1,13 @@
-package com.bio4j.dynamograph.parser
+package com.bio4j.dynamograph.parser.go
 
-import com.bio4j.dynamograph.mapper.GoMapper
 import com.bio4j.dynamograph.model.Properties._
 import com.bio4j.dynamograph.model.go.GoSchema.{NamespaceType, IsAType}
 import org.specs2.mutable.Specification
 import org.specs2.specification.Scope
-
 import scala.io.Source
+import com.bio4j.dynamograph.parser.go.PullGoParser
+import com.bio4j.dynamograph.parser.ParsingContants
+import com.bio4j.dynamograph.parser.SingleElement
 
 class PullGoParserTest extends Specification {
 

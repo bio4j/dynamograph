@@ -1,10 +1,11 @@
-package com.bio4j.dynamograph.parser
+package com.bio4j.dynamograph.parser.go
 
 import scala.xml.pull._
 import scala.io.Source
 import com.bio4j.dynamograph.model.Properties._
 import com.bio4j.dynamograph.model.go.GoSchema._
-import scala.xml.MetaData
+import com.bio4j.dynamograph.parser.ParsingContants
+import com.bio4j.dynamograph.parser.SingleElement
 
 
 class PullGoParser(val src: Source) extends AnyGoParser {
