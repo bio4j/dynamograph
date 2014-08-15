@@ -6,13 +6,12 @@ import ohnosequences.typesets._
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import scala.collection.JavaConverters._
 import com.bio4j.dynamograph.model.AnyVertexTable
-
-import scala.reflect.ClassTag
+import com.bio4j.dynamograph.default._
 
 
 trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
 
-  final type Raw = Map[String, AttributeValue]
+  final type Raw = Representation
   
   type Tpe <: Singleton with AnyVertexTypeWithId
   val tpe : Tpe
@@ -63,14 +62,6 @@ trait AnyDynamoVertex extends AnyVertex { dynamoVertex =>
       val it = e.reader.readIn(getId(rep)).asInstanceOf[List[E#Rep]]
       it.toList: List[E#Rep]
     }
-  }
-
-  private def getValue[P <: AnyProperty](rep: Rep, p : P ): P#Value = {
-      val attr = rep.get(p.label).getOrElse(new AttributeValue().withS(""))
-      Option(attr.getN) match {
-        case Some(n) if !n.isEmpty => attr.getN.toInt.asInstanceOf[P#Value]
-        case _ => attr.getS.asInstanceOf[P#Value]
-      }
   }
 
   private def getId(rep: Rep) : Tpe#Id#Value = getValue(rep, tpe.id)

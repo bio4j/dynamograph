@@ -1,6 +1,6 @@
 package com.bio4j.dynamograph.writer
 
-import com.bio4j.dynamograph.{ServiceProvider, AnyDynamoEdge}
+import com.bio4j.dynamograph.default._
 import ohnosequences.typesets._
 import ohnosequences.scarph._
 import ohnosequences.tabula.ThroughputStatus
@@ -13,11 +13,11 @@ import scala.collection.JavaConverters._
 
 
 
-trait AnyEdgeWriter extends AnyWriter{
+trait AnyEdgeWriter extends AnyWriter {
   type EdgeTables <: Singleton with AnyEdgeTables
   val edgeTables : EdgeTables
   
-  def write(edge: Map[String,AttributeValue]): List[PutItemRequest] = {
+  def write(edge: Representation): List[PutItemRequest] = {
     val inTableAttrs = Map(
      edgeTables.inTable.hashKey.label -> edge(edgeTables.edgeType.targetId.label),
      edgeTables.inTable.rangeKey.label -> edge(edgeTables.edgeType.id.label)

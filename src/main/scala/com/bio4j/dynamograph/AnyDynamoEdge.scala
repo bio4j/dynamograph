@@ -1,17 +1,16 @@
 package com.bio4j.dynamograph
 
-import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.bio4j.dynamograph.model.AnyEdgeTables
 import com.bio4j.dynamograph.reader.AnyEdgeReader
 import ohnosequences.scarph._
 import ohnosequences.typesets._
-import scala.reflect.ClassTag
+import com.bio4j.dynamograph.default._
 
 
 trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
 
-  final type Raw = Map[String, AttributeValue]
+  final type Raw = Representation
   
   type Tpe <: Singleton with AnyEdgeTypeWithId
   val tpe : Tpe
@@ -43,14 +42,6 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
   implicit object targetGetter extends GetTarget {
     def apply(rep: dynamoEdge.Rep): Out =
       target ->> target.reader.read(getValue(rep,tpe.targetId))
-  }
-
-  private def getValue[P <: AnyProperty](rep: Rep, p : P ): P#Value = {
-    val attr = rep.get(p.label).getOrElse(new AttributeValue().withS(""))
-    Option(attr.getN) match {
-      case Some(n) if !n.isEmpty => attr.getN.toInt.asInstanceOf[P#Value]
-      case _ => attr.getS.asInstanceOf[P#Value]
-    }
   }
 
 }
