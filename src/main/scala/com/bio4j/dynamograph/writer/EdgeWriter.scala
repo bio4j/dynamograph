@@ -17,8 +17,7 @@ trait AnyEdgeWriter extends AnyWriter{
   type EdgeTables <: Singleton with AnyEdgeTables
   val edgeTables : EdgeTables
   
-  //TODO: replace hardcoded type of the arg 
-    def write(edge: Map[String,AttributeValue]): List[PutItemRequest] = {
+  def write(edge: Map[String,AttributeValue]): List[PutItemRequest] = {
     val inTableAttrs = Map(
      edgeTables.inTable.hashKey.label -> edge(edgeTables.edgeType.targetId.label),
      edgeTables.inTable.rangeKey.label -> edge(edgeTables.edgeType.id.label)

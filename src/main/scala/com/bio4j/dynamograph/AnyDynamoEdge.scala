@@ -5,6 +5,7 @@ import com.bio4j.dynamograph.model.AnyEdgeTables
 import com.bio4j.dynamograph.reader.AnyEdgeReader
 import ohnosequences.scarph._
 import ohnosequences.typesets._
+import scala.reflect.ClassTag
 
 
 trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
@@ -43,9 +44,14 @@ trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
     def apply(rep: dynamoEdge.Rep): Out =
       target ->> target.reader.read(getValue(rep,tpe.targetId))
   }
-  
-  // NOTE: why was it private?
-  def getValue[P <: AnyProperty](rep: Rep, p : P) : String = rep.get(p.label).getOrElse(new AttributeValue().withS("")).getS
+
+  private def getValue[P <: AnyProperty](rep: Rep, p : P ): P#Value = {
+    val attr = rep.get(p.label).getOrElse(new AttributeValue().withS(""))
+    Option(attr.getN) match {
+      case Some(n) if !n.isEmpty => attr.getN.toInt.asInstanceOf[P#Value]
+      case _ => attr.getS.asInstanceOf[P#Value]
+    }
+  }
 
 }
 

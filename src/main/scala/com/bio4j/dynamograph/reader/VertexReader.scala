@@ -13,10 +13,10 @@ trait AnyVertexReader{
   
   val dbExecutor : AnyDynamoDbExecutor
   
-    def read(identifier : id.Value) : Map[String,AttributeValue] = {
+    def read(identifier : VertexTable#VertexType#Id#Value) : Map[String,AttributeValue] = {
 	  val request = new GetItemRequest()
 	    .withTableName(vertexTable.table.name)
-	    .withKey(Map(id.label -> new AttributeValue().withS(identifier)))
+	    .withKey(Map(vertexTable.vertexType.id.label -> new AttributeValue().withS(identifier)))
 	  dbExecutor.execute(request)
   }
 }
