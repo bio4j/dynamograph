@@ -11,7 +11,7 @@ import org.specs2.mock._
 import org.specs2.mutable._
 import org.specs2.specification.Scope
 
-class GoMapperTest extends Specification with Mockito{
+class GoMapperTest extends Specification with Mockito {
 
   "GoMapper " should {
 
@@ -31,6 +31,13 @@ class GoMapperTest extends Specification with Mockito{
       override val underTest = new GoMapper(vertexWriters, Map())
       underTest.map(
         SingleElement(Map(id.label -> "testLabel", ParsingContants.vertexType -> "aa"),Nil)
+      ) must throwA[NoSuchElementException]
+    }
+
+    "throw exception for vertex attributes without id" in new context{
+      override val underTest = new GoMapper(vertexWriters, Map())
+      underTest.map(
+        SingleElement(Map(testModel.name.label -> "testLabel", ParsingContants.vertexType -> TestVertexType.label),Nil)
       ) must throwA[NoSuchElementException]
     }
 

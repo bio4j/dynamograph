@@ -4,6 +4,7 @@ import com.bio4j.dynamograph.default._
 import com.typesafe.scalalogging.LazyLogging
 import treelog.LogTreeSyntaxWithoutAnnotations._
 import scalaz._
+import Scalaz._
 import com.amazonaws.services.dynamodbv2.model.AttributeValue
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest
 import com.bio4j.dynamograph.model.AnyEdgeTables
@@ -18,7 +19,7 @@ trait AnyEdgeWriter extends AnyWriter with LazyLogging {
   
   def write(edge: Representation): List[PutItemRequest] = {
     val result = prepareWriteResults(edge).run
-    logger.debug(result.written.toString)
+    logger.debug(result.written.shows)
     result.value.getOrElse(Nil)
   }
 

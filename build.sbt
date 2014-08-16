@@ -30,7 +30,7 @@ libraryDependencies ++= Seq(
 )
 
 dependencyOverrides ++= Set(
-  "ohnosequences" %% "type-sets" % "0.5.0-SNAPSHOT",
+  "ohnosequences" %% "type-sets" % "0.4.99-SNAPSHOT",
   "org.apache.httpcomponents" % "httpclient" % "4.2",
   "commons-codec" % "commons-codec" % "1.7",
   "com.amazonaws" % "aws-java-sdk" % "1.8.0",

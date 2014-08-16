@@ -5,6 +5,7 @@ import com.bio4j.dynamograph.model.AnyVertexTable
 import com.typesafe.scalalogging.LazyLogging
 import treelog.LogTreeSyntaxWithoutAnnotations._
 import scalaz._
+import Scalaz._
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import com.bio4j.dynamograph.default._
@@ -15,7 +16,7 @@ trait AnyVertexWriter extends AnyWriter with LazyLogging {
 
   def write(vertex: Representation): List[PutItemRequest] = {
     val result = preparePutItemRequest(vertex).run
-    logger.debug(result.written.toString)
+    logger.debug(result.written.shows)
     result.value.getOrElse(Nil)
   }
 

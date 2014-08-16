@@ -3,6 +3,7 @@ package com.bio4j.dynamograph.reader
 import com.typesafe.scalalogging.LazyLogging
 import treelog.LogTreeSyntaxWithoutAnnotations._
 import scalaz._
+import Scalaz._
 import com.bio4j.dynamograph.model._
 import ohnosequences.tabula.AnyCompositeKeyTable
 import com.amazonaws.services.dynamodbv2.model._
@@ -22,7 +23,7 @@ trait AnyEdgeReader extends LazyLogging {
 
   private def read(vId : EdgeTables#EdgeType#Id#Value, table : AnyCompositeKeyTable) : List[Map[String,AttributeValue]] = {
     val result = executeRead(vId, table).run
-    logger.debug(result.written.toString)
+    logger.debug(result.written.shows)
     result.value.getOrElse(Nil)
 
   }

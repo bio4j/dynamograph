@@ -7,6 +7,7 @@ import com.bio4j.dynamograph.dynamodb.AnyDynamoDbExecutor
 import com.bio4j.dynamograph.model.AnyVertexTable
 import treelog.LogTreeSyntaxWithoutAnnotations._
 import scalaz._
+import Scalaz._
 
 trait AnyVertexReader extends LazyLogging {
   type VertexTable <: Singleton with AnyVertexTable
@@ -16,7 +17,7 @@ trait AnyVertexReader extends LazyLogging {
   
   def read(identifier : VertexTable#VertexType#Id#Value) : Map[String,AttributeValue] = {
       val result = executeRead(identifier).run
-      logger.debug(result.written.toString)
+      logger.debug(result.written.shows)
       result.value.getOrElse(Map())
   }
 
