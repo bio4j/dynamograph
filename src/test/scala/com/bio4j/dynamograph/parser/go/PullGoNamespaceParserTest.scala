@@ -1,7 +1,8 @@
 package com.bio4j.dynamograph.parser.go
 
 import com.bio4j.dynamograph.model.Properties.name
-import com.bio4j.dynamograph.parser.SingleElement
+import com.bio4j.dynamograph.model.go.GoSchema.GoNamespacesType
+import com.bio4j.dynamograph.parser.{ParsingContants, SingleElement}
 import org.specs2.mutable.Specification
 import org.specs2.specification.Scope
 
@@ -35,7 +36,10 @@ class PullGoNamespaceParserTest extends Specification {
 
     val result = scala.collection.mutable.MutableList[SingleElement]()
 
-    val expectedVertexValue = new SingleElement(Map(name.label -> "biological_process"),Nil)
+    val expectedVertexValue = new SingleElement(Map(
+      name.label -> "biological_process",
+      ParsingContants.vertexType -> GoNamespacesType.label
+    ),Nil)
 
     val singleEntry = """biological_process""".stripMargin
 
