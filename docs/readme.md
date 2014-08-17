@@ -13,7 +13,7 @@ This document is divided into several units — each of them covering different 
 
 ## Introduction
 
-Dynamograph is a simple graph database based on [DynamoDB][1]. Its design is heavily influenced by the needs of [Bio4j](http://bio4j.com), so it would be a nice fit for those scenarios where _TODO explain/link to these particular needs — project assumptions?_
+Dynamograph is a simple graph database based on [DynamoDB][1]. Its design is heavily influenced by the needs of [Bio4j](http://bio4j.com), which you can find in project assumptions section.
 
 This part of the documentation provides general overview of the project.
 

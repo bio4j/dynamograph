@@ -43,3 +43,10 @@ It could be done by implementing custom readers and writers that will operate on
 
 [packages]: img/packages.png
 
+### Limitations
+
+Below you can find limitations for current implementation: 
+- attribute could be a string or a number - only those 2 types are supported
+- identifier must be a number 
+As project is based on DynamoDb it also inherit some limits from database.
+
