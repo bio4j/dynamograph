@@ -29,7 +29,7 @@ One of the project thaw was build over Dynamograph functionalities concentrated 
 There user finds methods for retrieving data from DynamoDB and map them to scala model.
 This group is more important as it will be more often used (writing will be used just for filling db with data).
 
-Reading is lazy - when you are reading vertex you will get only its attributes - if you want to read edges another call to database must be executed.
+One of the most important attribute of reading is laziness - when you are reading vertex you will get only its attributes (without any information about edges) - if you want to read edges another call to database must be executed.
 Thanks to such organization we reasonable utilize memory and throughput offered by dynamodb. 
 
 

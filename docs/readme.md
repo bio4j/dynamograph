@@ -53,10 +53,9 @@ This has a profound impact on the design of tables, that reflects this kind of r
 - a table storing the connection between an edge and its in-vertex
 - a table storing the connection between edge and its out-vertex
 
-<aside class="notice">
-- **in-vertex** — vertex to which come directed edge
-- **out-vertex** — vertex from which come directed edge
-</aside>
+
+> **in-vertex** — vertex to which come directed edge
+> **out-vertex** — vertex from which come directed edge
 
 ## Why DynamoDB?
 
