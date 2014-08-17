@@ -7,7 +7,7 @@ General plan of system could be described with next layers:
 - user interface layer — functions offered for the user of the system
 - Scala model layer — definition of the data model
 - database layer — functions responsible for data manipulation, communication with database
-- DynamoDB <!-- TODO DynamoDB? -->
+- DynamoDB — storage layer, persist data 
 
 The diagram below presents the layered architecture of the system:
 
@@ -20,7 +20,11 @@ Writing data to DynamoDB could be divided in 2 phases:
 - parsing / gathering data
 - uploading the data to db
 
-What is more writing data is organized into stream. <!-- TODO what do you mean here? -->
+What is more writing data is organized into stream of next phases:
+ - parsing chunk of the file
+ - mapping it to the intermediate form
+ - translating form to the put request
+ - executing request
 
 The diagram below represents the standard workflow of saving data to DynamoDB.
 

@@ -16,7 +16,7 @@ Code is organized in packages that divide code into different responsibilities:
 - `parser` — classes and functions for turning raw data into intermediate form
 - `model` — definition of scala model for supported datasets
 - `mapper` — sources for mapping intermediate parser output to the abstract intermediate format
-- `dao` — there is code that orchestrate database requests
+- `dynamodb` — there is code that invoke database requests
 
 Diagram below presents package organization of the project
 

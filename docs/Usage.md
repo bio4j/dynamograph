@@ -1,6 +1,6 @@
 ## Project usage
 
-This section explain how you can use Dynamograph with your own data and AWS infrastructure.
+This section explains how you can use Dynamograph with your own data and AWS infrastructure.
 
 ### Prerequisites
 
@@ -33,9 +33,19 @@ object Dynamograph {
 
 On the other hand method: `TableModelInitializer.clear()` will remove tables fron DynamoDB.
 
-<!-- I'd add another section about parsing here -->
+##### Parsing
 
-##### data uploading
+Before you will able to save data to DynamoDb you should prepare data - parse to the representation acceptable by service responsible for writing. 
+What is extremely important that parsing large files should read chunks and pass them further to the processing. 
+Currently you can parse file by next commands:
+```scala
+val elements = new PullGoParser(Source.fromFile("test_file.owl))
+```
+As a result you will receive `Iterables` on which you can apply function `(SingleElement) => U // U is type parameter`
+
+
+
+##### Data uploading
 
 Firstly you should identify the dataset on which you want to work and find proper parser for it (parser is part of the project). For each of the parser there also should be mapper which translates parser output to the intermediate form.
 Received intermediate form you could pass to the service which you can get from Service Provider.
@@ -73,13 +83,11 @@ val vertex: GoTerm // vertex that you have
 val attributeValue = vertex get identify // there you will get value of the id attribute 
 ```
 
-As you can see usage of Dynamograh when you have vertices or edges are extremely easy, but what in case that you want to get some vertex but everything you know about vertex is just `id`.
-In such case Dynamograph offer special service that you can use for it. Code below presents how to use it:
-
-<!-- Is this like explained here right now? -->
+As you can see usage of Dynamograph when you have vertices or edges is extremely easy, but what in case that you want to get some vertex but everything you know about vertex is just `id`.
+In such case Dynamograph offer reader for each of the vertex type. All you need to do is just to invoke read method for appropriate reader. Code below illustrates reading GOTerm by id:
 
 ``` scala
-val result = ServiceProvider.dao.get(id_of_the_vertex,vertex_type) 
+val result =  GoTerm ->> goTermVertexReader.read(id_of_the_vertex) 
 // result of this invocation returns vertex with given id and type - in case of success otherwise exception
 ```
 

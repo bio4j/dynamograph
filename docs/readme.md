@@ -60,8 +60,9 @@ This has a profound impact on the design of tables, that reflects this kind of r
 
 ## Why DynamoDB?
 
-<!-- TODO Something's missing here -->
-Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+> DynamoDB is a fast, fully managed NoSQL database as a service that makes it simple and cost-effective to store and retrieve any amount of data, and serve any level of request traffic
+
+The main reason for choosing DynamoDb as database is scalability and performance. Database characteristics enables building powerful solutions.
 
 
 ## Interactions with other tools
