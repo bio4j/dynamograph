@@ -34,7 +34,7 @@ trait AnyEdgeReader extends LazyLogging {
         hashKeyCondition <- prepareHashKeyCondition(vId)
         request <- prepareQueryRequest(table.name, table.hashKey.label, hashKeyCondition)
         requestResult <- dbExecutor.execute(request) ~> "Executing query request"
-        tableKeys <- prepareTableKeys(table.hashKey.label, requestResult) ~> "Preparing table keys"
+        tableKeys <- prepareTableKeys(edgeTables.edgeTable.hashKey.label, requestResult) ~> "Preparing table keys"
         batchRequest <- prepareBatchRequest(edgeTables.edgeTable.name, tableKeys)
         batchResult <- dbExecutor.execute(batchRequest) ~> "Executing batch request"
       } yield batchResult

@@ -88,10 +88,10 @@ class EdgeReaderTest extends Specification with Mockito {
       Map(ParsingContants.relationType -> TestVertexType.label, targetId.label -> "GO:0048311"),
       Map(ParsingContants.relationType -> TestVertexType.label, targetId.label -> "biological_process")
     )
-    val inQueryResult = List(Map(TestEdgeTables.inTable.hashKey.label -> new AttributeValue().withS("GO:0048311")) )
+    val inQueryResult = List(Map(TestEdgeTables.inTable.rangeKey.label -> new AttributeValue().withS("GO:0048311")) )
     val inBatch = List(Map[String,AttributeValue](),Map[String,AttributeValue](),Map[String,AttributeValue]())
     //List[Map[String, AttributeValue]]
-    val outQueryResult = List(Map(TestEdgeTables.outTable.hashKey.label -> new AttributeValue().withS("GO:2048311")))
+    val outQueryResult = List(Map(TestEdgeTables.outTable.rangeKey.label -> new AttributeValue().withS("GO:2048311")))
     val outBatch = List(Map[String,AttributeValue](),Map[String,AttributeValue]())
     val ddb = mock[AnyDynamoDbExecutor]
   }
