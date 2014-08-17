@@ -6,31 +6,30 @@ import com.bio4j.dynamograph.model.go.GoSchema._
 
 object GoWriters {
 
-  val goTermVertexWriter = new VertexWriter(GoTerm, GoTermTable)
+  case object goTermVertexWriter            extends VertexWriter(GoTermTable)
+  case object goNamespaceVertexWriter       extends VertexWriter(GoNamespacesTable)
 
-  val goNamespaceVertexWriter = new VertexWriter(GoNamespaces, GoNamespacesTable)
+  case object isAEdgeWriter                 extends EdgeWriter(IsATables)
+  case object partOfEdgeWriter              extends EdgeWriter(PartOfTables)
+  case object hasPartEdgeWriter             extends EdgeWriter(HasPartTables)
+  case object positivelyRegulatesEdgeWriter extends EdgeWriter(PositivelyRegulatesTables)
+  case object negativelyRegulatesEdgeWriter extends EdgeWriter(NegativelyRegulatesTables)
+  case object regulatesEdgeWriter           extends EdgeWriter(RegulatesTables)
+  case object namespaceEdgeWriter           extends EdgeWriter(NamespaceTables)
 
-  val isAEdgeWriter = new EdgeWriter(IsA, IsATables)
+  val vertexWritersMap = Map[String, AnyVertexWriter] (
+    GoTermType.label              -> goTermVertexWriter,
+    GoNamespacesType.label        -> goNamespaceVertexWriter
+  )
 
-  val partOfEdgeWriter = new EdgeWriter(PartOf, PartOfTables)
-
-  val hasPartEdgeWriter = new EdgeWriter(HasPart, HasPartTables)
-
-  val positivelyRegulatesEdgeWriter = new EdgeWriter(PositivelyRegulates, PositivelyRegulatesTables)
-
-  val negativelyRegulatesEdgeWriter = new EdgeWriter(NegativelyRegulates, NegativelyRegulatesTables)
-
-  val regulatesEdgeWriter = new EdgeWriter(Regulates, RegulatesTables)
-
-  val namespaceEdgeWriter = new EdgeWriter(Namespace, NamespaceTables)
-
-  val edgeWriters = Map(IsAType.label -> isAEdgeWriter,
-    PartOfType.label -> partOfEdgeWriter,
-    HasPartType.label -> hasPartEdgeWriter,
+  val edgeWritersMap = Map[String, AnyEdgeWriter] (
+    IsAType.label                 -> isAEdgeWriter,
+    PartOfType.label              -> partOfEdgeWriter,
+    HasPartType.label             -> hasPartEdgeWriter,
     PositivelyRegulatesType.label -> positivelyRegulatesEdgeWriter,
     NegativelyRegulatesType.label -> negativelyRegulatesEdgeWriter,
-    RegulatesType.label -> regulatesEdgeWriter,
-    NamespaceType.label -> namespaceEdgeWriter)
-
+    RegulatesType.label           -> regulatesEdgeWriter,
+    NamespaceType.label           -> namespaceEdgeWriter
+  )
 
 }

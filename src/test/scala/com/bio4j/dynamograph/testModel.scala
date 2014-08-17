@@ -1,26 +1,37 @@
 package com.bio4j.dynamograph
 
-import ohnosequences.tabula.{EU, Attribute}
-import ohnosequences.scarph.{ManyToMany, VertexType}
-import com.bio4j.dynamograph.model.go.TableGoSchema.{EdgeTables, VertexTable}
-import com.bio4j.dynamograph.model.go.GoImplementation.GoTerm
+import com.bio4j.dynamograph.model.go._
+import com.bio4j.dynamograph.model.Properties._
+import com.bio4j.dynamograph._
+import ohnosequences.typesets._
+import ohnosequences.tabula._
+import ohnosequences.scarph._
+import ohnosequences.tabula.impl._
+import com.bio4j.dynamograph.model._
+import com.bio4j.dynamograph.reader.VertexReader
+import com.bio4j.dynamograph.reader.EdgeReader
 
 object testModel {
 
-  case object id extends Attribute[Int]
+  case object testId extends Property[String]
 
-  case object name extends Attribute[String]
+  case object edgeId extends Property[String]
+  case object name extends Property[String]
 
-  object testVertexType extends VertexType("TestVertexType")
+  object TestVertexType       extends VertexTypeWithId(testId, "testVertexType")
+  implicit val TestVertexType_id         = TestVertexType has testId
 
-  object testEdgeType extends ManyToMany (testVertexType, "testEdgeType", testVertexType)
+  case object TestEdgeType    extends EdgeTypeWithId (TestVertexType, sourceId, relationId, "testEdgeType", TestVertexType, targetId) 
+  	with ManyIn with ManyOut
 
-  case object testVertex extends DynamoVertex(testVertexType)
+  case object TestVertexTable extends VertexTable(TestVertexType, "TestVertex", EU)
+  case object TestEdgeTables  extends EdgeTables(TestEdgeType, "TestEdge", EU)
+  
+  case object vertexReader    extends VertexReader(TestVertexTable, ServiceProvider.dynamoDbExecutor) 			
+  case object edgeReader      extends EdgeReader(TestEdgeTables, ServiceProvider.dynamoDbExecutor)
+  	
+  case object TestVertex      extends DynamoVertex(TestVertexType, TestVertexTable, vertexReader)
 
-  case object testEdge extends DynamoEdge(testVertex,testEdgeType,testVertex)
-
-  case object testVertexTable extends VertexTable(testVertex, "TestVertex", EU)
-
-  case object testEdgeTable extends EdgeTables(testEdge, "TestVertex", EU)
+  case object testEdge        extends DynamoEdge(TestVertex, TestEdgeType, TestVertex, TestEdgeTables, edgeReader)
 
  }

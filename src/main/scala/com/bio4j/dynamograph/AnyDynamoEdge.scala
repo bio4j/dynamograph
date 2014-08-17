@@ -1,50 +1,71 @@
 package com.bio4j.dynamograph
 
-import com.amazonaws.services.dynamodbv2.model.AttributeValue
+import com.bio4j.dynamograph.model.AnyEdgeTables
+import com.bio4j.dynamograph.reader.AnyEdgeReader
 import ohnosequences.scarph._
-import com.bio4j.dynamograph.dao.go.{AnyDynamoDbDao}
-import com.bio4j.dynamograph.model.GeneralSchema._
+import ohnosequences.typesets._
+import com.bio4j.dynamograph.default._
 
 
 trait AnyDynamoEdge extends AnyEdge { dynamoEdge =>
 
 
-  final type Raw = Map[String, AttributeValue]
+  final type Raw = Representation
+  
+  type Tpe <: Singleton with AnyEdgeTypeWithId
+  val tpe : Tpe
 
-  val dao: AnyDynamoDbDao = ServiceProvider.dao
 
-  type Source <: AnyVertex.ofType[Tpe#SourceType] with AnyDynamoVertex
+  type Source <: AnyDynamoVertex.ofType[Tpe#SourceType] with AnyDynamoVertex
   val source: Source
 
-  type Target <: AnyVertex.ofType[Tpe#TargetType] with AnyDynamoVertex
+  type Target <: AnyDynamoVertex.ofType[Tpe#TargetType] with AnyDynamoVertex
   val target: Target
+
+  type Tables <: Singleton with AnyEdgeTables.withEdgeType[Tpe]
+  val tables : Tables
+
+  type Reader <: Singleton with AnyEdgeReader.withTableType[Tables]
+  val reader: Reader
 
 
   implicit def unsafeGetProperty[P <: AnyProperty: Property.Of[this.Tpe]#is](p: P) =
     new PropertyGetter[P](p) {
-      def apply(rep: dynamoEdge.Rep) : p.Raw = getValue(rep, p.label).asInstanceOf[p.Raw]
+      def apply(rep: Rep) : p.Raw = getValue(rep, p).asInstanceOf[p.Raw]
     }
 
   implicit object sourceGetter extends GetSource {
     def apply(rep: dynamoEdge.Rep): Out =
-      source ->> dao.get(getValue(rep,sourceId.label), source)
+      source ->> source.reader.read(getValue(rep,tpe.sourceId))
   }
 
   implicit object targetGetter extends GetTarget {
-    def apply(rep: dynamoEdge.Rep): target.Rep =
-      target ->> dao.get(getValue(rep,targetId.label), target)
+    def apply(rep: dynamoEdge.Rep): Out =
+      target ->> target.reader.read(getValue(rep,tpe.targetId))
   }
-
-  private def getValue(rep: Rep, attributeName : String) : String = rep.get(attributeName).getOrElse(new AttributeValue().withS("")).getS
 
 }
 
 class DynamoEdge[
-ET <: AnyEdgeType,
-S <: Singleton with AnyVertex.ofType[ET#SourceType] with AnyDynamoVertex,
-T <: Singleton with AnyVertex.ofType[ET#TargetType] with AnyDynamoVertex
-](val source: S, val tpe: ET, val target: T) extends AnyDynamoEdge {
+  ET <: Singleton with AnyEdgeTypeWithId,
+  S <: Singleton with AnyDynamoVertex.ofType[ET#SourceType] with AnyDynamoVertex,
+  T <: Singleton with AnyDynamoVertex.ofType[ET#TargetType] with AnyDynamoVertex,
+  ETab <: Singleton with AnyEdgeTables.withEdgeType[ET],
+  R <: Singleton with AnyEdgeReader.withTableType[ETab]
+](
+  val source: S,
+  val tpe: ET,
+  val target: T,
+  val tables : ETab,
+  val reader : R
+) extends AnyDynamoEdge {
   type Source = S
   type Tpe = ET
   type Target = T
+  type Tables = ETab
+  type Reader = R
+}
+
+object AnyDynamoEdge{
+  type ofType[ET <: Singleton with AnyEdgeTypeWithId] = AnyDynamoEdge { type Tpe = ET }
 }

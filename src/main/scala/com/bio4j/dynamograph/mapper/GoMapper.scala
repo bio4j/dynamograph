@@ -1,41 +1,34 @@
 package com.bio4j.dynamograph.mapper
 
-import com.bio4j.dynamograph.model.go.GoImplementation._
-import com.bio4j.dynamograph.model.GeneralSchema.{relationId, targetId, sourceId, id}
+import com.bio4j.dynamograph.model.Properties.{relationId, targetId, sourceId, id}
 import com.bio4j.dynamograph.parser.{ParsingContants, SingleElement}
 import com.amazonaws.services.dynamodbv2.model.{PutItemRequest, AttributeValue}
-import com.bio4j.dynamograph.model.go.GoSchema._
-import com.bio4j.dynamograph.writer.GoWriters
-import ohnosequences.scarph.ops.default._
+import com.bio4j.dynamograph.writer.AnyEdgeWriter
+import com.bio4j.dynamograph.writer.AnyVertexWriter
 
-
-class GoMapper extends AnyMapper{
+class GoMapper(val vertexWriters : Map[String, AnyVertexWriter],val edgeWriters : Map[String, AnyEdgeWriter]) extends AnyMapper{
 
   override def map(element: SingleElement): List[PutItemRequest] = {
-    val vertex = GoTerm ->> element.vertexAttributes.mapValues(mapValue)
-    val vertexId : String = vertex.get(id)
+    val vertex = element.vertexAttributes.mapValues(mapValue).filterKeys(!_.equals(ParsingContants.vertexType))
+    val vertexId : String = element.vertexAttributes(id.label)
 
     def toWriteOperation(attributes: Map[String,String]) : List[PutItemRequest]   = {
       val targetIdentifier : String = attrValue(attributes, targetId.label)
-      val rawEdge = Map(relationId.label -> (vertexId + targetIdentifier), sourceId.label -> vertexId, targetId.label -> targetIdentifier).
-        mapValues(mapValue)
+      val rawEdge = (Map(
+        relationId.label -> (vertexId + targetIdentifier), 
+        sourceId.label   -> vertexId, 
+        targetId.label   -> targetIdentifier
+      ) ++ attributes.filterKeys(x => !x.equals(targetId.label) && !x.equals(ParsingContants.relationType))
+      ).mapValues(mapValue)
       createEdge(attrValue(attributes, ParsingContants.relationType), rawEdge)
     }
-    GoWriters.goTermVertexWriter.write(vertex) ::: element.edges.map(toWriteOperation).flatten
+    vertexWriters(element.vertexAttributes(ParsingContants.vertexType)).write(vertex) ::: element.edges.map(toWriteOperation).flatten
   }
 
   private def mapValue(x : String) : AttributeValue = new AttributeValue().withS(x)
 
   private def attrValue(attributes : Map[String, String], name : String) : String = attributes.get(name).get
 
-  private def createEdge(relationType : String, rawEdge : Map[String, AttributeValue]) : List[PutItemRequest] = relationType match {
-    case relType if relType == IsAType.label => GoWriters.isAEdgeWriter.write (IsA ->> rawEdge)
-    case relType if relType == HasPartType.label => GoWriters.hasPartEdgeWriter.write (HasPart ->> rawEdge)
-    case relType if relType == PartOfType.label => GoWriters.partOfEdgeWriter.write (PartOf ->> rawEdge)
-    case relType if relType == NegativelyRegulatesType.label => GoWriters.negativelyRegulatesEdgeWriter.write (NegativelyRegulates ->> rawEdge)
-    case relType if relType == PositivelyRegulatesType.label => GoWriters.positivelyRegulatesEdgeWriter.write (PositivelyRegulates ->> rawEdge)
-    case relType if relType == RegulatesType.label => GoWriters.regulatesEdgeWriter.write (Regulates ->> rawEdge)
-    case relType if relType == NamespaceType.label => GoWriters.namespaceEdgeWriter.write (Namespace ->> rawEdge)
-  }
-
+  private def createEdge(relationType: String, rawEdge: Map[String, AttributeValue]): List[PutItemRequest] =
+    edgeWriters(relationType).write(rawEdge)
 }

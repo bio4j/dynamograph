@@ -1,17 +1,36 @@
 package com.bio4j.dynamograph.writer
 
-import com.bio4j.dynamograph.model.go.TableGoSchema.VertexTable
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest
-import ohnosequences.tabula.AnyRegion
+import com.bio4j.dynamograph.model.AnyVertexTable
+import com.typesafe.scalalogging.LazyLogging
+import treelog.LogTreeSyntaxWithoutAnnotations._
+import scalaz._
+import Scalaz._
 import scala.collection.JavaConversions._
-import com.bio4j.dynamograph.AnyDynamoVertex
+import scala.collection.JavaConverters._
+import com.bio4j.dynamograph.default._
 
+trait AnyVertexWriter extends AnyWriter with LazyLogging {
+  type VertexTable <: Singleton with AnyVertexTable
+  val vertexTable : VertexTable
 
-class VertexWriter[VT <:AnyDynamoVertex, R <:AnyRegion](val vType: VT, val vertexTable : VertexTable[VT,R]) extends AnyVertexWriter {
-  type writeType = PutItemRequest
-  type vertexType = VT
-
-  def write(vertex: vertexType#Rep) : List[writeType] = {
-    return List(new PutItemRequest().withTableName(vertexTable.tableName).withItem(vertex))
+  def write(vertex: Representation): List[PutItemRequest] = {
+    val result = preparePutItemRequest(vertex).run
+    logger.debug(result.written.shows)
+    result.value.getOrElse(Nil)
   }
+
+  private def preparePutItemRequest(vertex: Representation) = {
+    "Calculation of putItemRequest" ~< {
+      for {
+        tableName <- vertexTable.table.name ~> ("Table name = " + _)
+        item <- vertex ~> ("Attributes = " + _)
+        itemRequest <- new PutItemRequest().withTableName(vertexTable.table.name).withItem(vertex) ~> ("PutItemRequest = " + _)
+      } yield List(itemRequest)
+    }
+  }
+}
+
+class VertexWriter[VT <: Singleton with AnyVertexTable](val vertexTable : VT) extends AnyVertexWriter {
+  type VertexTable = VT
 }
