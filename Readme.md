@@ -3,7 +3,7 @@
 Dynamograph is simple graph database based on DynamoDb.
 It offers possibility of persisting and retrieving data organized in graph structures.
 
-More information about the project, meaning of name etc you can find in next documentation sections:
+More information about the project you can find in next sections of documentation:
 
 1. [Introduction](docs/readme.md)
 1. [Functionalities](docs/Functionalities.md)
