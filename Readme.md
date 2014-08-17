@@ -1,4 +1,4 @@
-### Dynamograp
+### Dynamograph
 
 Dynamograph is simple graph database based on DynamoDb.
 It offers possibility of persisting and retrieving data organized in graph structures.
