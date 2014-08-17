@@ -30,7 +30,7 @@ class PullGoParser(val src: Source) extends AnyGoParser {
       parser.next match {
         case EvElemEnd(_, "Class") => done = true
         case EvElemStart(pre, "Class", attrs, _) => skip("Class", parser)
-        case EvElemStart(pre, "subClassOf", attrs, _) => edges ::= parseSingleRelation(attrs, parser)
+        case EvElemStart(pre, "subClassOf", attrs, _) =>  edges :::= (parseSingleRelation(attrs, parser))
         case EvElemStart(pre, PullGoParser.namespaceTag, _, _) => edges ::= parseNamespaceRelation(parser)
         case EvElemStart(pre, label, _, _) if PullGoParser.mapping.contains(label) => vertex += parseSingleProperty(label, parser)
         case _ => ()
@@ -77,13 +77,13 @@ class PullGoParser(val src: Source) extends AnyGoParser {
     Map(ParsingContants.relationType -> NamespaceType.label, targetId.label -> value)
   }
 
-  private def parseSingleRelation(attrs : scala.xml.MetaData,parser: XMLEventReader) : Map[String, String] =
+  private def parseSingleRelation(attrs : scala.xml.MetaData,parser: XMLEventReader) : List[Map[String, String]] =
     getAttributeValue(attrs, PullGoParser.resource) match {
-      case Some(StringPrefixMatcher(id)) => Map(ParsingContants.relationType -> IsAType.label, targetId.label -> id)
+      case Some(StringPrefixMatcher(id)) => List(Map(ParsingContants.relationType -> IsAType.label, targetId.label -> id))
       case _ => parseCompoundRelation(parser)
     }
 
-  private def parseCompoundRelation(parser: XMLEventReader) : Map[String, String] = {
+  private def parseCompoundRelation(parser: XMLEventReader) : List[Map[String, String]] = {
     var done = false
     var rType : String = null
     var value : String = null
@@ -100,9 +100,9 @@ class PullGoParser(val src: Source) extends AnyGoParser {
       }
     }
     if (rType != null)
-      Map(ParsingContants.relationType -> rType, targetId.label -> value)
+      List(Map(ParsingContants.relationType -> rType, targetId.label -> value))
     else
-      Map()
+      List()
   }
 
   private def getAttributeValue(attrs : scala.xml.MetaData, attrName : String) : Option[String] = {
