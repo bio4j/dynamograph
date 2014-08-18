@@ -1,6 +1,6 @@
 ## Summary
 
-Dynamograph is project created under Google Summer of Code program - but will not die with the end of it.
+Dynamograph is project created under Google Summer of Code program - but will not die with the end of it. It will be further developed to support more datasets.
  
 ### Conclusions 
 
